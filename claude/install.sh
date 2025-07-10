@@ -19,4 +19,4 @@ ln -sf "$(pwd)/CLAUDE.md" ~/.claude/CLAUDE.md
 ln -sf "$(pwd)/settings.json" ~/.claude/settings.json
 [ -d "$(pwd)/commands" ] && ln -sf "$(pwd)/commands" ~/.claude/commands
 
-echo "Configuration installed!\nClaude will now follow your guidelines and speak words of power."
+echo "Configuration installed!"
