@@ -1,34 +1,26 @@
 #!/bin/bash
 
-# Tmux configuration installation script
-# This script sets up tmux configuration and plugins
-
 set -e
 
-echo "Installing tmux configuration..."
-
-# Check if tmux is installed
+# Check tmux installation
 if ! command -v tmux &> /dev/null; then
-    echo "ERROR: tmux not found. Install from your package manager."
+    echo "ERROR: tmux not found"
     exit 1
 fi
 
-# Backup existing tmux config if it exists
+# Backup existing config
 if [ -f ~/.tmux.conf ]; then
-    echo "Backing up existing config..."
     mv ~/.tmux.conf ~/.tmux.conf.backup
 fi
 
-# Create symlink to tmux config
-echo "Creating symlink..."
+# Create symlink
 ln -sf "$(pwd)/tmux.conf" ~/.tmux.conf
 
-# Install TPM (Tmux Plugin Manager)
+# Install TPM
 if [ -d ~/.tmux/plugins/tpm ]; then
     cd ~/.tmux/plugins/tpm && git pull
 else
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
-echo "Configuration installed!"
-echo "Start tmux and press Ctrl-a + I to install plugins."
+echo "Done. Press Ctrl-a + I in tmux to install plugins."
