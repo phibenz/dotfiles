@@ -9,6 +9,13 @@ if ! command -v claude &> /dev/null; then
     exit 1
 fi
 
+# Check for text-to-speech on Linux
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if ! command -v espeak &> /dev/null && ! command -v spd-say &> /dev/null; then
+        echo "NOTE: For TTS support, install espeak: sudo apt install espeak"
+    fi
+fi
+
 # Setup directory and backup existing files
 mkdir -p ~/.claude
 [ -f ~/.claude/CLAUDE.md ] && mv ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.backup
