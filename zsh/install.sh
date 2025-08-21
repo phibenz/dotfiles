@@ -51,13 +51,16 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
-# Install Spaceship prompt theme
-if [ ! -d "$ZSH_CUSTOM/themes/spaceship-prompt" ]; then
-    echo "Installing Spaceship prompt..."
-    git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
-    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+# Install Starship prompt
+echo "Installing Starship prompt..."
+if ! command -v starship &> /dev/null; then
+    if command -v brew &> /dev/null; then
+        brew install starship
+    else
+        curl -sS https://starship.rs/install.sh | sh
+    fi
 else
-    echo "Spaceship prompt already installed."
+    echo "Starship already installed."
 fi
 
 # Install Hack Nerd Font
@@ -80,7 +83,12 @@ fi
 # Create symlinks
 echo "Creating symlinks..."
 ln -sf "$(pwd)/.zshrc" ~/.zshrc
-ln -sf "$(pwd)/.spaceshiprc.zsh" ~/.spaceshiprc.zsh
+
+# Create starship config directory and symlink
+mkdir -p ~/.config
+if [ -f "$(pwd)/starship.toml" ]; then
+    ln -sf "$(pwd)/starship.toml" ~/.config/starship.toml
+fi
 
 # Set zsh as default shell if not already
 if [ "$SHELL" != "$(which zsh)" ]; then
