@@ -23,4 +23,12 @@ else
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
+# Install Catppuccin theme
+mkdir -p ~/.config/tmux/plugins/catppuccin
+if [ -d ~/.config/tmux/plugins/catppuccin/tmux ]; then
+    cd ~/.config/tmux/plugins/catppuccin/tmux && git pull
+else
+    git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin/tmux
+fi
+
 echo "Done. Press Ctrl-a + I in tmux to install plugins."
