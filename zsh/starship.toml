@@ -13,17 +13,12 @@ palette = "catppuccin_mocha"
 format = """
 [](surface0)\
 $os\
-$username\
+${custom.phil_username}$username\
 [](bg:blue fg:surface0)\
 $directory\
-[](fg:blue bg:green)\
-$git_branch\
-[](fg:green bg:green)\
-$git_status\
-[](fg:green bg:red)\
+[](bg:red fg:blue)\
 $docker_context\
 [](fg:red)\
-$line_break\
 $character"""
 
 [os]
@@ -52,10 +47,16 @@ Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
 [username]
-show_always = true
+show_always = false
 style_user = "bg:surface0 fg:text"
 style_root = "bg:surface0 fg:text"
 format = '[ $user ]($style)'
+
+[custom.phil_username]
+when = 'test "$USER" = "philipp"'
+command = 'echo "phil"'
+style = "bg:surface0 fg:text"
+format = '[ $output ]($style)'
 
 [directory]
 style = "fg:mantle bg:blue"
