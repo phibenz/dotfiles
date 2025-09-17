@@ -7,7 +7,8 @@
       "Bash(ls:*)",
       "Bash(cat:*)",
       "Bash(head:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(jq:*)"
     ],
     "deny": []
   },
