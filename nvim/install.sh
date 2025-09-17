@@ -34,6 +34,26 @@ fi
 echo "Creating symlink..."
 ln -sf "$(pwd)" ~/.config/nvim
 
+# Install ripgrep (required for some plugins)
+echo "Installing ripgrep..."
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    if command -v brew &> /dev/null; then
+        brew install ripgrep
+    else
+        echo "WARNING: Homebrew not found. Please install ripgrep manually with 'brew install ripgrep'"
+    fi
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update && sudo apt-get install -y ripgrep
+    else
+        echo "WARNING: Package manager not detected. Please install ripgrep manually"
+    fi
+else
+    echo "WARNING: OS not detected. Please install ripgrep manually"
+fi
+
 # Install lazy.nvim plugin manager
 LAZY_PATH="$HOME/.local/share/nvim/lazy/lazy.nvim"
 [ ! -d "$LAZY_PATH" ] && git clone --filter=blob:none https://github.com/folke/lazy.nvim.git --branch=stable "$LAZY_PATH"
