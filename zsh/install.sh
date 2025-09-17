@@ -65,16 +65,34 @@ fi
 
 # Install Hack Nerd Font
 echo "Installing Hack Nerd Font..."
-if [ ! -d "$HOME/Library/Fonts" ]; then
-    mkdir -p "$HOME/Library/Fonts"
+
+# Determine font directory based on OS
+if [ "$(uname)" == "Darwin" ]; then
+    # macOS
+    FONT_DIR="$HOME/Library/Fonts"
+    FONT_CHECK="$FONT_DIR/HackNerdFont-Regular.ttf"
+else
+    # Linux/Ubuntu
+    FONT_DIR="$HOME/.fonts"
+    FONT_CHECK="$FONT_DIR/HackNerdFont-Regular.ttf"
+fi
+
+if [ ! -d "$FONT_DIR" ]; then
+    mkdir -p "$FONT_DIR"
 fi
 
 # Download and install Hack Nerd Font
-if [ ! -f "$HOME/Library/Fonts/HackNerdFont-Regular.ttf" ]; then
+if [ ! -f "$FONT_CHECK" ]; then
     curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.tar.xz
     tar -xf Hack.tar.xz
-    mv *.ttf "$HOME/Library/Fonts/"
+    mv *.ttf "$FONT_DIR/"
     rm -f Hack.tar.xz LICENSE.md README.md
+
+    # Update font cache on Linux
+    if [ "$(uname)" != "Darwin" ] && command -v fc-cache &> /dev/null; then
+        fc-cache -fv
+    fi
+
     echo "Hack Nerd Font installed!"
 else
     echo "Hack Nerd Font already installed."
