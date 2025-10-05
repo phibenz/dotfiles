@@ -8,7 +8,10 @@
       "Bash(cat:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
-      "Bash(jq:*)"
+      "Bash(jq:*)",
+      "WebFetch",
+      "WebSearch",
+      "Read"
     ],
     "deny": []
   },
