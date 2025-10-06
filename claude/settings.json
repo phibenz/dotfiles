@@ -1,6 +1,9 @@
 {
   "permissions": {
     "allow": [
+      "Read",
+      "WebFetch",
+      "WebSearch",
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(rg:*)",
@@ -9,9 +12,11 @@
       "Bash(head:*)",
       "Bash(tail:*)",
       "Bash(jq:*)",
-      "WebFetch",
-      "WebSearch",
-      "Read"
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git log:*)"
     ],
     "deny": []
   },
