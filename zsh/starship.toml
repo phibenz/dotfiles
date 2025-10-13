@@ -11,14 +11,15 @@ palette = "catppuccin_mocha"
 
 # Configure the format of the prompt
 format = """
-[](surface0)\
-$os\
-${custom.phil_username}$username\
-[](bg:blue fg:surface0)\
+$username\
 $directory\
-[](bg:red fg:blue)\
+$git_branch\
+$git_status\
+$git_metrics\
 $docker_context\
-[](fg:red)\
+$time\
+$cmd_duration\
+$line_break\
 $character"""
 
 [os]
@@ -31,7 +32,7 @@ Ubuntu = "󰕈"
 SUSE = ""
 Raspbian = "󰐿"
 Mint = "󰣭"
-Macos = ""
+Macos = ""
 Manjaro = ""
 Linux = "󰌽"
 Gentoo = "󰣨"
@@ -47,22 +48,16 @@ Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
 [username]
-show_always = false
-style_user = "bg:surface0 fg:text"
-style_root = "bg:surface0 fg:text"
-format = '[ $user ]($style)'
-
-[custom.phil_username]
-when = 'test "$USER" = "philipp"'
-command = 'echo "phil"'
-style = "bg:surface0 fg:text"
-format = '[ $output ]($style)'
+show_always = true
+style_user = "bold blue"
+style_root = "bold red"
+format = '[$user]($style) '
 
 [directory]
-style = "fg:mantle bg:blue"
-format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
+style = "bold cyan"
+format = "[$path]($style) "
+truncation_length = 0
+truncate_to_repo = false
 
 [directory.substitutions]
 "Documents" = "󰈙 "
@@ -72,24 +67,36 @@ truncation_symbol = "…/"
 "Developer" = "󰲋 "
 
 [git_branch]
-symbol = ""
-style = "bg:green"
-format = '[$symbol $branch ](fg:base bg:green)'
+symbol = ""
+style = "bold purple"
+format = '[$symbol $branch]($style) '
 
 [git_status]
-format = '[$all_status$ahead_behind](fg:base bg:green)'
+format = '[$all_status$ahead_behind](bold yellow) '
+
+[git_metrics]
+disabled = false
+added_style = "bold green"
+deleted_style = "bold red"
+format = '([+$added]($added_style) )([-$deleted]($deleted_style) )'
 
 
 [docker_context]
 symbol = ""
-style = "bg:red"
-format = '[[ $symbol( $context) ](fg:base bg:red)]($style)'
+style = "bold blue"
+format = '[$symbol $context]($style) '
 
 [time]
 disabled = false
 time_format = "%R"
-style = "bg:surface0"
-format = '[[  $time ](fg:text bg:surface0)]($style)'
+style = "bold white"
+format = '[ $time]($style) '
+
+[cmd_duration]
+disabled = false
+min_time = 500
+style = "bold yellow"
+format = '[󱦟 $duration]($style) '
 
 [line_break]
 disabled = false
