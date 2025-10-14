@@ -28,6 +28,6 @@ return {
     },
     config = function(_, opts)
       require('neo-tree').setup(opts)
-      vim.keymap.set('n', '<C-n>', ':Neotree filesystem reveal left<CR>', {})
+      vim.keymap.set('n', '<C-n>', ':Neotree filesystem toggle left<CR>', {})
     end
 }
