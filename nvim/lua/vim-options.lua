@@ -7,7 +7,7 @@ vim.cmd("set number")
 -- Relative line numbers
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.signcolumn = "number"
+vim.opt.signcolumn = "auto"
 
 
 -- Make sure to setup `mapleader` and `maplocalleader` before
