@@ -7,6 +7,11 @@ return {
       "MunifTanjim/nui.nvim",
     },
     opts = {
+      window = {
+        mappings = {
+          ["<C-b>"] = "close_window",  -- Toggle from inside neo-tree
+        },
+      },
       filesystem = {
         filtered_items = {
           visible = true,
@@ -34,7 +39,11 @@ return {
     },
     config = function(_, opts)
       require('neo-tree').setup(opts)
-      vim.keymap.set('n', '<C-n>', ':Neotree filesystem toggle left<CR>', {})
+      -- Focus neo-tree (switch to sidebar without toggling)
+      vim.keymap.set('n', '<C-n>', ':Neotree filesystem focus left<CR>', {})
+
+      -- Toggle neo-tree (show/hide)
+      vim.keymap.set('n', '<C-b>', ':Neotree filesystem toggle left<CR>', {})
 
       -- Auto-refresh neo-tree on git events
       vim.api.nvim_create_autocmd("User", {
