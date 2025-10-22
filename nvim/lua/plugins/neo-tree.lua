@@ -35,5 +35,22 @@ return {
     config = function(_, opts)
       require('neo-tree').setup(opts)
       vim.keymap.set('n', '<C-n>', ':Neotree filesystem toggle left<CR>', {})
+
+      -- Auto-refresh neo-tree on git events
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "FugitiveChanged",  -- Triggers on fugitive git commands
+        callback = function()
+          local events = require("neo-tree.events")
+          events.fire_event(events.GIT_EVENT)
+        end,
+      })
+
+      -- Also refresh when switching buffers or writing files
+      vim.api.nvim_create_autocmd({"BufWritePost", "BufEnter"}, {
+        callback = function()
+          local events = require("neo-tree.events")
+          events.fire_event(events.GIT_EVENT)
+        end,
+      })
     end
 }
