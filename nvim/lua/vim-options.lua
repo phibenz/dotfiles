@@ -8,6 +8,7 @@ vim.cmd("set number")
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.signcolumn = "auto"
+vim.opt.autoread = true
 
 
 -- Make sure to setup `mapleader` and `maplocalleader` before

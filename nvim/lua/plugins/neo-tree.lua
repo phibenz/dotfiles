@@ -24,7 +24,13 @@ return {
             ".prettierrc.json",
           },
         },
+        follow_current_file = {
+          enabled = true,
+        },
+        use_libuv_file_watcher = true,
       },
+      enable_git_status = true,
+      enable_diagnostics = true,
     },
     config = function(_, opts)
       require('neo-tree').setup(opts)
