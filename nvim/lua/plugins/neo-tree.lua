@@ -10,6 +10,38 @@ return {
       window = {
         mappings = {
           ["<C-b>"] = "close_window",  -- Toggle from inside neo-tree
+          ["Y"] = function(state)
+            local node = state.tree:get_node()
+            local filepath = node:get_id()
+            local filename = node.name
+            local modify = vim.fn.fnamemodify
+
+            local results = {
+              filepath,
+              modify(filepath, ':.'),  -- relative to CWD
+              modify(filepath, ':~'),  -- relative to HOME
+              filename,
+              modify(filename, ':r'),  -- filename without extension
+            }
+
+            vim.api.nvim_echo({
+              { 'Choose path format:\n', 'Normal' },
+              { '1. Absolute path\n', 'Normal' },
+              { '2. Relative to CWD\n', 'Normal' },
+              { '3. Relative to HOME\n', 'Normal' },
+              { '4. Filename\n', 'Normal' },
+              { '5. Filename (no ext)', 'Normal' },
+            }, false, {})
+
+            local char = vim.fn.getchar()
+            local number = tonumber(vim.fn.nr2char(char))
+
+            vim.cmd('redraw')  -- Clear the prompt
+
+            if number and number > 0 and number <= #results then
+              vim.fn.setreg('+', results[number])
+            end
+          end,
         },
       },
       filesystem = {
