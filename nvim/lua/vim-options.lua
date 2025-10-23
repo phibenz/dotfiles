@@ -7,7 +7,7 @@ vim.cmd("set number")
 -- Relative line numbers
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.signcolumn = "auto"
+vim.opt.signcolumn = "yes"
 vim.opt.autoread = true
 
 
