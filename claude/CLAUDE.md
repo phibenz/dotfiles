@@ -38,34 +38,17 @@ Apply Elon Musk's efficiency algorithm: question → delete → simplify → acc
 
 **TECHNOLOGY & STANDARDS**
 
-# Technology Stack
-- **Python**: 3.10+ with `uv`, Ruff, pytest, mypy
-- **ML/Data**: pandas, numpy, PyTorch, scikit-learn, Jupyter
-- **Infrastructure**: Docker, GitHub Actions, PostgreSQL
-- **Security**: gdb, pwndbg, Ghidra, Burp Suite, Wireshark
-- **Tools**: loguru, SQLAlchemy 2.0
-- **Web** (when needed): FastAPI, TypeScript, TailwindCSS
-
 # Code Standards
 ## Python
 - YOU MUST include type annotations for all function parameters and return values
-- YOU MUST write Google-style docstrings for public functions
 - YOU MUST use: snake_case for variables, PascalCase for classes, UPPER_SNAKE_CASE for constants
 - YOU MUST use async/await for I/O operations (network, disk, database)
 - YOU MUST follow single responsibility principle
 - YOU MUST use Pydantic models for validation and data structures
 
-# ML/Research Standards
-- **Reproducibility**: YOU MUST set random seeds (`torch.manual_seed()`, `np.random.seed()`, `random.seed()`)
-- **Experiment tracking**: YOU MUST log hyperparameters, metrics, and model versions
-- **Data validation**: YOU MUST check data shape, dtype, and NaN/inf values before training
-- **Memory management**: YOU MUST check dataset size before loading into memory
-- **Gradient verification**: YOU MUST verify backprop on small batches for custom implementations
-- **Model checkpointing**: YOU MUST save intermediate states during training runs >1hr
-- **Evaluation**: YOU MUST use separate validation and test sets, never leak test data
-
 # Anti-Patterns (NEVER DO THIS)
 - DO NOT use `import *` - always use explicit imports
+- DO NOT place imports inside functions/methods/classes - all imports must be at the top of the file
 - DO NOT mutate function arguments - return new objects instead
 - DO NOT use bare `except:` - specify exception types explicitly
 - DO NOT concatenate strings in loops - use `join()` or f-strings
@@ -78,14 +61,7 @@ Apply Elon Musk's efficiency algorithm: question → delete → simplify → acc
 
 ---
 
-**SECURITY & QUALITY**
-
-# Security Essentials
-- YOU MUST validate all inputs (client + server side)
-- YOU MUST use environment variables for secrets (never hardcode)
-- YOU MUST follow principle of least privilege
-- YOU MUST scan dependencies for vulnerabilities
-- YOU MUST verify code signatures when applicable
+**QUALITY**
 
 # Debugging Protocol
 When encountering errors:
@@ -101,13 +77,28 @@ When encountering errors:
 - Vectorization with numpy/pandas for data operations
 - Async I/O for external services
 - Connection pooling for databases
-- Caching strategies (Redis, in-memory)
 
-# Quality Checklist
-- [ ] Type annotations complete
-- [ ] Tests pass with 90%+ coverage
-- [ ] No security vulnerabilities
-- [ ] Performance acceptable
-- [ ] Error handling robust
-- [ ] Documentation updated
+# Comments & Docstrings Policy
+## Docstrings:
+  - Use concise one-liners for all functions/methods
+  - Describe WHAT the function does (API contract, purpose)
+  - Omit for simple data classes, exceptions, or classes where name and type hints are self-documenting
+  - Type hints replace parameter/return documentation - only document parameters when behavior needs clarification beyond the type
 
+## Comments:
+  - Only add comments where code intent is NOT obvious
+  - Explain WHY (rationale, decisions, context), not WHAT (code already shows this)
+  - Keep comments for:
+    - Complex algorithms or non-obvious patterns
+    - Workarounds for known issues/bugs
+    - Performance optimizations that aren't obvious
+    - Security considerations or edge cases
+    - Important context that can't be expressed in code
+  - NEVER add comments that:
+    - Appear at the beginning of files (no file-level documentation comments)
+    - Restate what the code does (e.g., `# Create temp directory`)
+    - Number steps (e.g., `# 1. Download file`, `# 2. Process`)
+    - Explain self-evident code (e.g., `x = 5  # Set x to 5`)
+    - Describe types/parameters already in type hints
+
+ 
