@@ -67,8 +67,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     nvm install 24
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v apt-get &> /dev/null; then
-        echo "Installing unzip..."
-        sudo apt-get install -y unzip
+        echo "Installing build dependencies..."
+        sudo apt-get update
+        sudo apt-get install -y unzip build-essential
         
         echo "Installing Node.js..."
         sudo apt-get install -y curl

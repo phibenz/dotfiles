@@ -1,13 +1,16 @@
-return {  
-    "nvim-treesitter/nvim-treesitter", 
+return {
+    "nvim-treesitter/nvim-treesitter",
+    version = false, -- last release is way too old
     build = ":TSUpdate",
-    config = function()
-      local configs = require("nvim-treesitter.configs")
-      configs.setup({
-        ensure_installed = { "c", "bash", "lua", "python", "vim", "vimdoc", "javascript", "svelte",  "html", "css"},
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+    opts = {
+        ensure_installed = { "c", "bash", "lua", "python", "vim", "vimdoc", "javascript", "svelte", "html", "css" },
         sync_install = false,
         highlight = { enable = true },
-        indent = { enable = true },  
-      })
+        indent = { enable = true },
+    },
+    config = function(_, opts)
+        require("nvim-treesitter.configs").setup(opts)
     end
 }
