@@ -54,6 +54,32 @@ else
     echo "WARNING: OS not detected. Please install ripgrep manually"
 fi
 
+# Install Mason dependencies
+echo "Installing Mason dependencies..."
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "Installing Node.js via nvm..."
+    # Download and install nvm:
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+    # in lieu of restarting the shell
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    # Download and install Node.js:
+    nvm install 24
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if command -v apt-get &> /dev/null; then
+        echo "Installing unzip..."
+        sudo apt-get install -y unzip
+        
+        echo "Installing Node.js..."
+        sudo apt-get install -y curl
+        curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+        sudo apt-get install -y npm
+    else
+        echo "WARNING: apt-get not found. Skipping Mason dependencies installation."
+    fi
+fi
+
 # Install lazy.nvim plugin manager
 LAZY_PATH="$HOME/.local/share/nvim/lazy/lazy.nvim"
 [ ! -d "$LAZY_PATH" ] && git clone --filter=blob:none https://github.com/folke/lazy.nvim.git --branch=stable "$LAZY_PATH"
