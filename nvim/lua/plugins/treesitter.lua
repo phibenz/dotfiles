@@ -5,7 +5,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     opts = {
-        ensure_installed = { "c", "bash", "lua", "python", "vim", "vimdoc", "javascript", "svelte", "html", "css" },
+        ensure_installed = { "c", "bash", "lua", "python", "vim", "vimdoc", "javascript", "svelte", "html", "css", "json", "yaml", "toml" },
         sync_install = false,
         highlight = { enable = true },
         indent = { enable = true },
