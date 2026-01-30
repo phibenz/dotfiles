@@ -21,24 +21,13 @@
     "deny": []
   },
   "hooks": {
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c \"word=$(printf 'discipline\\nfocus\\nwisdom\\ncourage\\nvirtue\\njustice\\nfortitude\\ntemperance\\nresilience\\nintegrity\\nperseverance\\ntranquility\\nmastery\\nexcellence\\npurpose\\ndetermination\\nsovereignty\\ntranscendence\\nmindfulness\\nstrength\\n' | shuf -n1); if command -v say >/dev/null 2>&1; then say -v Whisper '$word'; elif command -v espeak >/dev/null 2>&1; then espeak '$word'; elif command -v spd-say >/dev/null 2>&1; then spd-say '$word'; else echo '$word'; fi\""
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "say -v Whisper \"work work\""
+            "command": "bash -c \"word=$(printf 'discipline\\nfocus\\nwisdom\\ncourage\\nvirtue\\njustice\\nfortitude\\ntemperance\\nresilience\\nintegrity\\nperseverance\\ntranquility\\nmastery\\nexcellence\\npurpose\\ndetermination\\nsovereignty\\ntranscendence\\nmindfulness\\nstrength\\n' | shuf -n1); say -v Whisper '$word'\""
           }
         ]
       }
