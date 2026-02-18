@@ -24,13 +24,6 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias ll='ls -lah'
 
-# Git aliases
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gd='git diff'
-alias gp='git push'
-
 # Environment variables
 export EDITOR='nvim'
 export VISUAL='nvim'
