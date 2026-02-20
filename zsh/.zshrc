@@ -23,6 +23,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias ll='ls -lah'
+alias gs='git status'
 
 # Environment variables
 export EDITOR='nvim'
