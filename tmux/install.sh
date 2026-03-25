@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Check tmux installation
 if ! command -v tmux &> /dev/null; then
@@ -14,7 +16,7 @@ if [ -f ~/.tmux.conf ]; then
 fi
 
 # Create symlink
-ln -sf "$(pwd)/tmux.conf" ~/.tmux.conf
+ln -sfn "${SCRIPT_DIR}/tmux.conf" ~/.tmux.conf
 
 # Install TPM
 mkdir -p ~/.config/tmux/plugins
@@ -43,6 +45,6 @@ fi
 
 # Setup gitmux config
 mkdir -p ~/.config/tmux
-ln -sf "$(realpath .gitmux.yml)" ~/.config/tmux/gitmux.yml
+ln -sfn "${SCRIPT_DIR}/.gitmux.yml" ~/.config/tmux/gitmux.yml
 
 echo "Done. Press Ctrl-a + I in tmux to install plugins."

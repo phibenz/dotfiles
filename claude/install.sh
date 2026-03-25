@@ -1,5 +1,7 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Installing Claude Code configuration..."
 
@@ -22,8 +24,8 @@ mkdir -p ~/.claude
 [ -f ~/.claude/settings.json ] && mv ~/.claude/settings.json ~/.claude/settings.json.backup
 
 # Create symlinks
-ln -sfn "$(pwd)/CLAUDE.md" ~/.claude/CLAUDE.md
-ln -sfn "$(pwd)/settings.json" ~/.claude/settings.json
-[ -d "$(pwd)/commands" ] && ln -sfn "$(pwd)/commands" ~/.claude/commands
+ln -sfn "${SCRIPT_DIR}/CLAUDE.md" ~/.claude/CLAUDE.md
+ln -sfn "${SCRIPT_DIR}/settings.json" ~/.claude/settings.json
+[ -d "${SCRIPT_DIR}/commands" ] && ln -sfn "${SCRIPT_DIR}/commands" ~/.claude/commands
 
 echo "Configuration installed!"

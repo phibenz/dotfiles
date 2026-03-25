@@ -1,9 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Neovim configuration installation script
 # Sets up modern Lua-based nvim config with lazy.nvim
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Installing Neovim configuration..."
 
@@ -13,11 +15,11 @@ if ! command -v nvim &> /dev/null; then
     exit 1
 fi
 
-# Check nvim version (require 0.8+)
+# Check nvim version (require 0.11+)
 nvim_version=$(nvim --version | head -n1 | grep -o 'v[0-9]\+\.[0-9]\+' | cut -c2-)
-min_version="0.8"
+min_version="0.11"
 if ! printf '%s\n' "$min_version" "$nvim_version" | sort -V | head -n1 | grep -q "$min_version"; then
-    echo "ERROR: Neovim $nvim_version is too old. Requires v0.8+"
+    echo "ERROR: Neovim $nvim_version is too old. Requires v0.11+"
     exit 1
 fi
 
@@ -32,7 +34,7 @@ fi
 
 # Create symlink to nvim config
 echo "Creating symlink..."
-ln -sf "$(pwd)" ~/.config/nvim
+ln -sfn "${SCRIPT_DIR}" ~/.config/nvim
 
 # Install ripgrep (required for some plugins)
 echo "Installing ripgrep..."

@@ -1,9 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Zsh configuration installation script
 # Sets up modern zsh config with useful features
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Installing Zsh configuration..."
 
@@ -100,23 +102,24 @@ fi
 
 # Create symlinks
 echo "Creating symlinks..."
-ln -sf "$(pwd)/.zshrc" ~/.zshrc
+ln -sfn "${SCRIPT_DIR}/.zshrc" ~/.zshrc
 
 # Create starship config directory and symlink
 mkdir -p ~/.config
-if [ -f "$(pwd)/starship.toml" ]; then
-    ln -sf "$(pwd)/starship.toml" ~/.config/starship.toml
+if [ -f "${SCRIPT_DIR}/starship.toml" ]; then
+    ln -sfn "${SCRIPT_DIR}/starship.toml" ~/.config/starship.toml
 fi
 
 # Set zsh as default shell if not already
-if [ "$SHELL" != "$(which zsh)" ]; then
+zsh_path="$(command -v zsh)"
+if [ "${SHELL:-}" != "${zsh_path}" ]; then
     echo "Setting zsh as default shell..."
     if [ "$(uname)" == "Darwin" ]; then
         # macOS
-        sudo dscl . -create /Users/$USER UserShell $(which zsh)
+        sudo dscl . -create "/Users/${USER}" UserShell "${zsh_path}"
     else
         # Linux
-        chsh -s $(which zsh)
+        chsh -s "${zsh_path}"
     fi
     echo "Shell changed to zsh. Please log out and log back in for changes to take effect."
 else
