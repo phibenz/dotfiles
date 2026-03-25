@@ -34,17 +34,4 @@ else
     git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin/tmux
 fi
 
-# Install gitmux
-if ! command -v gitmux &> /dev/null; then
-    if command -v brew &> /dev/null; then
-        brew install gitmux
-    else
-        echo "WARNING: gitmux not found and brew not available"
-    fi
-fi
-
-# Setup gitmux config
-mkdir -p ~/.config/tmux
-ln -sfn "${SCRIPT_DIR}/.gitmux.yml" ~/.config/tmux/gitmux.yml
-
 echo "Done. Press Ctrl-a + I in tmux to install plugins."
