@@ -20,19 +20,6 @@
     ],
     "deny": []
   },
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c \"word=$(printf 'discipline\\nfocus\\nwisdom\\ncourage\\nvirtue\\njustice\\nfortitude\\ntemperance\\nresilience\\nintegrity\\nperseverance\\ntranquility\\nmastery\\nexcellence\\npurpose\\ndetermination\\nsovereignty\\ntranscendence\\nmindfulness\\nstrength\\n' | shuf -n1); say -v Whisper '$word'\""
-          }
-        ]
-      }
-    ]
-  },
   "alwaysThinkingEnabled": true,
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
