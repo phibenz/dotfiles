@@ -2,7 +2,6 @@ vim.cmd("set expandtab")
 vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
-vim.cmd("set number")
 
 -- Relative line numbers
 vim.opt.number = true
@@ -28,5 +27,4 @@ vim.keymap.set({'n', 'v'}, '<leader>D', '"+D') -- delete line
 -- Paste from system clipboard
 vim.keymap.set('n', '<leader>p', '"+p')  -- paste after cursor
 vim.keymap.set('n', '<leader>P', '"+P')  -- paste before cursor
-
 
