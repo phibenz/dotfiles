@@ -1,11 +1,11 @@
 ---
 name: fd-new
-description: Create a new Feature Design (FD) file and add it to docs/features/FEATURE_INDEX.md. Use when the user asks to create a new feature design entry from a title or feature description.
+description: Create a new Feature Design (FD) file from a title or feature description.
 ---
 
 # Create New Feature Design
 
-Create a new FD file and add it to the index.
+Create a new FD file.
 
 ## Argument
 
@@ -15,8 +15,9 @@ Title or description of the feature: `$ARGUMENTS`
 
 ### 1. Determine the next FD number
 
-- Read `docs/features/FEATURE_INDEX.md`
-- Find the highest FD number across Active, Completed, Deferred, and Backlog sections
+- Scan `docs/features/` and `docs/features/archive/` for files named like `FD-XXX_*.md`
+- If needed, also inspect FD headings inside those files for `FD-XXX`
+- Find the highest FD number present
 - Next number = highest + 1 (start at 1 if no FDs exist)
 - Pad to 3 digits: FD-001, FD-002, etc.
 
@@ -26,20 +27,52 @@ Title or description of the feature: `$ARGUMENTS`
 - If no argument provided, ask the user for a title and brief description
 - Generate a filename-safe slug from the title (UPPER_SNAKE_CASE)
 
-### 3. Create the FD file
+### 3. Ensure the directory exists
 
-- Copy structure from `docs/features/TEMPLATE.md`
+- Create `docs/features/` if it does not already exist
+
+### 4. Create the FD file
+
 - File: `docs/features/FD-{number}_{SLUG}.md`
-- Fill in: FD number, title, Status: Open
+- Create the file with this structure:
+
+```md
+# FD-{number}: {Title}
+
+**Impact:** Brief description of what this enables
+
+## Problem
+
+What we're solving and why it matters.
+
+## Solution
+
+How to implement it. Be specific about approach.
+
+## Files to Create/Modify
+
+| File | Action | Purpose |
+|------|--------|---------|
+| `path/to/file` | CREATE / MODIFY | What and why |
+
+## Verification
+
+How to test that it works. Concrete steps.
+
+## Related
+
+- Links to related FDs, docs, or issues
+```
+
+- Fill in: FD number and title
 - If the user provided enough context, fill in Problem and Solution sections
 - Otherwise leave them as placeholders for the user to fill
 
-### 4. Update FEATURE_INDEX.md
+### 5. Skip the index
 
-- Add a row to the **Active Features** table
-- Include: FD number, title, status (Open)
+Do not create or update a feature index/list file.
 
-### 5. Report
+### 6. Report
 
 Print the created FD with its number, file path, and what sections need filling in.
 Do NOT commit - the user will fill in details first.
