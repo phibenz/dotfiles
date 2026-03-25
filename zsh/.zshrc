@@ -1,9 +1,6 @@
 # Zsh Configuration with Oh My Zsh
 # Modern zsh config with useful features and optimizations
 
-# Catppuccin theme for zsh-syntax-highlighting (must be sourced before plugin)
-[ -f ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh ] && source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
-
 # Oh My Zsh configuration
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""
