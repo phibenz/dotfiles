@@ -2,20 +2,15 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_SKILLS_DIR="${SCRIPT_DIR}/feature-design/skills"
 TARGET_SKILLS_DIR="${HOME}/.codex/skills"
-
-if [[ ! -d "${SOURCE_SKILLS_DIR}" ]]; then
-  echo "No skills directory found at: ${SOURCE_SKILLS_DIR}" >&2
-  exit 1
-fi
 
 mkdir -p "${TARGET_SKILLS_DIR}"
 
 installed=0
 skipped=0
 
-while IFS= read -r -d '' skill_dir; do
+while IFS= read -r -d '' skill_file; do
+  skill_dir="$(dirname "${skill_file}")"
   skill_name="$(basename "${skill_dir}")"
 
   if [[ "${skill_name}" == "." || "${skill_name}" == ".." ]]; then
@@ -33,6 +28,6 @@ while IFS= read -r -d '' skill_dir; do
   ln -sfn "${skill_dir}" "${target_link}"
   echo "Linked ${skill_name} -> ${target_link}"
   installed=$((installed + 1))
-done < <(find "${SOURCE_SKILLS_DIR}" -mindepth 1 -maxdepth 1 -type d -print0)
+done < <(find "${SCRIPT_DIR}" -name SKILL.md -path '*/skills/*/SKILL.md' -type f -print0)
 
 echo "Done. Linked ${installed} skill(s), skipped ${skipped}."
