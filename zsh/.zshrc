@@ -1,6 +1,8 @@
 # Zsh configuration
 # Minimal native zsh setup with direct plugin sourcing
 
+ZSH_CONFIG_DIR="${${(%):-%x}:A:h}"
+
 # Completion
 autoload -Uz compinit
 compinit
@@ -17,6 +19,7 @@ bindkey '^[[B' history-beginning-search-forward
 ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
 [[ -f "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh"
 [[ -f "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+[[ -f "${ZSH_CONFIG_DIR}/git.plugin.zsh" ]] && source "${ZSH_CONFIG_DIR}/git.plugin.zsh"
 
 # Directory aliases
 alias ..='cd ..'
