@@ -7,12 +7,10 @@ ZSH_CONFIG_DIR="${${(%):-%x}:A:h}"
 autoload -Uz compinit
 compinit
 
-# History search on arrow keys
+# History search widgets
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
-bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
 
 # Direct plugins
 ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
@@ -31,6 +29,15 @@ export LESS='-R'
 
 # Load local customizations if they exist
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Normalize the interactive keymap after local scripts load.
+bindkey -e
+bindkey '^?' backward-delete-char
+bindkey '^H' backward-delete-char
+[[ -n "${terminfo[kcuu1]-}" ]] && bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
+[[ -n "${terminfo[kcud1]-}" ]] && bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
 
 # Initialize Starship prompt (after PATH is set)
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
