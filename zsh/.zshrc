@@ -8,12 +8,12 @@ autoload -Uz compinit
 compinit
 
 # History search on arrow keys
-autoload -Uz history-beginning-search-backward
-autoload -Uz history-beginning-search-forward
-zle -N history-beginning-search-backward
-zle -N history-beginning-search-forward
-bindkey '^[[A' history-beginning-search-backward
-bindkey '^[[B' history-beginning-search-forward
+autoload -Uz up-line-or-beginning-search
+autoload -Uz down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
 
 # Direct plugins
 ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
