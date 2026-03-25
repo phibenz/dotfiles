@@ -31,26 +31,19 @@ if [ -f ~/.zshrc ]; then
     cp ~/.zshrc ~/.zshrc.backup
 fi
 
-# Install Oh My Zsh if not present
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-else
-    echo "Oh My Zsh already installed."
-fi
-
-# Install additional plugins
+# Install direct zsh plugins
 echo "Installing zsh plugins..."
-ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
+mkdir -p "${ZSH_PLUGIN_DIR}"
 
 # zsh-autosuggestions
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+if [ ! -d "${ZSH_PLUGIN_DIR}/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_PLUGIN_DIR}/zsh-autosuggestions"
 fi
 
 # zsh-syntax-highlighting
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+if [ ! -d "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting"
 fi
 
 # Install Starship prompt

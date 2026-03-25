@@ -1,19 +1,22 @@
-# Zsh Configuration with Oh My Zsh
-# Modern zsh config with useful features and optimizations
+# Zsh configuration
+# Minimal native zsh setup with direct plugin sourcing
 
-# Oh My Zsh configuration
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME=""
-plugins=(
-    git
-    docker
-    history-substring-search
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-)
+# Completion
+autoload -Uz compinit
+compinit
 
-# Load Oh My Zsh
-source $ZSH/oh-my-zsh.sh
+# History search on arrow keys
+autoload -Uz history-beginning-search-backward
+autoload -Uz history-beginning-search-forward
+zle -N history-beginning-search-backward
+zle -N history-beginning-search-forward
+bindkey '^[[A' history-beginning-search-backward
+bindkey '^[[B' history-beginning-search-forward
+
+# Direct plugins
+ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
+[[ -f "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # Directory aliases
 alias ..='cd ..'
@@ -32,7 +35,7 @@ export LESS='-R'
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 # Initialize Starship prompt (after PATH is set)
-eval "$(starship init zsh)"
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
 # Start tmux automatically (if installed) - moved to end to ensure PATH is loaded
 # command -v tmux >/dev/null 2>&1 && test -z "$TMUX" && (tmux attach || tmux new-session)
