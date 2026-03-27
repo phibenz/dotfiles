@@ -38,6 +38,10 @@ bindkey '^H' backward-delete-char
 [[ -n "${terminfo[kcud1]-}" ]] && bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
 bindkey '^[[A' up-line-or-beginning-search
 bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5C' forward-word
+bindkey '^[[5D' backward-word
+bindkey '^[[5C' forward-word
 
 # Initialize Starship prompt (after PATH is set)
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
