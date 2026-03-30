@@ -14,7 +14,9 @@ Read the currently staged changes and propose exactly one concise commit message
 - Do not unstage files
 - Do not create a commit
 - Do not modify any files
-- Output a single one-line commit message and nothing else unless the user asks for alternatives
+- After choosing the message, wrap it in double quotes for the final output
+- If `uname` reports `Darwin` and `pbcopy` is available, copy that exact quoted one-line message to the clipboard with a shell command such as `printf '%s' "$quoted_message" | pbcopy`
+- Output a single quoted one-line commit message and nothing else unless the user asks for alternatives
 
 ## Message style
 
@@ -28,4 +30,7 @@ Read the currently staged changes and propose exactly one concise commit message
 
 1. Inspect the staged diff with git
 2. Infer the primary change
-3. Print one commit message
+3. Store the final one-line message in a shell variable so it can be reused exactly
+4. Wrap it in double quotes and store the quoted form in a second shell variable
+5. If on macOS and `pbcopy` exists, copy the quoted message to the clipboard
+6. Print the quoted one-line commit message
