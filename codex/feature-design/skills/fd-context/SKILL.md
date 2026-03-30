@@ -1,18 +1,21 @@
 ---
 name: fd-context
-description: Build focused implementation context for a specific Feature Design (FD). Use when the user provides an FD id (FD-XXX) and wants project, codebase, and recent activity context tailored to that FD.
+description: Build focused implementation context for a specific feature design document. Accepts custom design ids such as FD-012 or RL-635 and gathers project, codebase, and recent activity context for that design.
 ---
 
-# FD Context
+# Design Context
 
-Create an FD-specific briefing for a single feature design.
+Create a design-specific briefing for a single feature design.
 
 ## Argument
 
-Required: `FD-XXX`
+Required: a design id such as `FD-XXX`, `RL-635`, or another uppercase prefix
+plus number
+
 Optional: additional user description or focus area
 
-If the argument does not include an `FD-XXX` token, ask the user to provide it before continuing.
+If the argument does not include a design id token matching
+`[A-Z][A-Z0-9]*-[0-9]+`, ask the user to provide it before continuing.
 
 ## Step 1: Project Overview
 
@@ -25,52 +28,56 @@ Explore the project root to understand what this project is and how it works:
 
 Return: project name, purpose, tech stack, directory layout, key gotchas.
 
-## Step 2: FD Deep Dive
+## Step 2: Design Deep Dive
 
-Explore the codebase and recent activity specifically for the target FD (`FD-XXX`):
+Explore the codebase and recent activity specifically for the target design id:
 
-1. Locate and read the FD file for the target ID by searching `docs/features/` (and `docs/features/archive/` if needed)
-2. Extract problem statement, solution approach, verification plan, and files to modify from the FD
-3. Map FD scope to actual code by inspecting referenced files and discovering related modules
-4. Identify dependencies, integration points, and potential risk areas tied to this FD
-5. Find recent commits referencing the FD id or related feature keywords
-6. Summarize last 15 commits with emphasis on FD-relevant changes
-7. List files changed in the last 5 commits that overlap with FD scope
-8. Report branch context (current branch and ahead/behind main)
-9. Check uncommitted work and flag items related to this FD
+1. Locate and read the design doc for the target id by searching
+   `docs/features/` (and `docs/features/archive/` if needed)
+2. Match either the filename prefix or the heading id
+3. Extract problem statement, solution approach, verification plan, and files to modify from the design doc
+4. Map design scope to actual code by inspecting referenced files and discovering related modules
+5. Identify dependencies, integration points, and potential risk areas tied to this design
+6. Find recent commits referencing the design id or related feature keywords
+7. Summarize last 15 commits with emphasis on design-relevant changes
+8. List files changed in the last 5 commits that overlap with design scope
+9. Report branch context (current branch and ahead/behind main)
+10. Check uncommitted work and flag items related to this design
 
-Return: FD summary, planned file touchpoints, relevant modules, risks, implementation notes, FD-relevant commit summary, files in flux, branch status, and open work related to the FD.
+Return: design summary, planned file touchpoints, relevant modules, risks,
+implementation notes, design-relevant commit summary, files in flux, branch
+status, and open work related to the design.
 
 ## Step 3: Synthesize Results
 
-Combine agent outputs into a single FD-focused briefing.
+Combine agent outputs into a single design-focused briefing.
 
 ### Project Overview
 
 - Name, purpose, tech stack
 - Key constraints and gotchas
 
-### FD Context (`FD-XXX`)
+### Design Context (`ID`)
 
-- FD title and status
+- Design title and status
 - Problem and solution summary
 - Expected files/modules to change
 - Key risks and unknowns
 
-### Recent Activity (FD-Scoped)
+### Recent Activity (Design-Scoped)
 
-- What changed recently for this FD
-- Current branch and open work affecting this FD
+- What changed recently for this design
+- Current branch and open work affecting this design
 
 ### Quick Reference
 
 | Item | Value |
 |------|-------|
 | **Project** | {name} |
-| **FD** | {FD-XXX} |
+| **Design ID** | {ID} |
 | **Branch** | {current branch} |
-| **FD Status** | {status} |
-| **Recent FD focus** | {summary} |
+| **Design Status** | {status} |
+| **Recent focus** | {summary} |
 
 ## Working Directory
 

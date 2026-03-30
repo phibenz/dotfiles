@@ -1,29 +1,41 @@
 ---
 name: fd-new
-description: Create a new Feature Design (FD) file from a title or feature description.
+description: Create a new feature design document from a title, feature description, or explicit design id such as FD-012 or RL-635.
 ---
 
 # Create New Feature Design
 
-Create a new FD file.
+Create a new feature design document.
 
 ## Argument
 
 Title or description of the feature: `$ARGUMENTS`
 
+Optional: the argument may include an explicit design id such as `FD-012`,
+`RL-635`, or another uppercase prefix plus number.
+
 ## Steps
 
-### 1. Determine the next FD number
+### 1. Determine the design id
 
-- Scan `docs/features/` and `docs/features/archive/` for files named like `FD-XXX_*.md`
-- If needed, also inspect FD headings inside those files for `FD-XXX`
-- Find the highest FD number present
-- Next number = highest + 1 (start at 1 if no FDs exist)
-- Pad to 3 digits: FD-001, FD-002, etc.
+- If the argument includes an explicit id token like `FD-012`, `RL-635`, or
+  another token matching `[A-Z][A-Z0-9]*-[0-9]+`, use that exact id.
+- When using an explicit id:
+  - scan `docs/features/` and `docs/features/archive/` for an existing file or
+    heading with that id
+  - if it already exists, stop and tell the user instead of creating a duplicate
+- If no explicit id is provided:
+  - scan `docs/features/` and `docs/features/archive/` for files named like
+    `FD-XXX_*.md`
+  - if needed, also inspect headings inside those files for `FD-XXX`
+  - find the highest FD number present
+  - next number = highest + 1 (start at 1 if no FDs exist)
+  - pad to 3 digits: `FD-001`, `FD-002`, etc.
 
 ### 2. Parse the argument
 
-- Extract a title from `$ARGUMENTS`
+- Extract the design title from `$ARGUMENTS`
+- If an explicit design id token is present, remove it from the title text
 - If no argument provided, ask the user for a title and brief description
 - Generate a filename-safe slug from the title (UPPER_SNAKE_CASE)
 
@@ -31,13 +43,13 @@ Title or description of the feature: `$ARGUMENTS`
 
 - Create `docs/features/` if it does not already exist
 
-### 4. Create the FD file
+### 4. Create the design doc
 
-- File: `docs/features/FD-{number}_{SLUG}.md`
+- File: `docs/features/{DESIGN_ID}_{SLUG}.md`
 - Create the file with this structure:
 
 ```md
-# FD-{number}: {Title}
+# {DESIGN_ID}: {Title}
 
 **Impact:** Brief description of what this enables
 
@@ -64,7 +76,7 @@ How to test that it works. Concrete steps.
 - Links to related FDs, docs, or issues
 ```
 
-- Fill in: FD number and title
+- Fill in: design id and title
 - If the user provided enough context, fill in Problem and Solution sections
 - Otherwise leave them as placeholders for the user to fill
 
@@ -74,5 +86,6 @@ Do not create or update a feature index/list file.
 
 ### 6. Report
 
-Print the created FD with its number, file path, and what sections need filling in.
+Print the created design doc with its id, file path, and what sections need
+filling in.
 Do NOT commit - the user will fill in details first.
