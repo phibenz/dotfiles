@@ -1,11 +1,13 @@
 ---
 name: fd-context
-description: Build focused implementation context for a specific feature design document. Accepts custom design ids such as FD-012 or RL-635 and gathers project, codebase, and recent activity context for that design.
+description: Build focused implementation context for a specific feature design document. Accepts custom design ids such as FD-012 or RL-635 and gathers project, codebase, recent activity, feasibility risks, and implementation readiness for that design.
 ---
 
 # Design Context
 
 Create a design-specific briefing for a single feature design.
+In addition to context gathering, perform a lightweight feasibility review of
+the design against the current codebase and recent activity.
 
 ## Argument
 
@@ -48,7 +50,29 @@ Return: design summary, planned file touchpoints, relevant modules, risks,
 implementation notes, design-relevant commit summary, files in flux, branch
 status, and open work related to the design.
 
-## Step 3: Synthesize Results
+## Step 3: Feasibility Review
+
+Evaluate whether the design looks implementable from the current repo state.
+
+1. Check whether the design has enough specificity to implement:
+   acceptance criteria, architecture direction, verification plan, file/module
+   touchpoints, and rollout assumptions
+2. Look for blockers:
+   missing dependencies, missing infra or APIs, unclear ownership boundaries,
+   unavailable code paths, incomplete prerequisites, or required data/models not
+   present in the repo
+3. Look for unresolved conflicts:
+   contradictions inside the design doc, conflicts with existing architecture,
+   mismatches with recent commits, or overlap with in-flight local changes
+4. Separate hard blockers from soft unknowns
+5. Call out assumptions you are making when the design is underspecified
+6. Give an implementation readiness estimate using this rubric:
+   `Ready`, `Mostly Ready`, `Needs Design Work`, or `Blocked`
+
+Return: feasibility summary, blockers, unresolved conflicts, open questions,
+assumptions, and readiness estimate with a short rationale.
+
+## Step 4: Synthesize Results
 
 Combine agent outputs into a single design-focused briefing.
 
@@ -64,6 +88,16 @@ Combine agent outputs into a single design-focused briefing.
 - Expected files/modules to change
 - Key risks and unknowns
 
+### Feasibility
+
+- Overall feasibility assessment
+- Hard blockers
+- Unresolved conflicts or inconsistencies
+- Open questions and assumptions
+- Implementation readiness: `Ready`, `Mostly Ready`, `Needs Design Work`, or
+  `Blocked`
+- Short rationale for the readiness estimate
+
 ### Recent Activity (Design-Scoped)
 
 - What changed recently for this design
@@ -77,7 +111,22 @@ Combine agent outputs into a single design-focused briefing.
 | **Design ID** | {ID} |
 | **Branch** | {current branch} |
 | **Design Status** | {status} |
+| **Readiness** | {readiness estimate} |
 | **Recent focus** | {summary} |
+
+## Assessment Rules
+
+- Be concrete and repo-grounded; do not invent blockers without evidence
+- Distinguish clearly between:
+  - confirmed blockers
+  - probable risks
+  - missing information
+- If the design appears implementable but underspecified, prefer `Mostly Ready`
+  or `Needs Design Work` over `Blocked`
+- If there is a direct contradiction that prevents safe implementation, mark it
+  as a blocker and explain why
+- If evidence is mixed, state the uncertainty explicitly instead of forcing a
+  confident conclusion
 
 ## Working Directory
 
