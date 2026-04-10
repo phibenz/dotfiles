@@ -16,6 +16,7 @@ $directory\
 $git_branch\
 $git_status\
 $git_metrics\
+$python\
 $docker_context\
 $time\
 $cmd_duration\
@@ -78,6 +79,10 @@ format = '([+$added]($added_style) )([-$deleted]($deleted_style) )'
 symbol = ""
 style = "bold blue"
 format = '[$symbol $context]($style) '
+
+[python]
+format = '[(\($virtualenv\) )]($style)'
+style = "bold yellow"
 
 [time]
 disabled = false
