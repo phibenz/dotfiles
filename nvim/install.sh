@@ -72,7 +72,7 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "Installing build dependencies..."
         sudo apt-get update
         sudo apt-get install -y unzip build-essential
-        
+
         echo "Installing Node.js..."
         sudo apt-get install -y curl
         curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -

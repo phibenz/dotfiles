@@ -104,5 +104,3 @@ When encountering errors:
     - Explain self-evident code (e.g., `x = 5  # Set x to 5`)
     - Describe what a class/function does - the name should do that
     - Describe types/parameters already in type hints
-
- 

@@ -1,7 +1,7 @@
 return {
  "lewis6991/gitsigns.nvim",
  event = "BufReadPre",
- 
+
   config = function()
   require('gitsigns').setup ({
   signs = {
@@ -51,7 +51,7 @@ return {
     row = 0,
     col = 1
   },
-      
+
   on_attach = function(bufnr)
     local gs = require('gitsigns')
 
