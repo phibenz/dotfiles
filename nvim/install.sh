@@ -7,6 +7,21 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+ensure_nvm_node() {
+    if command -v node &> /dev/null && command -v npm &> /dev/null; then
+        echo "Node.js and npm already installed."
+        return 0
+    fi
+
+    echo "Installing Node.js via nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+    nvm install 24
+}
+
 echo "Installing Neovim configuration..."
 
 # Check if nvim is installed
@@ -59,25 +74,15 @@ fi
 # Install Mason dependencies
 echo "Installing Mason dependencies..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Installing Node.js via nvm..."
-    # Download and install nvm:
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-    # in lieu of restarting the shell
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    # Download and install Node.js:
-    nvm install 24
+    ensure_nvm_node
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v apt-get &> /dev/null; then
         echo "Installing build dependencies..."
         sudo apt-get update
         sudo apt-get install -y unzip build-essential
 
-        echo "Installing Node.js..."
         sudo apt-get install -y curl
-        curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-        sudo apt-get install -y npm
+        ensure_nvm_node
     else
         echo "WARNING: apt-get not found. Skipping Mason dependencies installation."
     fi
