@@ -6,20 +6,65 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NVM_VERSION="v0.40.3"
+NODE_VERSION="24"
+
+ensure_nvm_init() {
+    local shell_rc
+    local nvm_block
+
+    nvm_block=$(cat <<'EOF'
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+EOF
+)
+
+    for shell_rc in "$HOME/.zshrc" "$HOME/.bashrc"; do
+        if [[ -f "${shell_rc}" ]] && grep -Fq 'export NVM_DIR="$HOME/.nvm"' "${shell_rc}"; then
+            continue
+        fi
+
+        if [[ -f "${shell_rc}" ]]; then
+            printf '\n%s\n' "${nvm_block}" >> "${shell_rc}"
+        else
+            printf '%s\n' "${nvm_block}" > "${shell_rc}"
+        fi
+    done
+}
+
+load_nvm() {
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+}
 
 ensure_nvm_node() {
-    if command -v node &> /dev/null && command -v npm &> /dev/null; then
-        echo "Node.js and npm already installed."
+    if ! command -v curl &> /dev/null; then
+        echo "ERROR: curl is required to install nvm."
+        return 1
+    fi
+
+    if ! command -v nvm &> /dev/null; then
+        if [[ ! -s "$HOME/.nvm/nvm.sh" ]]; then
+            echo "Installing nvm..."
+            curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash
+        fi
+
+        ensure_nvm_init
+        load_nvm
+    fi
+
+    if ! command -v nvm &> /dev/null; then
+        echo "ERROR: nvm is not available after installation."
+        return 1
+    fi
+
+    if nvm use "${NODE_VERSION}" >/dev/null 2>&1; then
+        echo "Node.js ${NODE_VERSION} already installed via nvm."
         return 0
     fi
 
-    echo "Installing Node.js via nvm..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-    nvm install 24
+    echo "Installing Node.js ${NODE_VERSION} via nvm..."
+    nvm install "${NODE_VERSION}"
 }
 
 echo "Installing Neovim configuration..."
@@ -51,9 +96,15 @@ fi
 echo "Creating symlink..."
 ln -sfn "${SCRIPT_DIR}" ~/.config/nvim
 
+if [[ "$OSTYPE" == "linux-gnu"* ]] && command -v apt-get &> /dev/null; then
+    sudo apt-get update
+fi
+
 # Install ripgrep (required for some plugins)
 echo "Installing ripgrep..."
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if command -v rg &> /dev/null; then
+    echo "ripgrep already installed."
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
     if command -v brew &> /dev/null; then
         brew install ripgrep
@@ -63,7 +114,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux
     if command -v apt-get &> /dev/null; then
-        sudo apt-get update && sudo apt-get install -y ripgrep
+        sudo apt-get install -y ripgrep
     else
         echo "WARNING: Package manager not detected. Please install ripgrep manually"
     fi
@@ -78,10 +129,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v apt-get &> /dev/null; then
         echo "Installing build dependencies..."
-        sudo apt-get update
-        sudo apt-get install -y unzip build-essential
-
-        sudo apt-get install -y curl
+        sudo apt-get install -y curl unzip build-essential
         ensure_nvm_node
     else
         echo "WARNING: apt-get not found. Skipping Mason dependencies installation."
