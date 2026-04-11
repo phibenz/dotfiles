@@ -6,8 +6,19 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NVIM_CONFIG_DIR="${HOME}/.config/nvim"
 NVM_VERSION="v0.40.3"
 NODE_VERSION="24"
+
+canonical_path() {
+    local path="$1"
+
+    if command -v realpath &> /dev/null; then
+        realpath "${path}"
+    else
+        perl -MCwd=realpath -e 'print realpath(shift)' "${path}"
+    fi
+}
 
 ensure_nvm_init() {
     local shell_rc
@@ -122,14 +133,18 @@ fi
 mkdir -p ~/.config
 
 # Backup existing nvim config if it exists
-if [ -d ~/.config/nvim ]; then
+if [ -e "${NVIM_CONFIG_DIR}" ] && [ "$(canonical_path "${NVIM_CONFIG_DIR}")" = "${SCRIPT_DIR}" ]; then
+    echo "Neovim config already points to ${SCRIPT_DIR}."
+elif [ -d "${NVIM_CONFIG_DIR}" ]; then
     echo "Backing up existing config..."
-    mv ~/.config/nvim ~/.config/nvim.backup
+    mv "${NVIM_CONFIG_DIR}" ~/.config/nvim.backup
 fi
 
 # Create symlink to nvim config
-echo "Creating symlink..."
-ln -sfn "${SCRIPT_DIR}" ~/.config/nvim
+if [ ! -e "${NVIM_CONFIG_DIR}" ]; then
+    echo "Creating symlink..."
+    ln -sfn "${SCRIPT_DIR}" "${NVIM_CONFIG_DIR}"
+fi
 
 if [[ "$OSTYPE" == "linux-gnu"* ]] && command -v apt-get &> /dev/null; then
     sudo apt-get update
