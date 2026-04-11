@@ -26,6 +26,8 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export PAGER='less'
 export LESS='-R'
+export LANG="${LANG:-C.UTF-8}"
+export LC_CTYPE="${LC_CTYPE:-$LANG}"
 
 # Load local customizations if they exist
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
