@@ -37,6 +37,41 @@ load_nvm() {
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 }
 
+ensure_lua_toolchain() {
+    if command -v lua &> /dev/null && command -v luarocks &> /dev/null; then
+        echo "Lua and LuaRocks already installed."
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        if command -v brew &> /dev/null; then
+            echo "Installing Lua and LuaRocks..."
+            brew install lua luarocks
+        else
+            echo "WARNING: Homebrew not found. Please install lua and luarocks manually."
+            return 0
+        fi
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if command -v apt-get &> /dev/null; then
+            echo "Installing Lua and LuaRocks..."
+            sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
+        else
+            echo "WARNING: Package manager not detected. Please install lua and luarocks manually."
+            return 0
+        fi
+    else
+        echo "WARNING: OS not detected. Please install lua and luarocks manually."
+        return 0
+    fi
+
+    if command -v luarocks &> /dev/null; then
+        if luarocks show luasocket &> /dev/null; then
+            echo "LuaSocket already installed."
+        elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+            sudo luarocks install luasocket
+        else
+            luarocks install luasocket
+        fi
+    fi
+}
+
 ensure_nvm_node() {
     if ! command -v curl &> /dev/null; then
         echo "ERROR: curl is required to install nvm."
@@ -122,14 +157,18 @@ else
     echo "WARNING: OS not detected. Please install ripgrep manually"
 fi
 
-# Install Mason dependencies
+# Install plugin and Mason dependencies
 echo "Installing Mason dependencies..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Some Neovim plugins depend on LuaRocks packages such as LuaSocket.
+    ensure_lua_toolchain
     ensure_nvm_node
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v apt-get &> /dev/null; then
         echo "Installing build dependencies..."
         sudo apt-get install -y curl unzip build-essential
+        # Some Neovim plugins depend on LuaRocks packages such as LuaSocket.
+        ensure_lua_toolchain
         ensure_nvm_node
     else
         echo "WARNING: apt-get not found. Skipping Mason dependencies installation."
