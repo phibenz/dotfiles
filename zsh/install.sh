@@ -78,10 +78,13 @@ fi
 
 # Download and install Hack Nerd Font
 if [ ! -f "$FONT_CHECK" ]; then
-    curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.tar.xz
-    tar -xf Hack.tar.xz
-    mv *.ttf "$FONT_DIR/"
-    rm -f Hack.tar.xz LICENSE.md README.md
+    font_tmp_dir="$(mktemp -d)"
+    trap 'rm -rf "$font_tmp_dir"' EXIT
+
+    curl -L https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.tar.xz \
+        -o "${font_tmp_dir}/Hack.tar.xz"
+    tar --no-same-owner -xf "${font_tmp_dir}/Hack.tar.xz" -C "${font_tmp_dir}"
+    find "${font_tmp_dir}" -maxdepth 1 -name '*.ttf' -exec mv {} "$FONT_DIR/" \;
 
     # Update font cache on Linux
     if [ "$(uname)" != "Darwin" ] && command -v fc-cache &> /dev/null; then
