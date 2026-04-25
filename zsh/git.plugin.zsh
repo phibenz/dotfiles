@@ -84,6 +84,142 @@ function work_in_progress() {
   command git -c log.showSignature=false log -n 1 2>/dev/null | grep -q -- "--wip--" && echo "WIP!!"
 }
 
+function _copy_and_print_quoted_message() {
+  local quoted_message="$1"
+
+  if [[ "$(uname)" == "Darwin" ]] && command -v pbcopy >/dev/null 2>&1; then
+    printf '%s' "$quoted_message" | pbcopy
+  fi
+
+  printf '%s\n' "$quoted_message"
+}
+
+function _ensure_quoted_one_liner() {
+  local message="$1"
+
+  message="${message//$'\r'/}"
+  message="${message//$'\n'/ }"
+  message="${message#"${message%%[![:space:]]*}"}"
+  message="${message%"${message##*[![:space:]]}"}"
+  message="${message#\"}"
+  message="${message%\"}"
+  message="\"${message}\""
+
+  printf '%s' "$message"
+}
+
+function _extract_final_model_line() {
+  local response="$1"
+  local final_line
+
+  final_line=$(printf '%s\n' "$response" | sed -n 's/^FINAL:[[:space:]]*//p' | tail -n 1)
+  if [[ -z "$final_line" ]]; then
+    final_line=$(printf '%s\n' "$response" | sed '/^[[:space:]]*$/d' | tail -n 1)
+  fi
+
+  printf '%s' "$final_line"
+}
+
+function _recent_pr_titles() {
+  command -v gh >/dev/null 2>&1 || return 0
+
+  GH_NO_UPDATE_NOTIFIER=1 gh pr list \
+    --state merged \
+    --limit 8 \
+    --json title \
+    --jq '.[].title' \
+    2>/dev/null
+}
+
+function cm() {
+  command git rev-parse --git-dir >/dev/null 2>&1 || return 1
+  typeset -f _ollama_run_prompt >/dev/null 2>&1 || {
+    echo "_ollama_run_prompt is not available; source ai.plugin.zsh first" >&2
+    return 1
+  }
+
+  local staged_diff
+  staged_diff=$(git diff --cached --no-ext-diff) || return 1
+  [[ -n "$staged_diff" ]] || {
+    echo "no staged changes" >&2
+    return 1
+  }
+
+  local prompt response
+  prompt=$'Read the currently staged git diff and produce exactly one concise conventional commit message.\n'
+  prompt+=$'Requirements:\n'
+  prompt+=$'- Think silently if needed, but the final answer must be on a line that starts with FINAL:.\n'
+  prompt+=$'- After FINAL:, output exactly one concise conventional commit message.\n'
+  prompt+=$'- Use conventional commit prefixes when appropriate.\n'
+  prompt+=$'- Keep the message under 72 characters.\n'
+  prompt+=$'- Do not end the message with an unfinished phrase or trailing preposition.\n'
+  prompt+=$'- No explanations, no alternatives.\n\n'
+  prompt+=$'Example final line:\n'
+  prompt+=$'FINAL: feat: add foo bar support\n\n'
+  prompt+=$'Staged diff:\n'
+  prompt+="$staged_diff"
+
+  response=$(_ollama_run_prompt "${QWEN_OLLAMA_MODEL}" "$prompt") || return 1
+  response=$(_extract_final_model_line "$response")
+  response=$(_ensure_quoted_one_liner "$response")
+  _copy_and_print_quoted_message "$response"
+}
+
+function pr() {
+  command git rev-parse --git-dir >/dev/null 2>&1 || return 1
+  typeset -f _ollama_run_prompt >/dev/null 2>&1 || {
+    echo "_ollama_run_prompt is not available; source ai.plugin.zsh first" >&2
+    return 1
+  }
+
+  local current base extra diff_summary prompt recent_pr_titles
+  current=$(git branch --show-current) || return 1
+
+  for base in \
+    "$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)" \
+    origin/main origin/master main master
+  do
+    [[ -n "$base" ]] || continue
+    if git rev-parse --verify "$base" >/dev/null 2>&1 && [[ "$base" != "$current" ]]; then
+      break
+    fi
+    base=""
+  done
+
+  [[ -n "$base" ]] || {
+    echo "unable to determine base branch" >&2
+    return 1
+  }
+
+  diff_summary=$(printf 'Base branch: %s\n\nCommits:\n' "$base")
+  diff_summary+="$(git log --oneline --no-decorate "$base...HEAD")"
+  diff_summary+=$'\n\nDiff stat:\n'
+  diff_summary+="$(git diff --stat "$base...HEAD")"
+  recent_pr_titles="$(_recent_pr_titles)"
+
+  extra="$*"
+  prompt=$'Propose a PR title and concise PR description for the current branch compared to its base branch.\n'
+  prompt+=$'Output format:\n'
+  prompt+=$'<one-line title>\n\n- <bullet>\n- <bullet>\n'
+  prompt+=$'Do not include Title: or Description: headings.\n'
+  prompt+=$'Keep the title under 72 characters.\n'
+  prompt+=$'Use conventional commit prefixes when appropriate. Be concise.\n'
+  if [[ -n "$extra" ]]; then
+    prompt+=$'\nAdditional instruction:\n'
+    prompt+="$extra"
+    prompt+=$'\n'
+  fi
+  if [[ -n "$recent_pr_titles" ]]; then
+    prompt+=$'\nRecent merged PR titles for style reference:\n'
+    prompt+="$recent_pr_titles"
+    prompt+=$'\n'
+  fi
+  prompt+=$'\nChange summary:\n'
+  prompt+="$diff_summary"
+
+  _ollama_run_prompt "${QWEN_OLLAMA_MODEL}" "$prompt"
+}
+
 #
 # Aliases
 # (sorted alphabetically by command)

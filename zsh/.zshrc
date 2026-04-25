@@ -16,6 +16,7 @@ zle -N down-line-or-beginning-search
 ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
 [[ -f "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh"
 [[ -f "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+[[ -f "${ZSH_CONFIG_DIR}/ai.plugin.zsh" ]] && source "${ZSH_CONFIG_DIR}/ai.plugin.zsh"
 [[ -f "${ZSH_CONFIG_DIR}/git.plugin.zsh" ]] && source "${ZSH_CONFIG_DIR}/git.plugin.zsh"
 
 # Shell aliases
