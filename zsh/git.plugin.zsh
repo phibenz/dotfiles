@@ -108,6 +108,19 @@ function _ensure_quoted_one_liner() {
   printf '%s' "$message"
 }
 
+function _ensure_unquoted_one_liner() {
+  local message="$1"
+
+  message="${message//$'\r'/}"
+  message="${message//$'\n'/ }"
+  message="${message#"${message%%[![:space:]]*}"}"
+  message="${message%"${message##*[![:space:]]}"}"
+  message="${message#\"}"
+  message="${message%\"}"
+
+  printf '%s' "$message"
+}
+
 function _extract_final_model_line() {
   local response="$1"
   local final_line
@@ -131,22 +144,20 @@ function _recent_pr_titles() {
     2>/dev/null
 }
 
-function cm() {
-  command git rev-parse --git-dir >/dev/null 2>&1 || return 1
+function _generate_commit_message_from_diff() {
   typeset -f _ollama_run_prompt >/dev/null 2>&1 || {
     echo "_ollama_run_prompt is not available; source ai.plugin.zsh first" >&2
     return 1
   }
 
-  local staged_diff
-  staged_diff=$(git diff --cached --no-ext-diff) || return 1
-  [[ -n "$staged_diff" ]] || {
-    echo "no staged changes" >&2
+  local diff_text="$1"
+  [[ -n "$diff_text" ]] || {
+    echo "no changes to commit" >&2
     return 1
   }
 
   local prompt response
-  prompt=$'Read the currently staged git diff and produce exactly one concise conventional commit message.\n'
+  prompt=$'Read the git diff and produce exactly one concise conventional commit message.\n'
   prompt+=$'Requirements:\n'
   prompt+=$'- Think silently if needed, but the final answer must be on a line that starts with FINAL:.\n'
   prompt+=$'- After FINAL:, output exactly one concise conventional commit message.\n'
@@ -156,13 +167,39 @@ function cm() {
   prompt+=$'- No explanations, no alternatives.\n\n'
   prompt+=$'Example final line:\n'
   prompt+=$'FINAL: feat: add foo bar support\n\n'
-  prompt+=$'Staged diff:\n'
-  prompt+="$staged_diff"
+  prompt+=$'Diff:\n'
+  prompt+="$diff_text"
 
   response=$(_ollama_run_prompt "${QWEN_OLLAMA_MODEL}" "$prompt") || return 1
   response=$(_extract_final_model_line "$response")
-  response=$(_ensure_quoted_one_liner "$response")
-  _copy_and_print_quoted_message "$response"
+  _ensure_unquoted_one_liner "$response"
+}
+
+function _generate_staged_commit_message() {
+  local staged_diff
+  staged_diff=$(git diff --cached --no-ext-diff) || return 1
+  [[ -n "$staged_diff" ]] || {
+    echo "no staged changes" >&2
+    return 1
+  }
+
+  _generate_commit_message_from_diff "$staged_diff"
+}
+
+function cm() {
+  command git rev-parse --git-dir >/dev/null 2>&1 || return 1
+
+  local message
+  message=$(_generate_staged_commit_message) || return 1
+  _copy_and_print_quoted_message "$(_ensure_quoted_one_liner "$message")"
+}
+
+function cmc() {
+  command git rev-parse --git-dir >/dev/null 2>&1 || return 1
+
+  local message
+  message=$(_generate_staged_commit_message) || return 1
+  git commit "$@" -m "$message"
 }
 
 function pr() {
