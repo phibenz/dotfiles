@@ -113,6 +113,23 @@ ensure_nvm_node() {
     nvm install "${NODE_VERSION}"
 }
 
+ensure_tree_sitter_cli() {
+    if command -v tree-sitter &> /dev/null; then
+        echo "tree-sitter CLI already installed."
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        if command -v brew &> /dev/null; then
+            echo "Installing tree-sitter CLI..."
+            brew install tree-sitter-cli
+        else
+            echo "WARNING: Homebrew not found. Please install tree-sitter-cli manually with 'brew install tree-sitter-cli'"
+        fi
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        echo "WARNING: Please install tree-sitter-cli manually. nvim-treesitter main requires the CLI, not just libtree-sitter."
+    else
+        echo "WARNING: OS not detected. Please install tree-sitter-cli manually."
+    fi
+}
+
 echo "Installing Neovim configuration..."
 
 # Check if nvim is installed
@@ -171,6 +188,9 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 else
     echo "WARNING: OS not detected. Please install ripgrep manually"
 fi
+
+# Install tree-sitter CLI (required by nvim-treesitter parser installs)
+ensure_tree_sitter_cli
 
 # Install plugin and Mason dependencies
 echo "Installing Mason dependencies..."
