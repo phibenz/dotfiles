@@ -22,6 +22,15 @@ ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
 # Shell aliases
 alias ll='ls -lah'
 
+suni() {
+  if [[ $# -ne 1 ]]; then
+    echo "usage: suni <file>" >&2
+    return 1
+  fi
+
+  sort -u "$1" -o "$1"
+}
+
 # Environment variables
 export EDITOR='nvim'
 export VISUAL='nvim'
