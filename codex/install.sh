@@ -4,6 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_SKILLS_DIR="${HOME}/.codex/skills"
 TARGET_RULES_DIR="${HOME}/.codex/rules"
+TARGET_ZSH_LOCAL="${HOME}/.zshrc.local"
+CODEX_ALIAS="alias codex='npx @openai/codex@latest'"
 
 mkdir -p "${TARGET_SKILLS_DIR}"
 mkdir -p "${TARGET_RULES_DIR}"
@@ -46,5 +48,16 @@ while IFS= read -r -d '' rule_file; do
   echo "Linked ${rule_name} -> ${target_link}"
   installed=$((installed + 1))
 done < <(find "${SCRIPT_DIR}/rules" -name '*.rules' -type f -print0)
+
+touch "${TARGET_ZSH_LOCAL}"
+if grep -Fqx "${CODEX_ALIAS}" "${TARGET_ZSH_LOCAL}"; then
+  echo "Codex alias already installed in ${TARGET_ZSH_LOCAL}"
+else
+  {
+    printf '\n# Codex CLI\n'
+    printf '%s\n' "${CODEX_ALIAS}"
+  } >> "${TARGET_ZSH_LOCAL}"
+  echo "Installed Codex alias in ${TARGET_ZSH_LOCAL}"
+fi
 
 echo "Done. Linked ${installed} item(s), skipped ${skipped}."
