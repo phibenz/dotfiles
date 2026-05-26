@@ -18,6 +18,10 @@ plus number.
 Optional: a focus area, such as `API shape`, `migration path`, `tests`, or
 `implementation plan`.
 
+Optional: the argument may include an explicit FD document path. This is useful
+when reviewing from an implementation worktree while the design doc lives in a
+main checkout or sibling worktree.
+
 If the argument does not include a design id token matching
 `[A-Z][A-Z0-9]*-[0-9]+`, ask the user to provide it before continuing.
 
@@ -34,31 +38,58 @@ readiness.
 
 ## Investigation Steps
 
-1. Locate and read the target design doc.
-   - Search `docs/features/` first.
-   - Search `docs/features/archive/` if needed.
-   - Match either the filename prefix or the heading id.
+1. Identify the implementation root.
+   - Use the current working directory's git repo root as the implementation
+     root.
+   - Keep this root fixed for code inspection, branch/diff checks, command
+     examples, and interpreting repo-relative paths from the FD.
+   - Do not switch the implementation root just because the FD doc is found in
+     a different checkout or directory.
 
-2. Extract only the implementation-relevant contract.
+2. Locate and read the target design doc.
+   - If the argument includes an explicit existing file path, inspect that file
+     first and verify that its filename or heading matches the requested design
+     id.
+   - Otherwise search the implementation root's `docs/features/` first.
+   - Search the implementation root's `docs/features/archive/` if needed.
+   - Match either the filename prefix or the heading id.
+   - If not found, search other git worktrees for the same repository using
+     `git worktree list --porcelain`, checking each worktree's
+     `docs/features/` and `docs/features/archive/`.
+   - If still not found, search likely sibling checkouts under the parent
+     directory only when they have the same `origin` remote URL as the
+     implementation root.
+   - If the FD is found outside the implementation root, say which FD path was
+     used, but continue reviewing against the implementation root.
+
+3. Extract only the implementation-relevant contract.
    - Objective and intended user-visible behavior.
    - Proposed architecture or code path.
    - Acceptance criteria and verification plan.
    - Files, modules, APIs, commands, schemas, or data paths the FD names.
+   - Interpret relative file paths in the FD as relative to the implementation
+     root, unless the FD explicitly says a path is relative to the FD document
+     directory or names an external location.
+   - If the FD contains an absolute path that points inside a different
+     worktree for the same repository, translate it to the equivalent
+     repo-relative path and inspect that path under the implementation root.
+   - Treat absolute paths outside the repository as external dependencies or
+     artifacts, not as implementation-root-relative code paths.
 
-3. Trace the real code paths.
+4. Trace the real code paths.
    - Inspect the referenced files and nearby implementations.
    - Follow entry points, call sites, config/schema boundaries, and tests.
    - Check whether the proposed code path actually exists.
    - Identify existing helpers or abstractions that should be reused.
    - Look for simpler alternatives that fit the current architecture better.
 
-4. Check current repo state.
+5. Check current repo state.
    - Current branch and diff against the likely base branch.
    - Relevant uncommitted work.
    - Recent commits only when they overlap the FD scope.
    - In-flight changes that may conflict with the FD.
 
-5. Judge implementation readiness.
+6. Judge implementation readiness.
    - `Ready`: implementation can start with no material open decisions.
    - `Mostly Ready`: implementation can start, but a few minor assumptions
      should be stated explicitly.
@@ -148,4 +179,9 @@ None.
 
 ## Working Directory
 
-Use the current working directory as the project root.
+Use the current working directory to identify the implementation checkout, then
+use that checkout's git repository root as the implementation root.
+
+The FD document may live in a different directory or worktree. That affects
+where the FD text is read from, but it does not change which checkout is used
+for code inspection, branch state, diffs, or repo-relative path resolution.

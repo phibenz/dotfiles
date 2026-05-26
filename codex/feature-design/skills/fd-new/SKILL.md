@@ -43,7 +43,23 @@ Optional: the argument may include an explicit design id such as `FD-012`,
 
 - Create `docs/features/` if it does not already exist
 
-### 4. Create the design doc
+### 4. Write repo-root-relative references
+
+- Treat the current git repository root as the project root.
+- When the design names files, modules, commands, docs, schemas, datasets, or
+  tests that live inside the repository, write those paths relative to the repo
+  root.
+  - Good: `packages/api/src/server.py`
+  - Avoid: `/Users/name/work/repo/packages/api/src/server.py`
+- If the user provides an absolute path that is inside the current repo,
+  convert it to a repo-relative path before writing it into the FD.
+- Use absolute paths only when the referenced path is genuinely outside the
+  repository, such as a sibling checkout, external data directory, generated
+  artifact cache, or user-specific tool path.
+- In reports, prefer the created FD path relative to the repo root. Include an
+  absolute path only if it is needed to disambiguate an external location.
+
+### 5. Create the design doc
 
 - File: `docs/features/{DESIGN_ID}_{SLUG}.md`
 - Create the file with this structure:
@@ -80,11 +96,11 @@ How to test that it works. Concrete steps.
 - If the user provided enough context, fill in Problem and Solution sections
 - Otherwise leave them as placeholders for the user to fill
 
-### 5. Skip the index
+### 6. Skip the index
 
 Do not create or update a feature index/list file.
 
-### 6. Report
+### 7. Report
 
 Print the created design doc with its id, file path, and what sections need
 filling in.
