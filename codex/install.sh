@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_SKILLS_DIR="${HOME}/.codex/skills"
 TARGET_RULES_DIR="${HOME}/.codex/rules"
 TARGET_ZSH_LOCAL="${HOME}/.zshrc.local"
+TARGET_CONFIG="${HOME}/.codex/config.toml"
 CODEX_ALIAS="alias codex='npx @openai/codex@latest'"
 
 mkdir -p "${TARGET_SKILLS_DIR}"
@@ -58,6 +59,29 @@ else
     printf '%s\n' "${CODEX_ALIAS}"
   } >> "${TARGET_ZSH_LOCAL}"
   echo "Installed Codex alias in ${TARGET_ZSH_LOCAL}"
+fi
+
+touch "${TARGET_CONFIG}"
+if grep -Eq '^[[:space:]]*\[mcp_servers\.playwright\][[:space:]]*$' "${TARGET_CONFIG}"; then
+  echo "Playwright MCP server already installed in ${TARGET_CONFIG}"
+else
+  {
+    printf '\n[mcp_servers.playwright]\n'
+    printf 'command = "npx"\n'
+    printf 'args = ["@playwright/mcp@latest"]\n'
+  } >> "${TARGET_CONFIG}"
+  echo "Installed Playwright MCP server in ${TARGET_CONFIG}"
+fi
+
+if grep -Eq '^[[:space:]]*\[mcp_servers\.chrome-devtools\][[:space:]]*$' "${TARGET_CONFIG}"; then
+  echo "Chrome DevTools MCP server already installed in ${TARGET_CONFIG}"
+else
+  {
+    printf '\n[mcp_servers.chrome-devtools]\n'
+    printf 'command = "npx"\n'
+    printf 'args = ["chrome-devtools-mcp@latest"]\n'
+  } >> "${TARGET_CONFIG}"
+  echo "Installed Chrome DevTools MCP server in ${TARGET_CONFIG}"
 fi
 
 echo "Done. Linked ${installed} item(s), skipped ${skipped}."
