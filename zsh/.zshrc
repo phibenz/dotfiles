@@ -40,18 +40,6 @@ ymd() {
   TZ=UTC0 date +"%y%m%d"
 }
 
-daydir() {
-  if [[ $# -gt 1 ]]; then
-    echo "usage: daydir [base-dir]" >&2
-    return 1
-  fi
-
-  local base_dir="${1:-.}"
-  local target_dir="${base_dir%/}/$(TZ=UTC0 date +"%Y/%m/%d")"
-  mkdir -p -- "$target_dir" || return
-  print -r -- "$target_dir/"
-}
-
 # Environment variables
 export EDITOR='nvim'
 export VISUAL='nvim'
