@@ -36,7 +36,8 @@ Generate a concise PR title and description for the current branch.
 
 ## Description Style
 
-- Use only a few bullets.
+- Use as many bullets as are useful, usually 2-4. Do not force exactly three.
+- Make each bullet descriptive and easy to understand in simple words.
 - Focus on what changed and why it matters.
 - Do not include a broad diff tour, test logs, or implementation trivia unless
   the user explicitly asks.
@@ -50,6 +51,8 @@ Generate a concise PR title and description for the current branch.
 - Include one fitting emoji.
 - Keep the note to a compact phrase, usually 3-8 words plus the emoji. Avoid
   full-sentence explanations.
+- Wrap the final Codex note in Markdown italics with underscores:
+  `_<note>_`
 - If no obvious pun fits, still write a small cute Codex comment that fits the
   general shape of the change. Do not reuse a fixed fallback line.
 
@@ -62,7 +65,7 @@ Return only:
 
 - <bullet>
 - <bullet>
-- <bullet>
+- <optional bullet>
 
 _<diff-specific Codex involvement note>_
 ```
