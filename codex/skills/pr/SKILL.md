@@ -43,9 +43,10 @@ Generate a concise PR title and description for the current branch.
   the user explicitly asks.
 - Mention verification only when it is a meaningful part of the branch changes
   or the user asked for it.
-- End with a very short playful note that clearly indicates Codex was involved
-  in the PR. Base it on the changed code, touched files, or feature domain.
-  Prefer a light programming joke or small pun that is specific to the diff.
+- End with a very short playful note that clearly indicates Codex helped.
+  Keep it general to Codex instead of tying it to the PR contents, touched
+  files, branch name, or feature domain.
+  Prefer a broadly understandable Codex message or light programming pun.
 - The note must visibly mention `Codex` unless the wording makes Codex
   involvement unmistakable in another concise way.
 - Include one fitting emoji.
@@ -53,8 +54,7 @@ Generate a concise PR title and description for the current branch.
   full-sentence explanations.
 - Wrap the final Codex note in Markdown italics with underscores:
   `_<note>_`
-- If no obvious pun fits, still write a small cute Codex comment that fits the
-  general shape of the change. Do not reuse a fixed fallback line.
+- Do not reuse a fixed fallback line.
 
 ## Output
 
@@ -67,5 +67,5 @@ Return only:
 - <bullet>
 - <optional bullet>
 
-_<diff-specific Codex involvement note>_
+_<general Codex note>_
 ```
