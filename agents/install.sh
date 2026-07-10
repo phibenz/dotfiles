@@ -66,3 +66,7 @@ for target_dir in "${target_dirs[@]}"; do
 done
 
 echo "Done. Linked ${installed} skill(s), pruned ${pruned}, skipped ${skipped}."
+
+if [[ "$#" -eq 0 ]]; then
+  "${SCRIPT_DIR}/install-open-source-skills.sh"
+fi
