@@ -8,8 +8,7 @@ description: Use this skill to commit the intended current changes with a concis
 Stage the intended changes when needed, then generate and run exactly one commit
 command.
 
-`cm` writes the full `git commit` command, copies it to the clipboard, then
-creates the commit.
+`cm` creates the commit directly.
 
 ## Workflow
 
@@ -27,11 +26,10 @@ creates the commit.
    - Use the active model display name plus reasoning effort when known, such
      as `GPT-5.5 medium`.
    - If the reasoning effort is unavailable, use the active model display name.
-6. Copy and run the full command with two `-m` arguments:
+6. Run the commit with two `-m` arguments:
    - `git commit -m "<subject>" -m "Co-authored-by: <model> <noreply@openai.com>"`
    - Escape quotes and shell-sensitive characters inside each argument so the
-     command can be pasted directly into a terminal.
-   - Copy with `printf '%s' 'git commit -m "<subject>" -m "Co-authored-by: <model> <noreply@openai.com>"' | pbcopy` when available.
+     command executes correctly.
    - Forward any user-provided `git commit` flags such as `--amend` or
      `--no-verify`.
 7. After the commit succeeds, report only the commit command's concise result
@@ -64,10 +62,3 @@ creates the commit.
 ## Output
 
 After creating the commit, return only the concise commit result.
-
-If the user explicitly asks only for the command without committing, return
-only:
-
-```sh
-git commit -m "<prefix>: <message>" -m "Co-authored-by: <model> <noreply@openai.com>"
-```
