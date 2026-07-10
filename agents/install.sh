@@ -16,6 +16,32 @@ installed=0
 skipped=0
 pruned=0
 
+check_linearis_cli() {
+  local linearis_cmd=""
+
+  if command -v linearis >/dev/null 2>&1; then
+    linearis_cmd="linearis"
+  elif command -v linear >/dev/null 2>&1; then
+    linearis_cmd="linear"
+  else
+    echo "Linearis CLI is required by the FD skills but was not found." >&2
+    echo "Install it with: npm install -g linearis" >&2
+    return 1
+  fi
+
+  if ! "${linearis_cmd}" usage >/dev/null; then
+    echo "Linearis CLI failed: ${linearis_cmd} usage" >&2
+    return 1
+  fi
+
+  if ! "${linearis_cmd}" issues usage >/dev/null; then
+    echo "Linearis CLI failed: ${linearis_cmd} issues usage" >&2
+    return 1
+  fi
+
+  echo "Linearis CLI ready: ${linearis_cmd}"
+}
+
 is_managed_skill_link() {
   local link_path="$1"
   local link_target
@@ -70,3 +96,5 @@ echo "Done. Linked ${installed} skill(s), pruned ${pruned}, skipped ${skipped}."
 if [[ "$#" -eq 0 ]]; then
   "${SCRIPT_DIR}/install-open-source-skills.sh"
 fi
+
+check_linearis_cli

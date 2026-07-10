@@ -15,25 +15,16 @@ Title, description, or Linear issue id for the feature: `$ARGUMENTS`
 Optional: the argument may include an explicit Linear issue id such as `FD-012`,
 `RL-635`, or another uppercase prefix plus number.
 
-## Linearis Preflight
+## Linearis Runtime
 
-Before any Linear operation:
+The agent skill installer validates that the Linearis CLI exists and supports
+the required issue commands. Do not repeat that preflight for every FD request.
+Use `linearis` when available; otherwise use the supported `linear` alias.
 
-1. Check `command -v linearis || command -v linear`.
-   - If neither command exists, stop and tell the user Linearis is not
-     installed.
-   - Tell the user to install it with `npm install -g linearis`, or use a
-     one-off `npx linearis@latest ...` command if they do not want a global
-     install.
-   - Do not install Linearis automatically.
-2. Use `linearis` when available; otherwise use the supported `linear` alias.
-3. Run `<linearis-command> usage` once, then `<linearis-command> issues usage`
-   before issue operations.
-4. Treat the usage output as authoritative. Do not invent flags or
-   subcommands.
-5. If Linearis exits with an authentication-required JSON error or exit code
-   42, stop and surface the CLI's auth instruction to the user because the auth
-   flow is interactive.
+If Linearis is missing, exits with an authentication-required JSON error, or
+exits with code 42, stop and surface the setup or auth instruction to the user.
+Do not install or authenticate automatically because those flows are
+environment-specific and may be interactive.
 
 ## Steps
 

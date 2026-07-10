@@ -15,8 +15,10 @@ Usage: worktree-tmux.sh [--linear-id ID] [--base REF] [--dry-run] <task-slug>
        worktree-tmux.sh rm [--dry-run] [RL-1234] <task-slug>
        worktree-tmux.sh rm [--dry-run] RL-1234
 
-Creates ../<repo>-<task-slug>, branch phil/<linear-id>/<task-slug> when an ID is
-provided, then opens a new tmux window in that worktree with three panes.
+Creates ../<repo>-<linear-id>-<task-slug>, branch
+phil/<linear-id>/<task-slug> when an ID is provided, then opens a new tmux
+window in that worktree with three panes. Without an ID, creates
+../<repo>-<task-slug>, branch phil/<task-slug>.
 
 The rm mode removes the matching worktree and kills the tmux window named after
 the task slug.
@@ -173,7 +175,11 @@ elif [[ ! "${task}" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   exit 2
 else
   task_slug="${task}"
-  worktree_path="${repo_parent}/${repo_name}-${task_slug}"
+  if [[ -n "${branch_id}" ]]; then
+    worktree_path="${repo_parent}/${repo_name}-${branch_id}-${task_slug}"
+  else
+    worktree_path="${repo_parent}/${repo_name}-${task_slug}"
+  fi
 fi
 
 if [[ -n "${branch_id}" ]]; then
