@@ -9,6 +9,9 @@ prefix_rule(pattern=["bq", "show"], decision="allow")
 prefix_rule(pattern=["gcx"], decision="allow")
 prefix_rule(pattern=["gcx", "config", "check"], decision="allow")
 prefix_rule(pattern=["gcx", "metrics", "query"], decision="allow")
+# linearis
+prefix_rule(pattern=["linearis"], decision="allow")
+prefix_rule(pattern=["linear"], decision="allow")
 # git
 prefix_rule(pattern=["git", "commit"], decision="allow")
 prefix_rule(pattern=["git", "add"], decision="allow")

@@ -1,36 +1,52 @@
 ---
 name: fd-readiness
-description: Use this skill to review a feature design document against the current codebase and decide whether it is implementation-ready. Trigger for design ids such as FD-012 or RL-635 when the user wants blockers, ambiguities, unresolved questions, and recommended clean-code resolutions before implementation.
+description: Use this skill to review a Linear feature-design ticket against the current codebase and decide whether it is implementation-ready. Trigger for Linear issue ids such as FD-012 or RL-635 when the user wants blockers, ambiguities, unresolved questions, and recommended clean-code resolutions before implementation.
 ---
 
-# Feature Design Readiness Review
+# Linear Feature Design Readiness Review
 
-Evaluate whether a feature design is ready to implement against the current
-repo state. The goal is not to produce a broad context dump. The goal is to
-surface the concrete ambiguities, blockers, unresolved decisions, and code-path
-risks that must be resolved before implementation starts.
+Evaluate whether a Linear feature-design ticket is ready to implement against
+the current repo state. The goal is not to produce a broad context dump. The
+goal is to surface the concrete ambiguities, blockers, unresolved decisions,
+and code-path risks that must be resolved before implementation starts.
 
 ## Argument
 
-Required: a design id such as `FD-012`, `RL-635`, or another uppercase prefix
-plus number.
+Required: a Linear issue id such as `FD-012`, `RL-635`, or another uppercase
+prefix plus number.
 
 Optional: a focus area, such as `API shape`, `migration path`, `tests`, or
 `implementation plan`.
 
-Optional: the argument may include an explicit FD document path. This is useful
-when reviewing from an implementation worktree while the design doc lives in a
-main checkout or sibling worktree.
-
-If the argument does not include a design id token matching
+If the argument does not include an issue id token matching
 `[A-Z][A-Z0-9]*-[0-9]+`, ask the user to provide it before continuing.
+
+## Linearis Preflight
+
+Before any Linear operation:
+
+1. Check `command -v linearis || command -v linear`.
+   - If neither command exists, stop and tell the user Linearis is not
+     installed.
+   - Tell the user to install it with `npm install -g linearis`, or use a
+     one-off `npx linearis@latest ...` command if they do not want a global
+     install.
+   - Do not install Linearis automatically.
+2. Use `linearis` when available; otherwise use the supported `linear` alias.
+3. Run `<linearis-command> usage` once, then `<linearis-command> issues usage`
+   before issue operations.
+4. Treat the usage output as authoritative. Do not invent flags or
+   subcommands.
+5. If Linearis exits with an authentication-required JSON error or exit code
+   42, stop and surface the CLI's auth instruction to the user because the auth
+   flow is interactive.
 
 ## Review Goal
 
 Answer the practical question:
 
-> Can we start implementing this FD safely now, and if not, what exactly needs
-> clarification or design adjustment?
+> Can we start implementing this ticket safely now, and if not, what exactly
+> needs clarification or design adjustment?
 
 Prefer concise, repo-grounded findings over exhaustive background. Do not
 summarize the whole project unless a project constraint directly affects
@@ -42,35 +58,28 @@ readiness.
    - Use the current working directory's git repo root as the implementation
      root.
    - Keep this root fixed for code inspection, branch/diff checks, command
-     examples, and interpreting repo-relative paths from the FD.
-   - Do not switch the implementation root just because the FD doc is found in
-     a different checkout or directory.
+     examples, and interpreting repo-relative paths from the Linear ticket.
 
-2. Locate and read the target design doc.
-   - If the argument includes an explicit existing file path, inspect that file
-     first and verify that its filename or heading matches the requested design
-     id.
-   - Otherwise search the implementation root's `docs/features/` first.
-   - Search the implementation root's `docs/features/archive/` if needed.
-   - Match either the filename prefix or the heading id.
-   - If not found, search other git worktrees for the same repository using
-     `git worktree list --porcelain`, checking each worktree's
-     `docs/features/` and `docs/features/archive/`.
-   - If still not found, search likely sibling checkouts under the parent
-     directory only when they have the same `origin` remote URL as the
-     implementation root.
-   - If the FD is found outside the implementation root, say which FD path was
-     used, but continue reviewing against the implementation root.
+2. Read the target Linear ticket.
+   - Use Linearis to read the issue identified by the requested id.
+   - Prefer the `## Agent` section as the implementation contract.
+   - Use the `## Human` section only as summary context.
+   - If the ticket does not have `Human` and `Agent` sections, treat the full
+     description as a legacy design body and include a should-resolve issue
+     recommending that the ticket be normalized.
+   - Read issue discussions or replies only when the ticket body points to
+     missing design decisions that may have been clarified there.
+   - Do not update the ticket unless the user explicitly asks to persist the
+     readiness review.
 
 3. Extract only the implementation-relevant contract.
    - Objective and intended user-visible behavior.
    - Proposed architecture or code path.
    - Acceptance criteria and verification plan.
-   - Files, modules, APIs, commands, schemas, or data paths the FD names.
-   - Interpret relative file paths in the FD as relative to the implementation
-     root, unless the FD explicitly says a path is relative to the FD document
-     directory or names an external location.
-   - If the FD contains an absolute path that points inside a different
+   - Files, modules, APIs, commands, schemas, or data paths the ticket names.
+   - Interpret relative file paths in the ticket as relative to the
+     implementation root unless the ticket explicitly says otherwise.
+   - If the ticket contains an absolute path that points inside a different
      worktree for the same repository, translate it to the equivalent
      repo-relative path and inspect that path under the implementation root.
    - Treat absolute paths outside the repository as external dependencies or
@@ -86,8 +95,8 @@ readiness.
 5. Check current repo state.
    - Current branch and diff against the likely base branch.
    - Relevant uncommitted work.
-   - Recent commits only when they overlap the FD scope.
-   - In-flight changes that may conflict with the FD.
+   - Recent commits only when they overlap the ticket scope.
+   - In-flight changes that may conflict with the ticket.
 
 6. Judge implementation readiness.
    - `Ready`: implementation can start with no material open decisions.
@@ -129,7 +138,7 @@ Rationale:
 
 Issues To Resolve:
 1. <Issue title>
-   Evidence: <specific FD section, file, function, command, schema, or code path>
+   Evidence: <specific ticket section, file, function, command, schema, or code path>
    Why it matters: <implementation/review risk>
    Recommendation: <cleanest professional solution>
    Blocking level: <blocker | should-resolve | minor assumption>
@@ -151,7 +160,7 @@ If there are no material issues, say that directly:
 Readiness: Ready
 
 Rationale:
-The FD maps cleanly to existing code paths and the remaining decisions are
+The ticket maps cleanly to existing code paths and the remaining decisions are
 normal implementation details.
 
 Issues To Resolve:
@@ -170,8 +179,8 @@ None.
 - Be concrete and repo-grounded; do not invent blockers without evidence.
 - Always separate confirmed blockers from soft unknowns.
 - Prefer the simplest clean-code solution that fits the existing architecture.
-- If the FD is underspecified, propose the best default design choice instead of
-  only asking questions.
+- If the ticket is underspecified, propose the best default design choice
+  instead of only asking questions.
 - Ask questions only when implementation would be unsafe without the answer.
 - Keep the output focused on readiness, not general project context.
 - Do not include a broad project overview, directory tour, or recent-commit
@@ -181,7 +190,3 @@ None.
 
 Use the current working directory to identify the implementation checkout, then
 use that checkout's git repository root as the implementation root.
-
-The FD document may live in a different directory or worktree. That affects
-where the FD text is read from, but it does not change which checkout is used
-for code inspection, branch state, diffs, or repo-relative path resolution.

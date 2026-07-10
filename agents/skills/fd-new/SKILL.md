@@ -1,49 +1,64 @@
 ---
 name: fd-new
-description: Use this skill to create a new feature design document from a title, feature description, or explicit design id such as FD-012 or RL-635. Trigger when the user asks for a new FD, feature design, design doc, or implementation plan document.
+description: Use this skill to create a new Linear feature-design ticket or populate/update an existing Linear issue as a feature-design ticket with Linearis. Trigger when the user explicitly asks for a new FD, feature design, design ticket, implementation plan ticket, or asks to populate/update a Linear issue as a design ticket. Do not use for readiness, status, lookup, or other non-mutating requests that merely mention a Linear issue id.
 ---
 
-# Create New Feature Design
+# Create Linear Feature Design
 
-Create a new feature design document.
+Create or update a Linear issue that holds the feature design. Linear is the
+source of truth; do not create local `docs/features` files.
 
 ## Argument
 
-Title or description of the feature: `$ARGUMENTS`
+Title, description, or Linear issue id for the feature: `$ARGUMENTS`
 
-Optional: the argument may include an explicit design id such as `FD-012`,
+Optional: the argument may include an explicit Linear issue id such as `FD-012`,
 `RL-635`, or another uppercase prefix plus number.
+
+## Linearis Preflight
+
+Before any Linear operation:
+
+1. Check `command -v linearis || command -v linear`.
+   - If neither command exists, stop and tell the user Linearis is not
+     installed.
+   - Tell the user to install it with `npm install -g linearis`, or use a
+     one-off `npx linearis@latest ...` command if they do not want a global
+     install.
+   - Do not install Linearis automatically.
+2. Use `linearis` when available; otherwise use the supported `linear` alias.
+3. Run `<linearis-command> usage` once, then `<linearis-command> issues usage`
+   before issue operations.
+4. Treat the usage output as authoritative. Do not invent flags or
+   subcommands.
+5. If Linearis exits with an authentication-required JSON error or exit code
+   42, stop and surface the CLI's auth instruction to the user because the auth
+   flow is interactive.
 
 ## Steps
 
-### 1. Determine the design id
+### 1. Determine the target ticket
 
-- If the argument includes an explicit id token like `FD-012`, `RL-635`, or
-  another token matching `[A-Z][A-Z0-9]*-[0-9]+`, use that exact id.
-- When using an explicit id:
-  - scan `docs/features/` and `docs/features/archive/` for an existing file or
-    heading with that id
-  - if it already exists, stop and tell the user instead of creating a duplicate
-- If no explicit id is provided:
-  - scan `docs/features/` and `docs/features/archive/` for files named like
-    `FD-XXX_*.md`
-  - if needed, also inspect headings inside those files for `FD-XXX`
-  - find the highest FD number present
-  - next number = highest + 1 (start at 1 if no FDs exist)
-  - pad to 3 digits: `FD-001`, `FD-002`, etc.
+- If the argument includes an explicit issue id token matching
+  `[A-Z][A-Z0-9]*-[0-9]+`, use that exact Linear issue.
+  - Read it with Linearis before modifying it.
+  - If it already has useful content, update the description instead of
+    creating a duplicate ticket.
+- If no explicit issue id is provided, create a new Linear issue.
+  - Linearis issue creation requires `--team`. Infer the team only from
+    explicit user input, current repo conventions, current branch naming, or
+    clearly relevant Linear context.
+  - If the team is not clear, ask the user for the Linear team before creating
+    the ticket.
 
-### 2. Parse the argument
+### 2. Parse the feature request
 
-- Extract the design title from `$ARGUMENTS`
-- If an explicit design id token is present, remove it from the title text
-- If no argument provided, ask the user for a title and brief description
-- Generate a filename-safe slug from the title (UPPER_SNAKE_CASE)
+- Extract the feature title from `$ARGUMENTS`.
+- If an explicit issue id token is present, remove it from the title text.
+- If no usable title or description is provided, ask the user for the missing
+  context before creating or updating the ticket.
 
-### 3. Ensure the directory exists
-
-- Create `docs/features/` if it does not already exist
-
-### 4. Write repo-root-relative references
+### 3. Write repo-root-relative references
 
 - Treat the current git repository root as the project root.
 - When the design names files, modules, commands, docs, schemas, datasets, or
@@ -52,56 +67,68 @@ Optional: the argument may include an explicit design id such as `FD-012`,
   - Good: `packages/api/src/server.py`
   - Avoid: `/Users/name/work/repo/packages/api/src/server.py`
 - If the user provides an absolute path that is inside the current repo,
-  convert it to a repo-relative path before writing it into the FD.
+  convert it to a repo-relative path before writing it into the ticket.
 - Use absolute paths only when the referenced path is genuinely outside the
   repository, such as a sibling checkout, external data directory, generated
   artifact cache, or user-specific tool path.
-- In reports, prefer the created FD path relative to the repo root. Include an
-  absolute path only if it is needed to disambiguate an external location.
 
-### 5. Create the design doc
+### 4. Compose the Linear description
 
-- File: `docs/features/{DESIGN_ID}_{SLUG}.md`
-- Create the file with this structure:
+Use this structure:
 
 ```md
-# {DESIGN_ID}: {Title}
+## Human
 
-**Impact:** Brief description of what this enables
+<1-3 concise sentences explaining what this ticket does and why. Keep this
+section short enough for quick triage.>
 
-## Problem
+## Agent
+
+### Problem
 
 What we're solving and why it matters.
 
-## Solution
+### Solution
 
 How to implement it. Be specific about approach.
 
-## Files to Create/Modify
+### Files to Create/Modify
 
 | File | Action | Purpose |
 |------|--------|---------|
 | `path/to/file` | CREATE / MODIFY | What and why |
 
-## Verification
+### Verification
 
 How to test that it works. Concrete steps.
 
-## Related
+### Related
 
-- Links to related FDs, docs, or issues
+- Links to related tickets, docs, PRs, or issues
 ```
 
-- Fill in: design id and title
-- If the user provided enough context, fill in Problem and Solution sections
-- Otherwise leave them as placeholders for the user to fill
+- The `Human` section is for fast human scanning: concise, non-exhaustive, and
+  written in product or workflow terms.
+- The `Agent` section is the implementation contract: detailed enough for an
+  agent to start work, but still understandable to a human who wants depth.
+- If the user provided enough context, fill in the `Problem`, `Solution`, and
+  `Verification` sections.
+- If the implementation details are not known, leave explicit placeholders that
+  say what must be decided.
 
-### 6. Skip the index
+### 5. Write the ticket with Linearis
 
-Do not create or update a feature index/list file.
+- Use `issues create <title> --team <team> --description <body>` for a new
+  ticket.
+- Use `issues update <issue> --description <body>` for an existing ticket.
+- For a new ticket, create the Linear issue with the inferred or provided team.
+- For an existing ticket, preserve and merge any useful existing description
+  content; ask before replacing it wholesale.
+- Preserve the JSON output from Linearis and report the issue identifier and URL
+  from that output.
 
-### 7. Report
+### 6. Report
 
-Print the created design doc with its id, file path, and what sections need
-filling in.
-Do NOT commit - the user will fill in details first.
+Print the Linear issue identifier, URL, and any sections that still need user
+input.
+Do not create local feature-design files and do not commit.
