@@ -23,8 +23,7 @@ Generate a concise PR title and description for the current branch.
 4. Check recent merged PR titles when `gh` is available, and use them only as a
    style reference:
    - `GH_NO_UPDATE_NOTIFIER=1 gh pr list --state merged --limit 8 --json title --jq '.[].title'`
-5. Produce one PR title, a short description, and a small Codex attribution
-   note at the end.
+5. Produce one PR title and a short description.
 
 ## Title Style
 
@@ -43,18 +42,8 @@ Generate a concise PR title and description for the current branch.
   the user explicitly asks.
 - Mention verification only when it is a meaningful part of the branch changes
   or the user asked for it.
-- End with a very short playful note that clearly indicates Codex helped.
-  Keep it general to Codex instead of tying it to the PR contents, touched
-  files, branch name, or feature domain.
-  Prefer a broadly understandable Codex message or light programming pun.
-- The note must visibly mention `Codex` unless the wording makes Codex
-  involvement unmistakable in another concise way.
-- Include one fitting emoji.
-- Keep the note to a compact phrase, usually 3-8 words plus the emoji. Avoid
-  full-sentence explanations.
-- Wrap the final Codex note in Markdown italics with underscores:
-  `_<note>_`
-- Do not reuse a fixed fallback line.
+- Do not include Codex attribution, model attribution, emojis, or final playful
+  notes. Commit trailers already capture model involvement when needed.
 
 ## Output
 
@@ -66,6 +55,4 @@ Return only:
 - <bullet>
 - <bullet>
 - <optional bullet>
-
-_<general Codex note>_
 ```
