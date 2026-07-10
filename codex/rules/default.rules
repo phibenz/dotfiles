@@ -16,7 +16,12 @@ prefix_rule(pattern=["linear"], decision="allow")
 prefix_rule(pattern=["git", "commit"], decision="allow")
 prefix_rule(pattern=["git", "add"], decision="allow")
 # gh
+prefix_rule(pattern=["gh", "pr", "list"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "view"], decision="allow")
+prefix_rule(pattern=["gh", "pr", "create"], decision="allow")
+prefix_rule(pattern=["gh", "pr", "edit"], decision="allow")
+# git push for opening PRs
+prefix_rule(pattern=["git", "push", "-u", "origin", "HEAD"], decision="allow")
 # uv
 prefix_rule(pattern=["uv", "run"], decision="allow")
 prefix_rule(pattern=["uv", "run", "ty"], decision="allow")
