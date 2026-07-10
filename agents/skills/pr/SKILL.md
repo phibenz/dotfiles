@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Generate a pull request title and short bullet description from all changes on the current branch compared to the base branch. Use when the user asks for $pr, pr, PR wording, a pull request title, or a pull request description.
+description: Use this skill to generate a pull request title and short bullet description from all changes on the current branch compared to the base branch. Trigger when the user asks for $pr, pr, PR wording, a pull request title, or a pull request description.
 ---
 
 # Pull Request Wording
@@ -42,8 +42,8 @@ Generate a concise PR title and description for the current branch.
   the user explicitly asks.
 - Mention verification only when it is a meaningful part of the branch changes
   or the user asked for it.
-- Do not include Codex attribution, model attribution, emojis, or final playful
-  notes. Commit trailers already capture model involvement when needed.
+- Do not include agent attribution, model attribution, emojis, or final playful
+  notes. Commit trailers capture model involvement when needed.
 
 ## Output
 

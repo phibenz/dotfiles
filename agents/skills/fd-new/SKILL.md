@@ -1,6 +1,6 @@
 ---
 name: fd-new
-description: Create a new feature design document from a title, feature description, or explicit design id such as FD-012 or RL-635.
+description: Use this skill to create a new feature design document from a title, feature description, or explicit design id such as FD-012 or RL-635. Trigger when the user asks for a new FD, feature design, design doc, or implementation plan document.
 ---
 
 # Create New Feature Design

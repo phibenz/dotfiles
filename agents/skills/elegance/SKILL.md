@@ -1,6 +1,6 @@
 ---
 name: elegance
-description: Review recent code changes for simplicity, craft, and elegance. Use when the user asks whether changes are the most elegant version, whether code can be simplified, whether the implementation follows "as simple as possible, as complex as necessary", or asks for a craft-focused pass on code quality.
+description: Use this skill to review recent code changes for simplicity, craft, and elegance. Trigger when the user asks whether changes are the most elegant version, whether code can be simplified, whether the implementation follows "as simple as possible, as complex as necessary", or asks for a craft-focused pass on code quality.
 ---
 
 # Elegance Review

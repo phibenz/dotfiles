@@ -1,6 +1,6 @@
 ---
 name: fd-readiness
-description: Review a feature design document against the current codebase and decide whether it is implementation-ready. Use for design ids such as FD-012 or RL-635 when the user wants blockers, ambiguities, unresolved questions, and recommended clean-code resolutions before implementation.
+description: Use this skill to review a feature design document against the current codebase and decide whether it is implementation-ready. Trigger for design ids such as FD-012 or RL-635 when the user wants blockers, ambiguities, unresolved questions, and recommended clean-code resolutions before implementation.
 ---
 
 # Feature Design Readiness Review
