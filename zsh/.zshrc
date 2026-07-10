@@ -21,6 +21,7 @@ ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
 
 # Shell aliases
 alias ll='ls -lah'
+alias wktree="${ZSH_CONFIG_DIR:h}/scripts/worktree-tmux.sh"
 
 suni() {
   if [[ $# -ne 1 ]]; then
