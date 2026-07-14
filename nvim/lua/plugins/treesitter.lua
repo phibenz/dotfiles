@@ -18,6 +18,7 @@ return {
             "json",
             "yaml",
             "toml",
+            "rust",
         }
 
         vim.api.nvim_create_autocmd("FileType", {

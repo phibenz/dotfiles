@@ -13,7 +13,7 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "pyright", "clangd", "bashls" },
+        ensure_installed = { "lua_ls", "pyright", "clangd", "bashls", "rust_analyzer" },
         automatic_installation = true,
       })
     end
@@ -70,8 +70,14 @@ return {
         capabilities = capabilities,
       })
 
+      vim.lsp.config('rust_analyzer', {
+        cmd = { 'rust-analyzer' },
+        root_markers = { 'Cargo.toml', 'rust-project.json', '.git' },
+        capabilities = capabilities,
+      })
+
       -- Enable LSP servers for their respective filetypes
-      vim.lsp.enable({ 'lua_ls', 'pyright', 'clangd', 'bashls' })
+      vim.lsp.enable({ 'lua_ls', 'pyright', 'clangd', 'bashls', 'rust_analyzer' })
 
       -- Configure diagnostic display
       vim.diagnostic.config({
