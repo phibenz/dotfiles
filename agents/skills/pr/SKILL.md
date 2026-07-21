@@ -18,11 +18,17 @@ Do not only print PR wording. The skill mutates the PR.
    - Stop if it is empty or detached.
    - Stop if it is the base branch itself.
 3. Determine the likely base branch.
-   - Prefer `refs/remotes/origin/HEAD` when available.
+   - First check `git config --get branch.<current-branch>.gh-merge-base`.
+     When set, use that branch as the PR base. This is how `$impl` records an
+     explicitly requested stacked PR.
+   - Otherwise prefer `refs/remotes/origin/HEAD` when available.
    - Otherwise try `origin/main`, `origin/master`, `main`, then `master`.
    - Use the remote ref for diffs.
    - Use the branch name without the remote prefix for `gh pr create --base`
      (for example, diff against `origin/main`, create against `main`).
+   - If a configured stacked base cannot be resolved locally, fetch that branch
+     from `origin` before computing the diff. Do not silently fall back to the
+     default branch.
 4. Inspect all committed branch changes compared to the base branch:
    - `git log --oneline --no-decorate <base>...HEAD`
    - `git diff --name-status --no-renames <base>...HEAD`
