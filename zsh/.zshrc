@@ -54,6 +54,7 @@ export LC_CTYPE="${LC_CTYPE:-$LANG}"
 
 # Normalize the interactive keymap after local scripts load.
 bindkey -e
+bindkey '^J' self-insert-unmeta
 bindkey '^?' backward-delete-char
 bindkey '^H' backward-delete-char
 [[ -n "${terminfo[kcuu1]-}" ]] && bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
