@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if ! command -v gh >/dev/null 2>&1; then
+  echo "GitHub CLI is required by the gh-stack skill but was not found." >&2
+  echo "Install it from: https://cli.github.com" >&2
+  exit 1
+fi
+
+if ! gh extension list | grep -Fq "github/gh-stack"; then
+  gh extension install github/gh-stack
+fi
+
 open_source_skills=(
+  "github/gh-stack"
   "linearis-oss/linearis"
 )
 
