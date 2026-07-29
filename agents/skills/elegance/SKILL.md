@@ -1,6 +1,6 @@
 ---
 name: elegance
-description: Use this skill to review recent code changes for simplicity, craft, and elegance. Trigger when the user asks whether changes are the most elegant version, whether code can be simplified, whether the implementation follows "as simple as possible, as complex as necessary", or asks for a craft-focused pass on code quality.
+description: Use this skill to review recent code changes for simplicity, readability, structure, craft, and elegance. Trigger when the user asks whether changes are the most elegant version, whether code can be simplified or restructured for comprehension, whether stronger modeling or language and library concepts would improve the implementation, whether the implementation follows "as simple as possible, as complex as necessary", or asks for a craft-focused pass on code quality.
 ---
 
 # Elegance Review
@@ -27,6 +27,19 @@ as simple as possible, as complex as necessary.
    - Are abstractions pulling their weight?
    - Is naming precise enough that the code explains itself?
    - Are conditionals, state, and data flow localized and easy to follow?
+   - Would reorganizing the code around responsibilities, lifecycle, or data
+     flow make the main path easier to comprehend?
+   - Is the problem represented with the clearest concepts and data model, or
+     are primitive values, unstructured dictionaries, string flags, parallel
+     collections, or scattered validation hiding the domain?
+   - Would an established language, standard-library, or project-native
+     concept remove custom machinery and make invariants explicit? Depending on
+     the context, examples include an enum for closed states, a dataclass or
+     value object for cohesive data, a protocol for a real interface, a context
+     manager for resource lifetime, or Pydantic for validation-heavy external
+     data boundaries.
+   - Can mutation, cross-layer coupling, or implicit state be reduced so that
+     readers need less context to understand the behavior?
    - Does the implementation fit the repository's existing style?
    - Are tests focused on functionality and observable behavior rather than
      implementation trivia?
@@ -37,6 +50,10 @@ as simple as possible, as complex as necessary.
    - Call out changes that reduce complexity, risk, or future maintenance.
    - Avoid churn that only makes the code different.
    - Preserve explicitness when it makes edge cases easier to reason about.
+   - Recommend a new type, abstraction, framework, or dependency only when it
+     replaces meaningful bespoke logic, centralizes real invariants, or makes
+     multiple call sites easier to understand. Do not introduce one merely
+     because it is more sophisticated or fashionable.
 5. If the user asked for implementation, make the cleanup directly and verify
    it. Otherwise provide a concise review with concrete recommendations.
 
