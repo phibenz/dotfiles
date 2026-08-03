@@ -1,0 +1,24 @@
+{
+  "Application": {
+    "ApplePressAndHoldEnabled": false
+  },
+  "Profile": {
+    "Normal Font": "HackNF-Regular 12",
+    "Terminal Type": "xterm-256color"
+  },
+  "KeyMappings": [
+    {
+      "Key": "0xd-0x40000-0x24",
+      "Value": {
+        "Action": 11,
+        "Apply Mode": 0,
+        "Escaping": 2,
+        "Text": "0x1b 0x0a",
+        "Version": 2
+      }
+    }
+  ],
+  "RemovedKeyMappings": [
+    "0xd-0x20000-0x24"
+  ]
+}
