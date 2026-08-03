@@ -71,10 +71,8 @@ justification. Do not ask the user to reply with a magic sentence.
 - Use as many bullets as are useful, usually 2-4. Do not force exactly three.
 - Make each bullet descriptive and easy to understand in simple words.
 - Focus on what changed and why it matters.
-- Do not include a broad diff tour, test logs, or implementation trivia unless
-  the user explicitly asks.
-- Mention verification only when it is a meaningful part of the branch changes
-  or the user asked for it.
+- Do not include a broad diff tour, validation or verification details, test
+  logs, or implementation trivia unless the user explicitly asks.
 - Do not include agent attribution, model attribution, emojis, or final playful
   notes. Commit trailers capture model involvement when needed.
 
