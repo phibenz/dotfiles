@@ -21,6 +21,12 @@ The agent skill installer validates that the Linearis CLI exists and supports
 the required issue commands. Do not repeat that preflight for every FD request.
 Use `linearis` when available; otherwise use the supported `linear` alias.
 
+Before creating a new ticket, run `linearis auth status`, require
+`authenticated: true`, and read `user.id` from its JSON response. If it is not
+authenticated or has no user id, stop and surface its auth instruction. Use
+that UUID as the assignee so the ticket is assigned to the current Linearis
+account regardless of its display name or workspace.
+
 If Linearis is missing, exits with an authentication-required JSON error, or
 exits with code 42, stop and surface the setup or auth instruction to the user.
 Do not install or authenticate automatically because those flows are
@@ -109,12 +115,14 @@ How to test that it works. Concrete steps.
 
 ### 5. Write the ticket with Linearis
 
-- Use `issues create <title> --team <team> --description <body>` for a new
-  ticket.
+- For a new ticket, use
+  `issues create <title> --team <team> --description <body>` with
+  `--status TODO` and `--assignee <authenticated-user-id>`.
 - Use `issues update <issue> --description <body>` for an existing ticket.
-- For a new ticket, create the Linear issue with the inferred or provided team.
 - For an existing ticket, preserve and merge any useful existing description
   content; ask before replacing it wholesale.
+- Preserve an existing ticket's status and assignee unless the user explicitly
+  asks to change them.
 - Preserve the JSON output from Linearis and report the issue identifier and URL
   from that output.
 
