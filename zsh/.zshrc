@@ -7,10 +7,15 @@ ZSH_CONFIG_DIR="${${(%):-%x}:A:h}"
 autoload -Uz compinit
 compinit
 
-# History search widgets
+# Line editor widgets
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
+
+insert-literal-newline() {
+  LBUFFER+=$'\n'
+}
+zle -N insert-literal-newline
 
 # Direct plugins
 ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
@@ -54,9 +59,13 @@ export LC_CTYPE="${LC_CTYPE:-$LANG}"
 
 # Normalize the interactive keymap after local scripts load.
 bindkey -e
-bindkey '^J' self-insert-unmeta
 bindkey '^?' backward-delete-char
 bindkey '^H' backward-delete-char
+bindkey '^K' up-line-or-beginning-search
+bindkey '^J' down-line-or-beginning-search
+bindkey '^L' autosuggest-accept
+# iTerm2 maps Ctrl-Enter to Escape + Line Feed (hex 0x1b 0x0a).
+bindkey '^[^J' insert-literal-newline
 [[ -n "${terminfo[kcuu1]-}" ]] && bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
 [[ -n "${terminfo[kcud1]-}" ]] && bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
 bindkey '^[[A' up-line-or-beginning-search
