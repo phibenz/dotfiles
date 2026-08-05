@@ -26,7 +26,48 @@ ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
 
 # Shell aliases
 alias ll='ls -lah'
-alias wktree="${ZSH_CONFIG_DIR:h}/scripts/worktree-tmux.sh"
+
+# Herdr 0.8.0 can leave Kitty key-release reporting enabled after detach.
+_herdr_run_interactive() {
+  command herdr "$@"
+  local herdr_status=$?
+  [[ -t 1 ]] && printf '\e[=0u'
+  return "${herdr_status}"
+}
+
+# Add tmux-like session shortcuts while preserving Herdr's normal CLI.
+herdr() {
+  case "${1:-}" in
+    ls)
+      shift
+      command herdr session list "$@"
+      ;;
+    sa)
+      shift
+      if (( $# != 1 )); then
+        print -u2 'usage: herdr sa <name>'
+        return 2
+      fi
+      _herdr_run_interactive --session "$1"
+      ;;
+    '')
+      _herdr_run_interactive
+      ;;
+    --session)
+      _herdr_run_interactive "$@"
+      ;;
+    session)
+      if [[ "${2:-}" == attach ]]; then
+        _herdr_run_interactive "$@"
+      else
+        command herdr "$@"
+      fi
+      ;;
+    *)
+      command herdr "$@"
+      ;;
+  esac
+}
 
 suni() {
   if [[ $# -ne 1 ]]; then
