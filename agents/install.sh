@@ -3,8 +3,22 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_SKILLS_DIR="${SCRIPT_DIR}/skills"
+LOCAL_SKILLS_DIR="${AGENTS_LOCAL_SKILLS_DIR:-${SCRIPT_DIR}/skills.local}"
 OLD_CODEX_SKILLS_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)/codex/skills"
 OLD_FD_SKILLS_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)/codex/feature-design/skills"
+
+mkdir -p "${LOCAL_SKILLS_DIR}"
+
+skill_files=()
+while IFS= read -r -d '' skill_file; do
+  skill_files+=("${skill_file}")
+done < <(find "${SOURCE_SKILLS_DIR}" -mindepth 2 -maxdepth 2 -name SKILL.md -type f -print0)
+
+# Local skills may be grouped in arbitrary subdirectories. Installing them last
+# lets a local skill intentionally override a public skill with the same name.
+while IFS= read -r -d '' skill_file; do
+  skill_files+=("${skill_file}")
+done < <(find "${LOCAL_SKILLS_DIR}" -mindepth 2 -name SKILL.md -type f -print0)
 
 if [[ "$#" -eq 0 ]]; then
   target_dirs=("${HOME}/.agents/skills")
@@ -48,7 +62,7 @@ is_managed_skill_link() {
 
   link_target="$(readlink "${link_path}")"
   case "${link_target}" in
-    "${SOURCE_SKILLS_DIR}"/*|"${OLD_CODEX_SKILLS_DIR}"/*|"${OLD_FD_SKILLS_DIR}"/*)
+    "${SOURCE_SKILLS_DIR}"/*|"${LOCAL_SKILLS_DIR}"/*|"${OLD_CODEX_SKILLS_DIR}"/*|"${OLD_FD_SKILLS_DIR}"/*)
       return 0
       ;;
     *)
@@ -57,13 +71,26 @@ is_managed_skill_link() {
   esac
 }
 
+source_skill_exists() {
+  local skill_name="$1"
+  local skill_file
+
+  for skill_file in "${skill_files[@]}"; do
+    if [[ "$(basename "$(dirname "${skill_file}")")" == "${skill_name}" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 for target_dir in "${target_dirs[@]}"; do
   mkdir -p "${target_dir}"
 
   while IFS= read -r -d '' target_link; do
     skill_name="$(basename "${target_link}")"
 
-    if [[ -f "${SOURCE_SKILLS_DIR}/${skill_name}/SKILL.md" ]]; then
+    if source_skill_exists "${skill_name}"; then
       continue
     fi
 
@@ -74,7 +101,7 @@ for target_dir in "${target_dirs[@]}"; do
     fi
   done < <(find "${target_dir}" -mindepth 1 -maxdepth 1 -type l -print0)
 
-  while IFS= read -r -d '' skill_file; do
+  for skill_file in "${skill_files[@]}"; do
     skill_dir="$(dirname "${skill_file}")"
     skill_name="$(basename "${skill_dir}")"
     target_link="${target_dir}/${skill_name}"
@@ -88,7 +115,7 @@ for target_dir in "${target_dirs[@]}"; do
     ln -sfn "${skill_dir}" "${target_link}"
     echo "Linked ${skill_name} -> ${target_link}"
     installed=$((installed + 1))
-  done < <(find "${SOURCE_SKILLS_DIR}" -mindepth 2 -maxdepth 2 -name SKILL.md -type f -print0)
+  done
 done
 
 echo "Done. Linked ${installed} skill(s), pruned ${pruned}, skipped ${skipped}."
