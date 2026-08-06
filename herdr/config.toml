@@ -1,21 +1,36 @@
 onboarding = false
 [ui]
-agent_panel_sort = "priority"
+agent_panel_sort = "spaces"
 pane_borders = true
 pane_gaps = false
 pane_scrollbars = false
 
 [keys]
 prefix = "ctrl+a"
-detach = "prefix+d"
-goto = "prefix+f"
-focus_pane_left = "prefix+h"
-focus_pane_down = "prefix+j"
-focus_pane_up = "prefix+k"
-focus_pane_right = "prefix+l"
+detach = "prefix+q"
+goto = "prefix+space"
+previous_agent = ["prefix+shift+up", "prefix+u"]
+next_agent = ["prefix+shift+down", "prefix+d"]
+focus_agent = "prefix+shift+1..9"
+focus_pane_left = ["prefix+h", "prefix+left"]
+focus_pane_down = ["prefix+j", "prefix+down"]
+focus_pane_up = ["prefix+k", "prefix+up"]
+focus_pane_right = ["prefix+l", "prefix+right"]
+navigate_workspace_up = ["up", "k"]
+navigate_workspace_down = ["down", "j"]
+split_vertical = "prefix+v"
 split_horizontal = 'prefix+"'
 toggle_sidebar = "prefix+b"
 
 [theme]
 name = "catppuccin"
 auto_switch = false
+
+[ui.toast]
+delivery = "herdr"
+
+[ui.sidebar.agents.rows_by_agent]
+codex = [
+  ["state_icon", "workspace", "tab"],
+  ["terminal_title_stripped"],
+]
