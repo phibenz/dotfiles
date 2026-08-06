@@ -1,4 +1,4 @@
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "pull-request-number", "thread-title", "task-progress"]
 status_line_use_colors = true
-terminal_title = ["spinner", "thread", "task-progress"]
+terminal_title = ["git-branch"]
