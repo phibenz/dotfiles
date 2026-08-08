@@ -12,10 +12,15 @@ if ! gh extension list | grep -Fq "github/gh-stack"; then
 fi
 
 open_source_skills=(
+  "addyosmani/agent-skills@documentation-and-adrs"
   "github/gh-stack"
   "linearis-oss/linearis"
 )
 
 for skill in "${open_source_skills[@]}"; do
-  npx --yes skills add "${skill}"
+  npx --yes skills add "${skill}" \
+    --global \
+    --agent claude-code \
+    --agent codex \
+    --yes
 done

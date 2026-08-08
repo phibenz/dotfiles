@@ -2,6 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_AGENTS_FILE="$(cd "${SCRIPT_DIR}/.." && pwd)/agents/AGENTS.md"
+TARGET_AGENTS_FILE="${HOME}/.codex/AGENTS.md"
 TARGET_RULES_DIR="${HOME}/.codex/rules"
 SOURCE_PROFILE="${SCRIPT_DIR}/dotfiles.config.toml"
 TARGET_PROFILE="${HOME}/.codex/dotfiles.config.toml"
@@ -13,6 +15,15 @@ mkdir -p "${TARGET_RULES_DIR}"
 
 installed=0
 skipped=0
+
+if [[ -e "${TARGET_AGENTS_FILE}" && ! -L "${TARGET_AGENTS_FILE}" && -s "${TARGET_AGENTS_FILE}" ]]; then
+  echo "Skipping Codex instructions: ${TARGET_AGENTS_FILE} exists and is not a symlink"
+  skipped=$((skipped + 1))
+else
+  ln -sfn "${SOURCE_AGENTS_FILE}" "${TARGET_AGENTS_FILE}"
+  echo "Linked Codex instructions -> ${TARGET_AGENTS_FILE}"
+  installed=$((installed + 1))
+fi
 
 while IFS= read -r -d '' rule_file; do
   rule_name="$(basename "${rule_file}")"
