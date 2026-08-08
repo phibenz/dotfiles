@@ -13,18 +13,25 @@ prefix_rule(pattern=["gcx", "metrics", "query"], decision="allow")
 prefix_rule(pattern=["linearis"], decision="allow")
 prefix_rule(pattern=["linear"], decision="allow")
 # git
-prefix_rule(pattern=["git", "commit"], decision="allow")
 prefix_rule(pattern=["git", "add"], decision="allow")
+prefix_rule(pattern=["git", "commit"], decision="allow")
+prefix_rule(pattern=["git", "pull"], decision="allow")
+prefix_rule(pattern=["git", "push"], decision="allow")
 # gh
 prefix_rule(pattern=["gh", "pr", "list"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "view"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "create"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "edit"], decision="allow")
-# git push for opening PRs
-prefix_rule(pattern=["git", "push", "-u", "origin", "HEAD"], decision="allow")
 # uv
 prefix_rule(pattern=["uv", "run"], decision="allow")
 prefix_rule(pattern=["uv", "run", "ty"], decision="allow")
 prefix_rule(pattern=["uv", "run", "pytest"], decision="allow")
+# rust
+prefix_rule(pattern=["cargo", "build"], decision="allow")
+prefix_rule(pattern=["cargo", "check"], decision="allow")
+prefix_rule(pattern=["cargo", "clippy"], decision="allow")
+prefix_rule(pattern=["cargo", "fmt"], decision="allow")
+prefix_rule(pattern=["cargo", "metadata"], decision="allow")
+prefix_rule(pattern=["cargo", "test"], decision="allow")
 # gcloud
 prefix_rule(pattern=["gcloud", "storage", "cat"], decision="allow")
