@@ -21,6 +21,11 @@ The agent skill installer validates that the Linearis CLI exists and supports
 the required issue commands. Do not repeat that preflight for every FD request.
 Use `linearis` when available; otherwise use the supported `linear` alias.
 
+Run Linearis authentication checks and issue commands with network access
+outside the sandbox. If a sandboxed `auth status` reports
+`authenticated: false`, retry with network access before treating the token as
+invalid.
+
 Before creating a new ticket, run `linearis auth status`, require
 `authenticated: true`, and read `user.id` from its JSON response. If it is not
 authenticated or has no user id, stop and surface its auth instruction. Use

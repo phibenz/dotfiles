@@ -28,6 +28,11 @@ the required issue commands. Do not repeat that preflight for every readiness
 request. Use `linearis` when available; otherwise use the supported `linear`
 alias.
 
+Run Linearis authentication checks and issue commands with network access
+outside the sandbox. If a sandboxed `auth status` reports
+`authenticated: false`, retry with network access before treating the token as
+invalid.
+
 If Linearis is missing, exits with an authentication-required JSON error, or
 exits with code 42, stop and surface the setup or auth instruction to the user.
 Do not install or authenticate automatically because those flows are

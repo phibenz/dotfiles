@@ -15,6 +15,10 @@ already completed.
 - Treat `$ARGUMENTS` and the current conversation as the implementation
   contract.
 - Accept an optional Linear id matching `[A-Z][A-Z0-9]*-[0-9]+`.
+- Run Linearis authentication checks and issue commands with network access
+  outside the sandbox. If a sandboxed `auth status` reports
+  `authenticated: false`, retry with network access before treating the token
+  as invalid.
 - When a ticket is identified, read its current body with Linearis. Prefer its
   `## Agent` section, incorporating decisions from a later readiness review or
   user message. Later explicit user instructions take precedence.

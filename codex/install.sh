@@ -27,16 +27,18 @@ fi
 
 while IFS= read -r -d '' rule_file; do
   rule_name="$(basename "${rule_file}")"
-  target_link="${TARGET_RULES_DIR}/${rule_name}"
+  target_file="${TARGET_RULES_DIR}/${rule_name}"
 
-  if [[ -e "${target_link}" && ! -L "${target_link}" ]]; then
-    echo "Skipping ${rule_name}: ${target_link} exists and is not a symlink"
+  if [[ -L "${target_file}" ]]; then
+    rm "${target_file}"
+  elif [[ -e "${target_file}" && ! -f "${target_file}" ]]; then
+    echo "Skipping ${rule_name}: ${target_file} exists and is not a regular file"
     skipped=$((skipped + 1))
     continue
   fi
 
-  ln -sfn "${rule_file}" "${target_link}"
-  echo "Linked ${rule_name} -> ${target_link}"
+  cp "${rule_file}" "${target_file}"
+  echo "Installed ${rule_name} -> ${target_file}"
   installed=$((installed + 1))
 done < <(find "${SCRIPT_DIR}/rules" -name '*.rules' -type f -print0)
 
