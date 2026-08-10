@@ -1,6 +1,8 @@
 # general
+prefix_rule(pattern=["curl"], decision="allow")
 prefix_rule(pattern=["printf", "%s"], decision="allow")
 prefix_rule(pattern=["pbcopy"], decision="allow")
+prefix_rule(pattern=["sort"], decision="allow")
 # bq
 prefix_rule(pattern=["bq"], decision="allow")
 prefix_rule(pattern=["bq", "query"], decision="allow")

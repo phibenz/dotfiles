@@ -8,6 +8,7 @@ pane_scrollbars = false
 [keys]
 prefix = "ctrl+a"
 detach = "prefix+q"
+workspace_picker = "prefix+g"
 goto = "prefix+space"
 previous_agent = ["prefix+shift+up", "prefix+u"]
 next_agent = ["prefix+shift+down", "prefix+d"]
@@ -28,6 +29,9 @@ auto_switch = false
 
 [ui.toast]
 delivery = "herdr"
+
+[ui.toast.herdr]
+position = "top-right"
 
 [ui.sidebar.agents.rows_by_agent]
 codex = [
