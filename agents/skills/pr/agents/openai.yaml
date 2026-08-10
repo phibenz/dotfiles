@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pull Request"
+  short_description: "Delegate pull request creation or update"
+  default_prompt: "Use $pr to delegate creation or update of the current branch pull request."

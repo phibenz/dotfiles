@@ -1,0 +1,4 @@
+interface:
+  display_name: "Worktree"
+  short_description: "Delegate an origin/main worktree and Codex pane"
+  default_prompt: "Use $wt to delegate creation of a sibling worktree and start Codex in its right Herdr pane."

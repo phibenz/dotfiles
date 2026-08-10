@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Use this skill to create or update the current branch's GitHub pull request with a generated title and description. Trigger when the user asks for $pr, pr, to open a PR, update PR title/body, PR wording, a pull request title, or a pull request description.
+description: Delegate creation or update of the current branch's GitHub pull request to a background subagent, with a generated title and description. Trigger when the user asks for $pr, pr, to open a PR, update PR title/body, PR wording, a pull request title, or a pull request description.
 ---
 
 # Pull Request Upsert
@@ -9,6 +9,18 @@ Create the current branch's GitHub pull request if it does not exist. If it
 already exists, update its title and body.
 
 Do not only print PR wording. The skill mutates the PR.
+
+## Delegation and Sequencing
+
+When you are the parent agent, delegate the complete workflow to exactly one background subagent:
+
+1. If the user also requests `$acp`, wait for the ACP worker to commit and push successfully. Never run the ACP and PR workers concurrently.
+2. Spawn the PR worker with `task_name = "pr_worker"`, `fork_turns = "none"`, `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
+3. Include the user's request, the current working directory, this skill's absolute path, and the ACP result for a combined request. Tell the worker to read the skill, skip this section, execute the Workflow directly, and never spawn another subagent.
+4. Do not duplicate its GitHub mutations. Surface approval requests and wait for its result.
+5. For a combined request, return only the concise ACP result and the PR result after both stages succeed.
+
+When you are the delegated worker, skip this section and execute the Workflow directly.
 
 ## Workflow
 
