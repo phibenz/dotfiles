@@ -1,4 +1,4 @@
 interface:
   display_name: "Add, Commit, Push"
-  short_description: "Stage, commit, and push intended changes"
-  default_prompt: "Use $acp to stage, commit, and push the intended changes."
+  short_description: "Delegate stage, commit, and push workflow"
+  default_prompt: "Use $acp to delegate staging, committing, and pushing the intended changes."

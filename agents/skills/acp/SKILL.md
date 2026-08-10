@@ -1,11 +1,23 @@
 ---
 name: acp
-description: Stage only the intended current changes, create exactly one concise conventional commit with active-model co-author attribution, and push it. Set up the remote tracking branch when the current branch has no upstream. Use when the user invokes $acp, says acp, says add commit push or stage commit push, or asks to commit and push current changes.
+description: Delegate staging, committing, and pushing only the intended current changes to a background subagent. Create exactly one concise conventional commit with active-model co-author attribution, and set up remote tracking when needed. Use when the user invokes $acp, says acp, says add commit push or stage commit push, or asks to commit and push current changes.
 ---
 
 # Add, Commit, Push
 
 Stage the complete intended change, commit it once, and push the current branch.
+
+## Delegation and Sequencing
+
+When you are the parent agent, delegate the complete workflow to exactly one background subagent:
+
+1. If the user also requests `$pr`, treat ACP as the first serial stage. Do not spawn the PR worker yet.
+2. Spawn the ACP worker with `task_name = "acp_worker"`, `fork_turns = "none"`, `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
+3. Include the user's request, the current working directory, this skill's absolute path, the intended file scope, and requested commit flags. Tell the worker to read the skill, skip this section, execute the Workflow directly, and never spawn another subagent.
+4. Do not duplicate its Git mutations. Surface approval requests and wait for its result.
+5. If ACP succeeds and the user requested `$pr`, start the PR skill next. If ACP fails, stop and do not create or update a PR.
+
+When you are the delegated worker, skip this section and execute the Workflow directly.
 
 ## Workflow
 
