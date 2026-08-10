@@ -13,6 +13,7 @@ fi
 
 open_source_skills=(
   "addyosmani/agent-skills@documentation-and-adrs"
+  "danyuchn/asd-ste100-skill"
   "github/gh-stack"
   "linearis-oss/linearis"
 )
