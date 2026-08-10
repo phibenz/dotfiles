@@ -1,3 +1,6 @@
+[agents]
+max_concurrent_threads_per_session = 10
+
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "pull-request-number", "thread-title", "task-progress"]
 status_line_use_colors = true

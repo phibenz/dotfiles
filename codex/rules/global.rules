@@ -18,11 +18,14 @@ prefix_rule(pattern=["git", "commit"], decision="allow")
 prefix_rule(pattern=["git", "fetch"], decision="allow")
 prefix_rule(pattern=["git", "pull"], decision="allow")
 prefix_rule(pattern=["git", "push"], decision="allow")
+prefix_rule(pattern=["git", "stash"], decision="allow")
 # gh
 prefix_rule(pattern=["gh", "pr", "list"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "view"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "create"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "edit"], decision="allow")
+# pre-commit
+prefix_rule(pattern=["pre-commit", "run"], decision="allow")
 # uv
 prefix_rule(pattern=["uv", "run"], decision="allow")
 prefix_rule(pattern=["uv", "run", "ty"], decision="allow")
