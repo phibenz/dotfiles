@@ -61,8 +61,15 @@ When you are the delegated worker, skip this section and execute the Workflow di
 9. If a PR exists, update it:
    - `GH_NO_UPDATE_NOTIFIER=1 gh pr edit <number> --title <title> --body-file <body-file>`
 10. If no PR exists, create it:
-   - Ensure the current branch has an upstream. If it does not, run
-     `git push -u origin HEAD`.
+   - Inspect `branch.<current-branch>.remote` and
+     `branch.<current-branch>.merge`. Treat the upstream as correct only when
+     the remote exists and the merge ref equals
+     `refs/heads/<current-branch>`.
+   - If the upstream is absent or points to a different branch, select the push
+     remote in this order: the branch's configured push remote,
+     `remote.pushDefault`, the branch's configured remote, `origin`, or the sole
+     configured remote. Ignore `.` as a push target. Then run
+     `git push --set-upstream <remote> HEAD:refs/heads/<current-branch>`.
    - `GH_NO_UPDATE_NOTIFIER=1 gh pr create --base <base-name> --head <current-branch> --title <title> --body-file <body-file>`
 11. Remove the temporary body file.
 

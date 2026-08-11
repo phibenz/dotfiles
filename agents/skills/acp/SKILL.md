@@ -1,6 +1,6 @@
 ---
 name: acp
-description: Delegate staging, committing, and pushing only the intended current changes to a background subagent. Create exactly one concise conventional commit with active-model co-author attribution, and set up remote tracking when needed. Use when the user invokes $acp, says acp, says add commit push or stage commit push, or asks to commit and push current changes.
+description: Delegate staging, committing, and pushing only the intended current changes to a background subagent. Create exactly one concise conventional commit with active-model co-author attribution, and ensure the current branch tracks its same-name remote branch. Use when the user invokes $acp, says acp, says add commit push or stage commit push, or asks to commit and push current changes.
 ---
 
 # Add, Commit, Push
@@ -42,13 +42,20 @@ When you are the delegated worker, skip this section and execute the Workflow di
    - Escape shell-sensitive characters in both arguments.
    - Forward user-provided commit flags such as `--amend` or `--no-verify`.
 7. Push only after the commit succeeds:
-   - If `git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}'`
-     succeeds, run `git push` with any explicitly requested safe push flags.
-   - If there is no upstream, choose the remote in this order: the branch's
-     configured remote, `origin`, or the sole configured remote.
+   - Inspect `branch.<current-branch>.remote` and
+     `branch.<current-branch>.merge`. Treat the upstream as correct only when
+     the remote exists and the merge ref equals
+     `refs/heads/<current-branch>`.
+   - If the upstream is correct, run `git push` with any explicitly requested
+     safe push flags.
+   - If the upstream is absent or points to a different branch, choose the
+     remote in this order: the branch's configured push remote,
+     `remote.pushDefault`, the branch's configured remote, `origin`, or the sole
+     configured remote. Ignore `.` as a push target.
    - When a remote is unambiguous, run
-     `git push --set-upstream <remote> HEAD` to create or connect the remote
-     branch and push the commit.
+     `git push --set-upstream <remote> HEAD:refs/heads/<current-branch>` to
+     create or connect the same-name remote branch and push the commit. This
+     also replaces an inherited upstream such as `origin/main`.
    - If there is no remote, or multiple remotes with no unambiguous choice, stop
      after the commit and ask the user which remote to use.
 8. Verify the final branch and upstream state with `git status --short --branch`.

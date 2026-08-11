@@ -60,8 +60,11 @@ the request, base, and branch name may happen first.
    The no-ticket form has exactly one slash. For example:
    `phil/rl-635/add-runtime-attachments` or
    `phil/add-runtime-attachments`.
-5. Create the branch from the resolved base with `git switch -c`. Do not reuse,
-   reset, or overwrite an existing branch of the same name.
+5. Create the branch from the resolved base with
+   `git switch --no-track -c <new-branch> <resolved-base>`. The `--no-track`
+   option prevents the feature branch from inheriting the base branch as its
+   upstream. Do not reuse, reset, or overwrite an existing branch of the same
+   name.
 6. For an explicitly stacked implementation, record the future PR base:
 
    ```sh
