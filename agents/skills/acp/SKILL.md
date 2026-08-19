@@ -37,10 +37,12 @@ When you are the delegated worker, skip this section and execute the Workflow di
    - `Co-authored-by: <model> <noreply@openai.com>`
    - Use the active model display name plus reasoning effort when known, such as
      `GPT-5.5 medium`. Otherwise use the active model display name.
-6. Run exactly one commit command with two message arguments:
+6. Run the initial commit attempt with two message arguments:
    - `git commit -m "<subject>" -m "Co-authored-by: <model> <noreply@openai.com>"`
    - Escape shell-sensitive characters in both arguments.
    - Forward user-provided commit flags such as `--amend` or `--no-verify`.
+   - If it fails, apply the Hook Repair and Retry rules below. Do not retry for
+     any other failure.
 7. Push only after the commit succeeds:
    - Inspect `branch.<current-branch>.remote` and
      `branch.<current-branch>.merge`. Treat the upstream as correct only when
@@ -79,6 +81,26 @@ When you are the delegated worker, skip this section and execute the Workflow di
 - Choose the prefix from the staged diff.
 - Keep the subject to one line and preferably under 72 characters.
 - Use imperative, present-tense wording.
+
+## Hook Repair and Retry
+
+- Allow one repair-and-retry cycle only when no commit was created and a Ruff,
+  `ruff-format`, or Ty hook failed.
+- Determine whether each diagnostic was caused by the intended diff. Inspect
+  the staged and unstaged diffs, diagnostic locations, and changed contracts or
+  callers. Treat uncertain causality as unrelated.
+- Keep `ruff-format` output only when every affected path belongs to the
+  intended scope and the hook changes are formatting-only.
+- Fix a Ruff or Ty diagnostic only when the intended changes caused it. Make
+  the smallest correction in intended paths or directly affected dependent
+  paths. Never run a broad fix across the repository.
+- Leave pre-existing and unrelated failures unchanged. If one blocks the hook,
+  stop and report it instead of expanding the commit scope.
+- Stage only the repaired intended paths, inspect the complete cached diff
+  again, and rerun the identical commit command once.
+- Stop when another hook type failed, the second commit attempt fails, or the
+  repair would mix with unrelated local changes.
+- Never bypass the hooks or add `--no-verify` unless the user requested it.
 
 ## Push Safety
 
