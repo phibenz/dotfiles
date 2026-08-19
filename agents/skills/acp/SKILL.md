@@ -11,8 +11,7 @@ Stage the complete intended change, commit it once, and push the current branch.
 
 When you are the parent agent:
 
-1. Execute the Workflow directly by default. Do not spawn a worker for a normal
-   `$acp` request.
+1. Execute the Workflow directly by default.
 2. If the user explicitly requests background or delegated ACP, spawn exactly
    one worker with `task_name = "acp_worker"`, `fork_turns = "none"`,
    `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
