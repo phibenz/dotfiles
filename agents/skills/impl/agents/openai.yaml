@@ -1,4 +1,0 @@
-interface:
-  display_name: "Implement"
-  short_description: "Implement ticket or chat instructions"
-  default_prompt: "Use $impl to implement the requested change on a new branch."
