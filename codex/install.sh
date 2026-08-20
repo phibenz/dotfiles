@@ -7,6 +7,8 @@ TARGET_AGENTS_FILE="${HOME}/.codex/AGENTS.md"
 TARGET_RULES_DIR="${HOME}/.codex/rules"
 SOURCE_PROFILE="${SCRIPT_DIR}/dotfiles.config.toml"
 TARGET_PROFILE="${HOME}/.codex/dotfiles.config.toml"
+ZSH_LOCAL_FILE="${HOME}/.zshrc.local"
+CODEX_ALIAS="alias codex='command codex --profile dotfiles'"
 CODEX_INSTALL_URL="https://chatgpt.com/codex/install.sh"
 CODEX_BIN_DIR="${CODEX_INSTALL_DIR:-${HOME}/.local/bin}"
 CODEX_BIN="${CODEX_BIN_DIR}/codex"
@@ -69,4 +71,18 @@ else
   installed=$((installed + 1))
 fi
 
-echo "Done. Linked ${installed} Codex item(s), skipped ${skipped}."
+if [[ -f "${ZSH_LOCAL_FILE}" ]] && grep -Fqx "${CODEX_ALIAS}" "${ZSH_LOCAL_FILE}"; then
+  echo "Codex alias ready -> ${ZSH_LOCAL_FILE}"
+elif [[ -f "${ZSH_LOCAL_FILE}" ]] && grep -Eq '^[[:space:]]*alias[[:space:]]+codex=' "${ZSH_LOCAL_FILE}"; then
+  echo "Skipping Codex alias: ${ZSH_LOCAL_FILE} already defines codex"
+  skipped=$((skipped + 1))
+elif [[ -e "${ZSH_LOCAL_FILE}" && ! -f "${ZSH_LOCAL_FILE}" ]]; then
+  echo "Skipping Codex alias: ${ZSH_LOCAL_FILE} is not a regular file"
+  skipped=$((skipped + 1))
+else
+  printf '\n%s\n' "${CODEX_ALIAS}" >> "${ZSH_LOCAL_FILE}"
+  echo "Added Codex alias -> ${ZSH_LOCAL_FILE}"
+  installed=$((installed + 1))
+fi
+
+echo "Done. Installed ${installed} Codex item(s), skipped ${skipped}."
