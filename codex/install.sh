@@ -7,14 +7,32 @@ TARGET_AGENTS_FILE="${HOME}/.codex/AGENTS.md"
 TARGET_RULES_DIR="${HOME}/.codex/rules"
 SOURCE_PROFILE="${SCRIPT_DIR}/dotfiles.config.toml"
 TARGET_PROFILE="${HOME}/.codex/dotfiles.config.toml"
-TARGET_ZSH_LOCAL="${HOME}/.zshrc.local"
-LEGACY_CODEX_ALIAS="alias codex='npx @openai/codex@latest'"
-CODEX_ALIAS="alias codex='npx @openai/codex@latest --profile dotfiles'"
+CODEX_INSTALL_URL="https://chatgpt.com/codex/install.sh"
+CODEX_BIN_DIR="${CODEX_INSTALL_DIR:-${HOME}/.local/bin}"
+CODEX_BIN="${CODEX_BIN_DIR}/codex"
 
 mkdir -p "${TARGET_RULES_DIR}"
 
 installed=0
 skipped=0
+
+if [[ ! -x "${CODEX_BIN}" ]]; then
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required to install Codex." >&2
+    exit 1
+  fi
+
+  echo "Installing Codex CLI with the standalone installer..."
+  curl -fsSL "${CODEX_INSTALL_URL}" | \
+    CODEX_NON_INTERACTIVE=1 CODEX_INSTALL_DIR="${CODEX_BIN_DIR}" sh
+fi
+
+if [[ ! -x "${CODEX_BIN}" ]]; then
+  echo "Codex CLI is not executable after installation: ${CODEX_BIN}" >&2
+  exit 1
+fi
+
+echo "Codex CLI ready: ${CODEX_BIN}"
 
 if [[ -e "${TARGET_AGENTS_FILE}" && ! -L "${TARGET_AGENTS_FILE}" && -s "${TARGET_AGENTS_FILE}" ]]; then
   echo "Skipping Codex instructions: ${TARGET_AGENTS_FILE} exists and is not a symlink"
@@ -49,25 +67,6 @@ else
   ln -sfn "${SOURCE_PROFILE}" "${TARGET_PROFILE}"
   echo "Linked Codex profile -> ${TARGET_PROFILE}"
   installed=$((installed + 1))
-fi
-
-touch "${TARGET_ZSH_LOCAL}"
-if grep -Fqx "${CODEX_ALIAS}" "${TARGET_ZSH_LOCAL}"; then
-  echo "Codex alias already installed in ${TARGET_ZSH_LOCAL}"
-elif grep -Fqx "${LEGACY_CODEX_ALIAS}" "${TARGET_ZSH_LOCAL}"; then
-  temp_zsh_local="$(mktemp "${TARGET_ZSH_LOCAL}.tmp.XXXXXX")"
-  awk -v old="${LEGACY_CODEX_ALIAS}" -v new="${CODEX_ALIAS}" \
-    '$0 == old { print new; next } { print }' \
-    "${TARGET_ZSH_LOCAL}" > "${temp_zsh_local}"
-  cp "${temp_zsh_local}" "${TARGET_ZSH_LOCAL}"
-  rm "${temp_zsh_local}"
-  echo "Updated Codex alias in ${TARGET_ZSH_LOCAL}"
-else
-  {
-    printf '\n# Codex CLI\n'
-    printf '%s\n' "${CODEX_ALIAS}"
-  } >> "${TARGET_ZSH_LOCAL}"
-  echo "Installed Codex alias in ${TARGET_ZSH_LOCAL}"
 fi
 
 echo "Done. Linked ${installed} Codex item(s), skipped ${skipped}."
