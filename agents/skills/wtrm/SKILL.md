@@ -20,7 +20,7 @@ Remove a completed worktree and its runtime state without deleting committed wor
 
 ## Safety Check
 
-Before requesting authorization, establish all cleanup targets:
+Before mutation, establish all cleanup targets:
 
 1. Run `git -C <target-path> status --porcelain=v1 --untracked-files=all`. Stop if it returns any path. Never stash, clean, reset, or force removal.
 2. Record the exact worktree path, branch, HEAD, and Herdr `open_workspace_id` from structured output. The branch is retained.
@@ -30,11 +30,11 @@ Before requesting authorization, establish all cleanup targets:
 6. If Herdr has no session UUID, query unarchived `cli` threads by exact `cwd`. Use the result only when exactly one session matches. Stop and ask the user if none or multiple match.
 7. Ignore subagent thread rows. Archive only the root `cli` session associated with the Herdr Codex agent.
 
-Show one preview with the exact path, branch, workspace ID, and Codex session UUID. State that cleanup removes the checkout, closes its Herdr workspace, archives the session, and retains the branch. Ask for confirmation immediately before mutation. An explicit `--yes` in the current request can provide this confirmation.
+An explicit `$wtrm <worktree-name>` invocation authorizes cleanup after these checks pass. A direct request that names the worktree and asks to remove it also authorizes cleanup. Report the resolved path, branch, workspace ID, and session UUID in a concise update, then continue without another confirmation. Ask for authorization only when the request does not clearly ask for removal.
 
 ## Cleanup
 
-After confirmation:
+After authorization:
 
 1. When the worktree has an open Herdr workspace, run `herdr worktree remove --workspace <workspace-id>` without `--force`. This closes the workspace and removes the checkout.
 2. When no Herdr workspace exists, run `git worktree remove -- <target-path>` without `--force`.
