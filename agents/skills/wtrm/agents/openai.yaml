@@ -1,0 +1,4 @@
+interface:
+  display_name: "Worktree Cleanup"
+  short_description: "Remove a worktree and archive its Codex session"
+  default_prompt: "Use $wtrm to remove a named worktree, close its Herdr workspace, and archive its Codex session."

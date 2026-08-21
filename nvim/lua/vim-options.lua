@@ -17,6 +17,8 @@ vim.g.maplocalleader = "\\"
 -- enable 24-bit colour
 vim.opt.termguicolors = true
 
+vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode' })
+
 -- Clipboard
 -- Yank into system clipboard
 vim.keymap.set({'n', 'v'}, '<leader>y', '"+y') -- yank motion
