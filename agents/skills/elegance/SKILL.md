@@ -45,6 +45,16 @@ as simple as possible, as complex as necessary.
      implementation trivia?
    - Are any tests naive, purely mechanical, or only restating the code instead
      of increasing confidence? If so, recommend removing them.
+   - Do any negative or regression tests reject deleted syntax or describe
+     states that the current design can no longer produce? Check this in every
+     review, not only after cleanup work. If a test only preserves history about
+     deleted code and protects no current observable contract, remove the test
+     and any production guard, error path, compatibility behavior, or comment
+     that exists only to satisfy it.
+   - Keep tests for active invariants that supported inputs can still violate.
+     Examples include positive timeout values, safe paths, and executable
+     entrypoints. Do not remove useful behavior coverage merely because the
+     original implementation changed.
    - Is there duplicated or dead code that should be deleted?
 4. Separate real improvements from taste.
    - Call out changes that reduce complexity, risk, or future maintenance.

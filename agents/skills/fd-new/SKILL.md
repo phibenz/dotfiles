@@ -1,6 +1,6 @@
 ---
 name: fd-new
-description: Use this skill to create a new Linear feature-design ticket or populate/update an existing Linear issue as a feature-design ticket with Linearis. Trigger when the user explicitly asks for a new FD, feature design, design ticket, implementation plan ticket, or asks to populate/update a Linear issue as a design ticket. Do not use for readiness, status, lookup, or other non-mutating requests that merely mention a Linear issue id.
+description: Use this skill to create a new Linear feature-design ticket with a project assignment or populate/update an existing Linear issue as a feature-design ticket with Linearis. Trigger when the user explicitly asks for a new FD, feature design, design ticket, implementation plan ticket, or asks to populate/update a Linear issue as a design ticket. Do not use for readiness, status, lookup, or other non-mutating requests that merely mention a Linear issue id.
 ---
 
 # Create Linear Feature Design
@@ -52,6 +52,13 @@ environment-specific and may be interactive.
     clearly relevant Linear context.
   - If the team is not clear, ask the user for the Linear team before creating
     the ticket.
+  - Require a project for every new ticket. Prefer an explicit project from the
+    user. Otherwise run `projects list` and infer the project only from the
+    current repository, referenced tickets, or clearly relevant Linear
+    context.
+  - If more than one project is plausible, ask the user which project to use.
+    Never create a project automatically, and never create an unassigned
+    ticket.
 
 ### 2. Parse the feature request
 
@@ -122,12 +129,13 @@ How to test that it works. Concrete steps.
 
 - For a new ticket, use
   `issues create <title> --team <team> --description <body>` with
-  `--status TODO` and `--assignee <authenticated-user-id>`.
+  `--status TODO`, `--assignee <authenticated-user-id>`, and
+  `--project <project>`.
 - Use `issues update <issue> --description <body>` for an existing ticket.
 - For an existing ticket, preserve and merge any useful existing description
   content; ask before replacing it wholesale.
-- Preserve an existing ticket's status and assignee unless the user explicitly
-  asks to change them.
+- Preserve an existing ticket's status, assignee, and project unless the user
+  explicitly asks to change them.
 - Preserve the JSON output from Linearis and report the issue identifier and URL
   from that output.
 

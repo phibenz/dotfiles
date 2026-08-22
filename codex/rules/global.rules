@@ -7,6 +7,8 @@ prefix_rule(pattern=["sort"], decision="allow")
 prefix_rule(pattern=["bq"], decision="allow")
 prefix_rule(pattern=["bq", "query"], decision="allow")
 prefix_rule(pattern=["bq", "show"], decision="allow")
+# codex
+prefix_rule(pattern=["codex", "archive"], decision="allow")
 # docker
 prefix_rule(pattern=["docker", "build"], decision="allow")
 prefix_rule(pattern=["docker", "buildx", "build"], decision="allow")

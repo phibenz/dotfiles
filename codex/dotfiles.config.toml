@@ -1,3 +1,5 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
 [agents]
 max_concurrent_threads_per_session = 10
 
@@ -5,3 +7,6 @@ max_concurrent_threads_per_session = 10
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "pull-request-number", "thread-title", "task-progress"]
 status_line_use_colors = true
 terminal_title = ["git-branch"]
+
+[projects."/Users/philipp/projects/seojoong"]
+trust_level = "trusted"
