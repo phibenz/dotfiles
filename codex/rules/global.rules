@@ -58,14 +58,9 @@ prefix_rule(pattern=["gh", "pr", "view"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "create"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "edit"], decision="allow")
 # herdr worktree setup
-prefix_rule(pattern=["herdr", "worktree", "list"], decision="allow")
-prefix_rule(pattern=["herdr", "worktree", "open"], decision="allow")
-prefix_rule(pattern=["herdr", "pane", "split"], decision="allow")
-prefix_rule(pattern=["herdr", "pane", "layout"], decision="allow")
-prefix_rule(pattern=["herdr", "pane", "neighbor"], decision="allow")
-prefix_rule(pattern=["herdr", "agent", "list"], decision="allow")
-prefix_rule(pattern=["herdr", "agent", "start"], decision="allow")
-prefix_rule(pattern=["herdr", "agent", "get"], decision="allow")
+prefix_rule(pattern=["herdr", "worktree"], decision="allow")
+prefix_rule(pattern=["herdr", "pane"], decision="allow")
+prefix_rule(pattern=["herdr", "agent"], decision="allow")
 # pre-commit
 prefix_rule(pattern=["pre-commit", "run"], decision="allow")
 # uv

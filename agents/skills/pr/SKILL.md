@@ -47,7 +47,7 @@ When you are the delegated worker, skip this section and execute the Workflow di
 2. If there are no committed branch changes, inspect untracked `docs/features/`
    before stopping with `no committed branch changes to open as a PR`.
 3. Check for an existing PR with
-   `GH_NO_UPDATE_NOTIFIER=1 gh pr view --json number,url,title,baseRefName`.
+   `GH_NO_UPDATE_NOTIFIER=1 gh pr view --json number,url,title,body,baseRefName`.
    Treat the normal no-PR result as the create path. If an existing PR reports
    a different base, use that base as authoritative and recompute the local
    change summary before updating it.
@@ -101,6 +101,10 @@ justification. Do not ask the user to reply with a magic sentence.
 - Use as many bullets as are useful, usually 2-4. Do not force exactly three.
 - Make each bullet descriptive and easy to understand in simple words.
 - Focus on what changed and why it matters.
+- When the PR implements one or more specific Linear tickets, append one
+  separate `Fixes <ISSUE-ID>` line for each ticket. Resolve ticket IDs from the
+  user request, current conversation, branch name, commit subjects, changed
+  feature-design paths, and an existing PR body. Do not guess an issue ID.
 - Do not include a broad diff tour, validation or verification details, test
   logs, or implementation trivia unless the user explicitly asks.
 - Do not include agent attribution, model attribution, emojis, or final playful
