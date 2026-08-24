@@ -120,6 +120,16 @@ How to test that it works. Concrete steps.
   written in product or workflow terms.
 - The `Agent` section is the implementation contract: detailed enough for an
   agent to start work, but still understandable to a human who wants depth.
+- Design the smallest complete change: as simple as possible, as complex as
+  necessary.
+- Minimize the change surface, moving parts, and new concepts. Prefer existing
+  project patterns over new abstractions, dependencies, configuration, or
+  optional behavior.
+- Add complexity only when correctness, measured performance, security, or
+  reuse across real call sites requires it. Avoid speculative optimization and
+  unrelated cleanup.
+- Keep verification focused on observable behavior and active invariants, not
+  implementation details.
 - If the user provided enough context, fill in the `Problem`, `Solution`, and
   `Verification` sections.
 - If the implementation details are not known, leave explicit placeholders that
