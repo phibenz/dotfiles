@@ -1,6 +1,6 @@
 ---
 name: wt
-description: Create a task-named sibling Git worktree from a freshly fetched default or explicit base, register it as a Herdr workspace, split its initial terminal into 65% left and 35% right panes, and start a Codex agent in the right pane. Use when the user invokes $wt, says wt, asks for a new worktree with a Herdr window, or wants an isolated worktree and paired Codex pane for a task.
+description: Create a task-named sibling Git worktree from a freshly fetched default or explicit base, register it as a Herdr workspace, split its initial terminal into 40% left and 60% right panes, and start a Codex agent in the right pane. Use when the user invokes $wt, says wt, asks for a new worktree with a Herdr window, or wants an isolated worktree and paired Codex pane for a task.
 ---
 
 # Worktree
@@ -63,8 +63,8 @@ Choose a fresh branch name from the task and the repository's existing user/bran
    - Treat `HERDR_WORKSPACE_ID` as the source workspace ID.
    - Run `herdr worktree open --workspace <source-workspace-id> --path <target-path> --label <folder-name> --no-focus`.
    - Read the workspace ID and root pane ID from the JSON response. Never infer IDs from ordering.
-5. Split the root pane. Keep 65% of the width on the left and allocate 35% to the right:
-   - Run `herdr pane split --pane <root-pane-id> --direction right --ratio 0.65 --cwd <target-path> --no-focus`.
+5. Split the root pane. Keep 40% of the width on the left and allocate 60% to the right:
+   - Run `herdr pane split --pane <root-pane-id> --direction right --ratio 0.40 --cwd <target-path> --no-focus`.
    - Read the new right pane ID from the JSON response.
 6. Start Codex in the right pane:
    - Run `herdr agent start <agent-name> --kind codex --pane <right-pane-id> --timeout 120000`.
