@@ -1,19 +1,19 @@
 ---
 name: fd-readiness
-description: Use this skill to review a Linear feature-design ticket against the current codebase and decide whether it is implementation-ready. Trigger for Linear issue ids such as FD-012 or RL-635 when the user wants blockers, ambiguities, unresolved questions, and recommended clean-code resolutions before implementation.
+description: Review one Linear implementation ticket against the current codebase and decide whether it is ready for one focused pull request. Trigger for issue identifiers such as FD-012 when the user wants blockers, ambiguities, unresolved questions, and recommended clean-code resolutions before implementation. Do not use to assess a parent feature plan as one implementation unit.
 ---
 
-# Linear Feature Design Readiness Review
+# Linear Ticket Readiness Review
 
-Evaluate whether a Linear feature-design ticket is ready to implement against
-the current repo state. The goal is not to produce a broad context dump. The
-goal is to surface the concrete ambiguities, blockers, unresolved decisions,
-and code-path risks that must be resolved before implementation starts.
+Evaluate whether one Linear implementation ticket is ready for one focused pull
+request against the current repository state. Surface only the ambiguities,
+blockers, unresolved decisions, scope problems, and code-path risks that must be
+resolved before implementation starts.
 
 ## Argument
 
-Required: a Linear issue id such as `FD-012`, `RL-635`, or another uppercase
-prefix plus number.
+Required: a Linear issue id such as `FD-012` or another uppercase prefix plus
+number.
 
 Optional: a focus area, such as `API shape`, `migration path`, `tests`, or
 `implementation plan`.
@@ -59,11 +59,11 @@ readiness.
 
 2. Read the target Linear ticket.
    - Use Linearis to read the issue identified by the requested id.
-   - Prefer the `## Agent` section as the implementation contract.
-   - Use the `## Human` section only as summary context.
-   - If the ticket does not have `Human` and `Agent` sections, treat the full
-     description as a legacy design body and include a should-resolve issue
-     recommending that the ticket be normalized.
+   - Use `## Summary` as quick context and the remaining description as the
+     implementation contract.
+   - If the issue is a parent feature plan with multiple implementation
+     tickets, ask the user to select a child ticket. Do not rate the parent as
+     one implementation unit.
    - Read issue discussions or replies only when the ticket body points to
      missing design decisions that may have been clarified there.
    - Do not update the ticket unless the user explicitly asks to persist the
@@ -110,6 +110,7 @@ Focus on issues that would cause implementation churn, incorrect architecture,
 or review pushback:
 
 - Ambiguous behavior or acceptance criteria.
+- Scope that contains more than one independent semantic change or pull request.
 - Missing edge-case policy where the code must choose one behavior.
 - Unclear ownership between modules or layers.
 - Proposed paths that do not match the existing code architecture.
