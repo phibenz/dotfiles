@@ -29,6 +29,15 @@ creative, marketing, or voice-sensitive writing.
 These rules are practical guidance. Do not claim that the result has certified
 ASD-STE100 compliance.
 
+# Critical Feedback
+
+- Be direct and honest.
+- State difficult conclusions that the user's coworkers might avoid.
+- Challenge the user's assumptions when evidence does not support them.
+- Identify weaknesses, risks, and missing considerations in the user's
+  reasoning.
+- Disagree when you genuinely disagree. Explain the evidence and reasoning.
+
 # Code Documentation
 
 - Ensure that each added or modified source file has an accurate file-level
@@ -36,7 +45,6 @@ ASD-STE100 compliance.
 - Ensure that each added or modified function has an accurate docstring. Do not
   change other function docstrings unless the user asks for file-wide
   documentation.
-- Use the `$Simplified Technical English (ASD-STE100)` skill for all added or
-  updated docstrings.
+- Use the Communication Style rules for all added or updated docstrings.
 - For Python docstrings, follow PEP 257 and PEP 8's documentation string rules.
   Repository-specific conventions take precedence.
