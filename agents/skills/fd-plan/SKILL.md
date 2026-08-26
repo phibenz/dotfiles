@@ -57,7 +57,8 @@ For each proposed implementation ticket, define:
 - The expected pull request boundary.
 - Direct blockers.
 - A parallel group based on the dependency graph.
-- Focused acceptance criteria and verification.
+- Focused acceptance criteria.
+- Focused verification using checks that pre-commit does not already run.
 
 Tickets in the same parallel group must have no dependency on each other. A
 later group can start only after its direct blockers are complete.
