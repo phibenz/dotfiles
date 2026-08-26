@@ -1,6 +1,6 @@
 ---
 name: wt
-description: Create a task-named sibling Git worktree from a freshly fetched origin/main, register it as a Herdr workspace, split its initial terminal into equal left and right panes, and start a Codex agent in the right pane. Run inline by default and delegate only when the user explicitly requests background execution. Use when the user invokes $wt, says wt, asks for a new worktree with a Herdr window, or wants an isolated worktree and paired Codex pane for a task.
+description: Create a task-named sibling Git worktree from a freshly fetched default or explicit base, register it as a Herdr workspace, split its initial terminal into 65% left and 35% right panes, and start a Codex agent in the right pane. Use when the user invokes $wt, says wt, asks for a new worktree with a Herdr window, or wants an isolated worktree and paired Codex pane for a task.
 ---
 
 # Worktree
@@ -9,31 +9,37 @@ Create the worktree and Herdr layout as one workflow. Preserve the source checko
 
 ## Execution
 
-Execute the complete workflow directly by default. Do not start a subagent only because the user invokes this skill.
-
-When the user explicitly requests background execution or invokes `$wt background`, delegate the complete workflow to exactly one background subagent:
-
-1. Spawn it with `fork_turns = "none"`, `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
-2. Include the user's task, the current working directory, and this skill's absolute path in the prompt. Tell the worker to read the skill, skip this Execution section, execute the Workflow directly, and never spawn another subagent.
-3. Do not duplicate the worker's Git or Herdr mutations. Keep the worker running in the background, surface any approval request, and report completion only after you receive and verify its result.
-
-When you are the delegated worker, skip this section and execute the Workflow directly.
+Execute the complete workflow directly.
 
 Use the fewest tool calls that the data dependencies permit. Batch independent read-only checks. Continue through successful dependent steps without extra status updates. Do not repeat successful commands only to verify them.
 
 ## Naming
 
 1. Treat the current Git top-level directory as the source directory.
-2. Derive a concise kebab-case task slug that describes the work. Never use a generic suffix such as `worktree`, `wktree`, or only a number.
-3. Use the source directory's basename as the folder prefix. If it is longer than seven characters, truncate it to its first seven characters.
-4. Name the new folder `<source-prefix>-<task-slug>` and place it beside the source directory.
+2. Derive a concise kebab-case task slug that describes the work. Never use a generic suffix such as `worktree`, or only a number.
+3. Use the complete source basename when it has seven or fewer characters.
+4. For a longer basename, create a recognizable abbreviation with no more than seven characters.
+5. Prefer a distinctive complete word, a common abbreviation, or the initials of meaningful words, in that order.
+6. Do not cut a word at an arbitrary character.
+7. Name the new folder `<source-prefix>-<task-slug>` and place it beside the source directory.
 
 Examples:
 
 - `/work/app` plus `fix-login` becomes `/work/app-fix-login`.
 - `/work/catalog-service` plus `add-metrics` becomes `/work/catalog-add-metrics`.
+- `/work/identity-access-management` plus `add-audit-log` becomes `/work/iam-add-audit-log`.
+- `/work/dotfiles` plus `update-shell` becomes `/work/dots-update-shell`.
 
 Choose a fresh branch name from the task and the repository's existing user/branch convention. If no convention is visible, use `<user>/<task-slug>`. Keep folder naming independent of branch slashes.
+
+## Base Selection
+
+1. If the user names a base, use it as the explicit base.
+2. Otherwise try these candidates in order: `refs/remotes/origin/HEAD`, `origin/main`, `origin/master`, `main`, and `master`.
+3. If the explicit base is a missing branch, fetch it from `origin` and use the resulting remote ref. Never replace the explicit base.
+4. Resolve each candidate with `git rev-parse --verify '<candidate>^{commit}'`. Select the first candidate that resolves.
+5. Stop if the explicit base fails to resolve or no default candidate resolves.
+6. After branch creation, store an explicit base in `branch.<new-branch>.gh-merge-base`. This lets `$pr` use the same base.
 
 ## Workflow
 
@@ -48,15 +54,17 @@ Choose a fresh branch name from the task and the repository's existing user/bran
    - Never delete, prune, reuse, reset, or overwrite an existing branch, path, worktree, workspace, tab, or pane.
    - Derive a useful unique agent name from the task slug, valid for `[a-z][a-z0-9_-]{0,31}`. Add a short suffix if `herdr agent list` shows a collision.
 3. Refresh the base and create the sibling checkout:
-   - Run `git fetch origin`, then resolve `refs/remotes/origin/main` to an exact commit. Stop if the fetch or resolution fails. Never fall back to local `main`, the current `HEAD`, or a stale remote-tracking ref.
-   - Run `git worktree add -b <branch> <target-path> <origin-main-commit>`.
+   - Run `git fetch origin`. Stop if the fetch fails.
+   - Apply the Base Selection rules after the fetch. Resolve the selected base to an exact commit.
+   - Run `git worktree add -b <branch> <target-path> <base-commit>`.
+   - If the user supplied a base, configure `branch.<branch>.gh-merge-base` with the selected base.
    - Run these dependent Git steps in one tool call when practical.
 4. Register the checkout with Herdr:
    - Treat `HERDR_WORKSPACE_ID` as the source workspace ID.
    - Run `herdr worktree open --workspace <source-workspace-id> --path <target-path> --label <folder-name> --no-focus`.
    - Read the workspace ID and root pane ID from the JSON response. Never infer IDs from ordering.
-5. Split the root pane into equal left and right panes:
-   - Run `herdr pane split --pane <root-pane-id> --direction right --ratio 0.5 --cwd <target-path> --no-focus`.
+5. Split the root pane. Keep 65% of the width on the left and allocate 35% to the right:
+   - Run `herdr pane split --pane <root-pane-id> --direction right --ratio 0.65 --cwd <target-path> --no-focus`.
    - Read the new right pane ID from the JSON response.
 6. Start Codex in the right pane:
    - Run `herdr agent start <agent-name> --kind codex --pane <right-pane-id> --timeout 120000`.

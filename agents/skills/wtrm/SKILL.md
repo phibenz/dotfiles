@@ -36,7 +36,14 @@ An explicit `$wtrm <worktree-name>` invocation authorizes cleanup after these ch
 
 After authorization:
 
-1. When the worktree has an open Herdr workspace, run `herdr worktree remove --workspace <workspace-id>` without `--force`. This closes the workspace and removes the checkout.
+1. When the worktree has an open Herdr workspace:
+   - Immediately before removal, run `herdr workspace list`.
+   - Record the unique workspace with `focused: true` when its ID differs from the target workspace ID.
+   - If no unique non-target workspace is focused, continue without focus restoration.
+   - Run `herdr worktree remove --workspace <workspace-id>` without `--force`. This closes the workspace and removes the checkout.
+   - Run `herdr workspace list` again.
+   - If the recorded workspace still exists and is not focused, run `herdr workspace focus <recorded-workspace-id>`.
+   - If focus restoration fails, record the failure and continue the remaining cleanup. Report the focus failure in the final result.
 2. When no Herdr workspace exists, run `git worktree remove -- <target-path>` without `--force`.
 3. Confirm the target is absent from both `git worktree list --porcelain` and `herdr worktree list --cwd <source-top-level>`.
 4. Run `lsof <rollout-path>` before archiving. If any process still holds the session file, stop and report the partial cleanup. Never kill the holder automatically.
