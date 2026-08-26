@@ -44,8 +44,7 @@ depending on the final work breakdown.
 - Identify the desired user-visible or operational outcome.
 - Inspect the current repository, relevant Linear issues, and existing project
   patterns before choosing the design.
-- Define the scope, non-goals, constraints, integration points, and success
-  criteria.
+- Define the scope, constraints, integration points, and success criteria.
 - Resolve material design choices when the codebase supports a clear default.
 - Ask only for choices that would materially change the design or ticket graph.
 
@@ -88,7 +87,7 @@ For a parent plan, use this structure:
 ```md
 ## Summary
 
-<1-3 sentences that state the feature outcome and why it matters.>
+- <Feature outcome and why it matters.>
 
 ## Goal
 
@@ -96,13 +95,7 @@ For a parent plan, use this structure:
 
 ## Scope
 
-### In Scope
-
 - <Included behavior>
-
-### Out of Scope
-
-- <Explicit non-goal>
 
 ## Design
 
@@ -114,10 +107,6 @@ For a parent plan, use this structure:
 |-----|--------|---------|------------|----------------|
 | T1 | <title or issue link> | <semantic outcome> | None | 1 |
 
-## Integration and Rollout
-
-<How the child changes combine and how the feature becomes active.>
-
 ## Success Criteria
 
 - [ ] <Feature-level observable result>
@@ -127,8 +116,19 @@ For a parent plan, use this structure:
 - <Only unresolved choices that still need an owner>
 ```
 
-Keep the summary short. Keep implementation details in the child tickets unless
-they define a cross-ticket contract.
+Use one to three short bullets in `Summary`.
+
+Add `## Out of Scope` after `## Scope` only when the boundary can be ambiguous.
+Also add it when prior discussion identifies explicit non-goals or related work
+that this plan must exclude. Use a bullet list for the excluded items.
+
+Add `## Integration and Rollout` after `## Work Breakdown` only when the feature
+needs staged activation, migration, compatibility sequencing, or a separate
+cross-ticket integration step. Do not use it to repeat ticket order,
+dependencies, or outcomes from `Work Breakdown`.
+
+Keep implementation details in the child tickets unless they define a
+cross-ticket contract.
 
 ### 4. Create the plan
 

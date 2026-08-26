@@ -55,7 +55,7 @@ setup instruction. Do not install or authenticate automatically.
 
 - Inspect the current repository when the request depends on existing code.
 - State the user-visible or operational outcome.
-- Define explicit in-scope and out-of-scope boundaries.
+- Define the explicit in-scope boundary.
 - Name the relevant code paths relative to the repository root.
 - Convert absolute paths inside the repository to repository-relative paths.
 - Use absolute paths only for genuine external dependencies or artifacts.
@@ -69,7 +69,7 @@ Use this structure:
 ```md
 ## Summary
 
-<1-3 sentences that state the outcome and why it matters.>
+- <Outcome and why it matters.>
 
 ## Problem
 
@@ -77,8 +77,7 @@ Use this structure:
 
 ## Scope
 
-- In scope: <included behavior>
-- Out of scope: <excluded behavior>
+- <Included behavior>
 
 ## Implementation
 
@@ -108,9 +107,14 @@ Use this structure:
 - <Related tickets, documents, pull requests, or issues>
 ```
 
-Keep `Summary` concise. Use the remaining sections as the implementation
-contract. Remove empty optional rows or bullets instead of leaving meaningless
-placeholders.
+Use one to three short bullets in `Summary`.
+
+Add `## Out of Scope` after `## Scope` only when the boundary can be ambiguous.
+Also add it when prior discussion identifies explicit non-goals or related work
+that this ticket must exclude. Use a bullet list for the excluded items.
+
+Use the remaining sections as the implementation contract. Remove empty
+optional rows or bullets instead of leaving meaningless placeholders.
 
 ### 4. Write the issue
 
