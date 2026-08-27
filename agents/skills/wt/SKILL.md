@@ -1,6 +1,6 @@
 ---
 name: wt
-description: Create a task-named sibling Git worktree from a freshly fetched default or explicit base, register it as a Herdr workspace, split its initial terminal into 40% left and 60% right panes, and start a Codex agent in the right pane. Use when the user invokes $wt, says wt, asks for a new worktree with a Herdr window, or wants an isolated worktree and paired Codex pane for a task.
+description: Create a task-named sibling Git worktree from a freshly fetched default or explicit base, register it as a Herdr workspace, split its initial terminal into a 60% left shell pane and a 40% right Codex pane, and start a Codex agent in the right pane. Use when the user invokes $wt, says wt, asks for a new worktree with a Herdr window, or wants an isolated worktree and paired Codex pane for a task.
 ---
 
 # Worktree
@@ -63,15 +63,15 @@ Choose a fresh branch name from the task and the repository's existing user/bran
    - Treat `HERDR_WORKSPACE_ID` as the source workspace ID.
    - Run `herdr worktree open --workspace <source-workspace-id> --path <target-path> --label <folder-name> --no-focus`.
    - Read the workspace ID and root pane ID from the JSON response. Never infer IDs from ordering.
-5. Split the root pane. Keep 40% of the width on the left and allocate 60% to the right:
-   - Run `herdr pane split --pane <root-pane-id> --direction right --ratio 0.40 --cwd <target-path> --no-focus`.
+5. Split the root pane. Keep the root pane on the left with 60% of the width. Allocate 40% to the new right pane:
+   - Run `herdr pane split --pane <root-pane-id> --direction right --ratio 0.60 --cwd <target-path> --no-focus`.
    - Read the new right pane ID from the JSON response.
-6. Start Codex in the right pane:
+6. Start Codex in the new right pane:
    - Run `herdr agent start <agent-name> --kind codex --pane <right-pane-id> --timeout 120000`.
 7. Accept the successful command results as the normal verification:
    - A successful `git worktree add` from the resolved commit establishes the branch, path, base, and clean checkout.
    - The structured `worktree open` and `pane split` responses establish the workspace, pane IDs, direction, and ratio.
-   - A successful `herdr agent start` establishes agent readiness. The timeout is a limit, not a required wait.
+   - A successful `herdr agent start` establishes agent readiness in the new right pane. The timeout is a limit, not a required wait.
    - Run `git status`, `git rev-parse`, `herdr pane layout`, `herdr pane neighbor`, or `herdr agent get` only when output is missing, inconsistent, or needed to diagnose a retry.
 
 If sandboxing blocks the sibling path, shared Git metadata, or Herdr socket, request narrowly scoped escalation and retry the same operation. If a later step fails after the worktree is created, preserve the partial result and report the completed IDs and exact failing step; do not roll it back automatically. On a retry, inspect the existing Herdr workspace and panes before creating more layout.
