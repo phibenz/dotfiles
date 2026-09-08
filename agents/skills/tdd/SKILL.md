@@ -1,5 +1,5 @@
 ---
-name: test
+name: tdd
 description: Write or review automated tests that maximize confidence relative to maintenance cost. Use when adding, selecting, restructuring, or removing tests, or when deciding test boundaries, test doubles, TDD workflow, or the test portfolio. Do not use only to run an existing test command without changing or assessing tests.
 ---
 
