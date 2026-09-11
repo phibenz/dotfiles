@@ -1,3 +1,6 @@
+-- Configure language servers with Mason and Neovim's native LSP APIs.
+-- On a fresh setup, install the servers with:
+-- :MasonInstall lua-language-server pyright clangd bash-language-server rust-analyzer
 return {
   -- Mason: LSP server installer
   {
@@ -7,23 +10,11 @@ return {
     end
   },
 
-  -- Mason-lspconfig: Bridge between mason and lspconfig
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "pyright", "clangd", "bashls", "rust_analyzer" },
-        automatic_installation = true,
-      })
-    end
-  },
-
   -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
+      "williamboman/mason.nvim",
       "saghen/blink.cmp",
     },
     config = function()

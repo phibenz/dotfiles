@@ -83,6 +83,9 @@ later group can start only after its direct blockers are complete.
 - Do not create child tickets until the user explicitly confirms the parent
   design. The initial planning request is not confirmation.
 
+Use concise bullet points in every prose section. Use plain language and include
+only necessary information. Keep the `Work Breakdown` table for structured data.
+
 For a parent plan, use this structure:
 
 ```md
@@ -92,7 +95,7 @@ For a parent plan, use this structure:
 
 ## Goal
 
-<The complete outcome this plan must deliver.>
+- <The complete outcome this plan must deliver.>
 
 ## Scope
 
@@ -100,7 +103,7 @@ For a parent plan, use this structure:
 
 ## Design
 
-<The overall approach, important boundaries, and integration decisions.>
+- <The overall approach, important boundaries, and integration decisions.>
 
 ## Work Breakdown
 

@@ -22,6 +22,8 @@ creative, marketing, or voice-sensitive writing.
   once, then use the same term consistently.
 - Use a list for three or more steps, conditions, or related items. Keep one topic
   in each paragraph.
+- In sectioned documents, use concise bullet points. Use plain language and
+  include only necessary information.
 - Put a warning or condition before the action that it controls.
 - Preserve all facts, numbers, constraints, exceptions, and scope qualifiers.
   Never remove meaning only to make the text shorter.
@@ -37,6 +39,13 @@ ASD-STE100 compliance.
 - Identify weaknesses, risks, and missing considerations in the user's
   reasoning.
 - Disagree when you genuinely disagree. Explain the evidence and reasoning.
+
+# Python
+
+- Prefer an `Enum` class over a `Literal` type for a fixed set of named values.
+- Use `Literal` only when an exact constant value is part of the type contract.
+- Write union types with `|`. For example, write `int | str`, not
+  `Union[int, str]`.
 
 # Code Documentation
 

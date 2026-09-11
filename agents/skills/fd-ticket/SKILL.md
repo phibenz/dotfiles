@@ -67,6 +67,9 @@ setup instruction. Do not install or authenticate automatically.
 
 ### 3. Write the description
 
+Use concise bullet points in every prose section. Use plain language and include
+only necessary information. Keep the file table for structured data.
+
 Use this structure:
 
 ```md
@@ -76,7 +79,7 @@ Use this structure:
 
 ## Problem
 
-<The concrete problem this ticket solves.>
+- <The concrete problem this ticket solves.>
 
 ## Scope
 
@@ -84,7 +87,7 @@ Use this structure:
 
 ## Implementation
 
-<The intended approach and important constraints.>
+- <The intended approach and important constraints.>
 
 ### Files to Create or Modify
 
@@ -98,7 +101,7 @@ Use this structure:
 
 ## Verification
 
-<Commands or checks that prove the acceptance criteria.>
+- <Commands or checks that prove the acceptance criteria.>
 
 ## Dependencies
 
