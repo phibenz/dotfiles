@@ -1,3 +1,4 @@
+-- Configure editing options and clipboard shortcuts.
 vim.cmd("set expandtab")
 vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
@@ -8,6 +9,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.signcolumn = "yes"
 vim.opt.autoread = true
+vim.opt.undofile = true
 
 
 -- Make sure to setup `mapleader` and `maplocalleader` before
