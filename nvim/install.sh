@@ -214,5 +214,9 @@ fi
 LAZY_PATH="$HOME/.local/share/nvim/lazy/lazy.nvim"
 [ ! -d "$LAZY_PATH" ] && git clone --filter=blob:none https://github.com/folke/lazy.nvim.git --branch=stable "$LAZY_PATH"
 
+# Reconcile installed plugins with the current lazy.nvim configuration.
+echo "Synchronizing Neovim plugins..."
+nvim --headless "+Lazy! sync" +qa
+
 echo "Configuration installed!"
-echo "Start nvim and plugins will auto-install. Run :checkhealth to verify."
+echo "Start nvim and run :checkhealth to verify."
