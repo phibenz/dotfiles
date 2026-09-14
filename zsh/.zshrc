@@ -21,7 +21,6 @@ zle -N insert-literal-newline
 ZSH_PLUGIN_DIR="${HOME}/.zsh/plugins"
 [[ -f "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh"
 [[ -f "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-[[ -f "${ZSH_CONFIG_DIR}/ai.plugin.zsh" ]] && source "${ZSH_CONFIG_DIR}/ai.plugin.zsh"
 [[ -f "${ZSH_CONFIG_DIR}/git.plugin.zsh" ]] && source "${ZSH_CONFIG_DIR}/git.plugin.zsh"
 
 # Shell aliases
@@ -98,14 +97,13 @@ export LC_CTYPE="${LC_CTYPE:-$LANG}"
 # Load local customizations if they exist
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-# Normalize the interactive keymap after local scripts load.
-bindkey -e
-bindkey '^?' backward-delete-char
-bindkey '^H' backward-delete-char
+# Enable vi editing after local scripts load. New prompts start in insert mode.
+bindkey -v
+bindkey '^H' beginning-of-line
 bindkey '^K' up-line-or-beginning-search
 bindkey '^J' down-line-or-beginning-search
 bindkey '^L' autosuggest-accept
-# iTerm2 maps Ctrl-Enter to Escape + Line Feed (hex 0x1b 0x0a).
+# Ctrl-Enter sends Escape + Line Feed (hex 0x1b 0x0a).
 bindkey '^[^J' insert-literal-newline
 [[ -n "${terminfo[kcuu1]-}" ]] && bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
 [[ -n "${terminfo[kcud1]-}" ]] && bindkey "${terminfo[kcud1]}" down-line-or-beginning-search

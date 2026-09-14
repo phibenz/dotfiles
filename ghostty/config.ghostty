@@ -1,0 +1,21 @@
+# Configure the terminal appearance and keyboard shortcuts.
+font-family = Hack Nerd Font
+font-size = 12
+
+theme = TokyoNight
+# Use Aura's purple cursor.
+cursor-color = #a277ff
+
+# Send Herdr's Ctrl+A prefix from Cmd+A.
+# This replaces Ghostty's Cmd+A Select All shortcut. Ctrl+A also works normally.
+keybind = cmd+a=text:\x01
+
+# Send Escape followed by Line Feed for multiline command input.
+keybind = ctrl+enter=text:\x1b\x0a
+
+# Send Ctrl+Arrow sequences for word navigation.
+keybind = ctrl+left=text:\x1b[1;5D
+keybind = ctrl+right=text:\x1b[1;5C
+
+# Use left Option for Herdr's Alt-based pane swaps. Keep right Option for symbols.
+macos-option-as-alt = left
