@@ -5,6 +5,11 @@ font-size = 12
 theme = TokyoNight
 # Use Aura's purple cursor.
 cursor-color = #a277ff
+# Make bar and outlined cursors one pixel thicker.
+adjust-cursor-thickness = 1
+
+# Open a new terminal window instead of a tab.
+keybind = cmd+t=new_window
 
 # Send Herdr's Ctrl+A prefix from Cmd+A.
 # This replaces Ghostty's Cmd+A Select All shortcut. Ctrl+A also works normally.
