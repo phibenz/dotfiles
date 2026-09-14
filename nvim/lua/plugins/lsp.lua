@@ -100,7 +100,10 @@ return {
           vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-          vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+          vim.keymap.set('n', '<leader>ls', vim.lsp.buf.signature_help, {
+            buffer = ev.buf,
+            desc = 'Show signature help',
+          })
           vim.keymap.set('n', '<leader>lt', vim.lsp.buf.type_definition, {
             buffer = ev.buf,
             desc = 'Go to type definition',

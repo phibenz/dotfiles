@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
+# Install Herdr configuration and the Vim/Neovim navigation plugin.
 
 set -euo pipefail
 
 if ! command -v herdr &> /dev/null; then
     echo "ERROR: herdr not found"
+    exit 1
+fi
+
+if ! command -v jq &> /dev/null; then
+    echo "ERROR: jq is required for Vim/Neovim detection. On macOS, run: brew install jq" >&2
     exit 1
 fi
 
@@ -21,4 +27,6 @@ mkdir -p "${HERDR_CONFIG_DIR}"
 ln -sfn "${SCRIPT_DIR}/config.toml" "${HERDR_CONFIG_DIR}/config.toml"
 herdr integration install codex
 
-echo "Herdr configuration and Codex integration installed."
+herdr plugin install paulbkim-dev/vim-herdr-navigation --yes
+
+echo "Herdr configuration and navigation plugin installed."
