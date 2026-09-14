@@ -1,4 +1,4 @@
--- Configure editing options and clipboard shortcuts.
+-- Configure editing options, window splits, and clipboard shortcuts.
 vim.cmd("set expandtab")
 vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
@@ -20,6 +20,10 @@ vim.g.maplocalleader = "\\"
 vim.opt.termguicolors = true
 
 vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode' })
+
+-- Match Herdr's split keys with Neovim's Space leader.
+vim.keymap.set('n', '<leader>v', '<Cmd>rightbelow vsplit<CR>', { desc = 'Split right' })
+vim.keymap.set('n', '<leader>"', '<Cmd>rightbelow split<CR>', { desc = 'Split below' })
 
 -- Clipboard
 -- Yank into system clipboard

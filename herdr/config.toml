@@ -4,6 +4,11 @@ agent_panel_sort = "priority"
 pane_borders = true
 pane_gaps = false
 pane_scrollbars = false
+tab_bar_right = [
+  { type = "command", command = '''printf '%s' "${HERDR_ACTIVE_PANE_ID:--}"''', interval_seconds = 1, timeout_seconds = 1 },
+  { type = "datetime", format = "%H:%M" },
+]
+tab_bar_right_separator = " · "
 
 status_indicators = "dots"
 [keys]
