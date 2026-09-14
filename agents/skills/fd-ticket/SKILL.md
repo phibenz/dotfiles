@@ -1,144 +1,178 @@
 ---
 name: fd-ticket
-description: Create or update one Linear implementation ticket that maps to one focused pull request and one coherent semantic change. Use when the user asks for a single implementation ticket or asks to populate an existing issue. Do not use to plan or decompose a multi-ticket feature; use fd-plan.
+description: Draft and revise one implementation ticket locally, then publish it to Linear after approval. Each ticket maps to one focused pull request and one coherent semantic change. Use for a single implementation ticket or an existing issue. Use fd-plan for a multi-ticket feature.
 ---
 
-# Create Linear Implementation Ticket
+# Draft and Publish an Implementation Ticket
 
-Create or update one Linear issue that defines one reviewable implementation
-change. Linear is the source of truth. Do not create local feature-design files.
+Define one reviewable implementation change in a local Markdown file. Iterate on
+that file with the user before creating or updating the Linear issue.
 
 ## Argument
 
-Accept a ticket title, feature description, or Linear issue identifier such as
-`FD-012` in `$ARGUMENTS`.
+Accept a ticket title, feature description, local draft path, or Linear issue
+identifier such as `FD-012` in `$ARGUMENTS`.
+
+## Local Drafts and Approval
+
+- Use `docs/fd/<ticket-id>-<slug>.md` unless the user supplies another path.
+  For unpublished tickets, use a temporary ID such as `T1`.
+- Reuse the draft during revisions and preserve unrelated files. Keep title,
+  issue ID, team, project, and relations separate from the description.
+- Draft locally; use Linear only for read-only context until publication approval.
+- Share the path and publish only after explicit approval of the current draft.
+  Later revisions require renewed approval.
+- Retain the published ID and URL locally. Replace the temporary ID in default
+  filenames and draft links with the real ID after publication.
 
 ## Ticket Boundary
 
 - Design the ticket so one pull request can complete it.
 - Keep one coherent semantic change in that pull request.
-- Include the tests, migrations, and documentation required to complete that
-  change. Do not split them out only to reduce the diff size.
+- Target 300–800 changed lines per pull request. Prefer a size near 300 lines.
+- Count changed lines as additions plus deletions when assessing scope.
+- If the estimate exceeds 800 lines, use `fd-plan` to find smaller coherent
+  changes. Do not pad a smaller change or add unrelated work to reach 300 lines.
 - Exclude unrelated cleanup and independently useful behavior.
 - If the request needs multiple independent semantic changes, use `fd-plan`
   instead of combining them in one ticket.
 
 ## Linearis Runtime
 
-The shared installer validates that the Linearis CLI supports the required
-issue commands. Use `linearis` when available. Otherwise, use the supported
-`linear` alias.
-
-Run authentication checks and issue commands with network access outside the
-sandbox. If a sandboxed `auth status` reports `authenticated: false`, retry
-with network access before treating the token as invalid.
-
-Before creating a ticket, run `linearis auth status`. Require
-`authenticated: true`, and use `user.id` as the assignee. If Linearis is
-missing, requires authentication, or exits with code 42, stop and show its
-setup instruction. Do not install or authenticate automatically.
+- Use `linearis`, or the supported `linear` alias. The shared installer checks
+  command compatibility.
+- Run Linear commands with network access outside the sandbox. Retry sandboxed
+  authentication failures with network access before diagnosing invalid credentials.
+- Before publication, require `linearis auth status` to report
+  `authenticated: true`. Use `user.id` to assign new issues.
+- If the CLI is missing, needs authentication, or exits with code 42, stop the
+  Linear operation and show setup instructions. Leave installation and login to the user.
+- Continue local drafting when context is sufficient; flag missing context.
 
 ## Workflow
 
-### 1. Select the issue
+### 1. Identify the draft and target issue
 
+- When given a draft path, read that file and reuse its recorded target issue.
 - If `$ARGUMENTS` contains an issue identifier matching
-  `[A-Z][A-Z0-9]*-[0-9]+`, read and update that issue.
+  `[A-Z][A-Z0-9]*-[0-9]+`, read that issue as context for a local update draft.
 - Preserve useful existing content. Ask before replacing it wholesale.
-- If there is no issue identifier, create a new issue.
+- If neither the input nor the draft identifies an issue, draft a new issue
+  without creating it yet.
 - Infer the team and project only from explicit user input, repository
   conventions, referenced issues, or clearly relevant Linear context.
-- Require a project for a new issue. Ask when the team or project is ambiguous.
+- Require a team and project before publishing a new issue. Record unresolved
+  ownership in the draft and ask before publication.
 - Never create a project automatically.
 
 ### 2. Define the implementation contract
 
-- Inspect the current repository when the request depends on existing code.
+- Inspect the relevant production code, callers, interfaces, and nearby tests
+  before drafting implementation steps. Use the repository's actual patterns.
+- Verify referenced paths, symbols, signatures, and fixtures. Distinguish
+  existing code from proposed additions; flag any context you cannot inspect.
 - State the user-visible or operational outcome.
 - Define the explicit in-scope boundary.
 - Name the relevant code paths relative to the repository root.
 - Convert absolute paths inside the repository to repository-relative paths.
 - Use absolute paths only for genuine external dependencies or artifacts.
-- Define observable acceptance criteria.
-- Inspect the repository's pre-commit configuration when it exists.
-- Define focused verification using checks that pre-commit does not already
-  run.
-- Record known blockers with Linear relations, not only in prose.
+- Read and follow the `tdd` skill before defining tests. Choose stable boundaries
+  that expose the ticket's intended behavior.
+- Record known blockers in the draft metadata.
 
-### 3. Write the description
+### 3. Write and review the local description
 
-Use concise bullet points in every prose section. Use plain language and include
-only necessary information. Keep the file table for structured data.
+Use concise bullets throughout, with one main idea per bullet and as many bullets
+as needed. Use plain language and include only necessary information. Use focused
+code blocks where they clarify the change.
 
-Use this structure:
+Read and use [assets/ticket.md](assets/ticket.md) as the description template.
 
-```md
-## Summary
+#### Objective
 
-- <Outcome and why it matters.>
+- In `Objective`, state the concrete outcomes the ticket must achieve.
+- Treat many objective bullets as a sign that the ticket may be too broad.
+  Review the boundary and split independent outcomes with `fd-plan`.
 
-## Problem
+#### Non-Goals (optional)
 
-- <The concrete problem this ticket solves.>
+- Add this section after `Objective` when exclusions clarify the boundary or
+  preserve agreed non-goals. Use concise bullets; omit it otherwise.
 
-## Scope
+#### Problem
 
-- <Included behavior>
+- Explain the concrete problem and necessary background.
 
-## Implementation
+#### Implementation Steps
 
-- <The intended approach and important constraints.>
+Use `Implementation Steps` with numbered subsections named after observable
+behaviors. A ticket may contain several steps that together deliver one coherent
+change. Keep tests, code locations, and implementation details together in each
+step.
 
-### Files to Create or Modify
+- Design each implementation step as one coherent commit containing its tests
+  and production changes, with the relevant tests passing. A ticket's steps
+  form the commit sequence for one pull request.
+- Start each step with one sentence explaining what behavior changes and why,
+  before naming code locations.
+- Describe each step with concrete behavior and changes. Refine later steps as
+  earlier steps reveal more.
+- Within each step, use `#### Testing` followed by `#### Implementation` to
+  distinguish the test work from production changes. Place sketches under the
+  corresponding heading.
 
-| File | Action | Purpose |
-|------|--------|---------|
-| `path/to/file` | CREATE / MODIFY | What and why |
+##### Testing within each step
 
-## Acceptance Criteria
+- Pair one concrete test scenario with a short implementation plan. Identify the
+  test path, observable expected result, and test boundary. Select tests using
+  the `tdd` skill's confidence and cost rules.
+- Keep behavior checks within the relevant implementation step.
 
-- <Observable result>
+##### Implementation within each step
 
-## Verification
+- Group implementation changes by function or file within the step. Name the
+  production paths and relevant symbols, with the required changes and constraints.
+  Keep all changes for one behavior in that step.
+- Include sketches only when they clarify a contract or important design choice.
+  Precise prose is sufficient otherwise. Match the repository's language, APIs,
+  and conventions. Choose the form that explains the change:
+  - For a new or changed interface, a proposed signature, types, and behavior
+    contract can clarify how callers use it.
+  - For an existing function, a focused diff can clarify the relevant change.
+    Include its path and function name; an unchanged signature alone adds little.
+  - For a changed interaction, a short call-site example can explain how the
+    components connect.
+- State what dependent steps rely on: shared names, inputs, outputs, and behavior.
+  Keep these contracts consistent across steps; do not add signatures mechanically.
+- Keep snippets limited to the behavior and important design choices. Mark
+  incomplete scaffolding and proposed symbols clearly; do not present them as
+  existing or verified code. Do not write the entire patch during ticket drafting.
+- Treat snippets as proposed scaffolding, not a frozen implementation. If the
+  implementation refines a shared contract, update the dependent steps accordingly.
+- Include accurate docstrings for proposed functions when the language supports
+  them. Follow repository documentation conventions.
 
-- <Commands or checks that prove the acceptance criteria.>
+### 4. Publish the approved draft
 
-## Dependencies
-
-- Blocked by: <issue or None>
-- Blocks: <issue or None>
-
-## Related
-
-- <Related tickets, documents, pull requests, or issues>
-```
-
-Use one to three short bullets in `Summary`.
-
-Add `## Out of Scope` after `## Scope` only when the boundary can be ambiguous.
-Also add it when prior discussion identifies explicit non-goals or related work
-that this ticket must exclude. Use a bullet list for the excluded items.
-
-In `Verification`, include only checks that pre-commit does not already run.
-Prefer focused behavior, integration, migration, or manual checks. Omit
-`Verification` when no additional check is needed.
-
-Use the remaining sections as the implementation contract. Remove empty
-optional rows or bullets instead of leaving meaningless placeholders.
-
-### 4. Write the issue
-
+- Reread the approved file and use its title and description as the publication
+  content. Keep metadata and update notes local, outside the body and comments.
+- For an existing issue, reread Linear before updating. If its content changed
+  since drafting, reconcile the local draft and obtain approval again.
 - Create a new issue with `issues create <title> --team <team> --project
   <project> --status TODO --assignee <authenticated-user-id> --description
   <body>`.
-- Add `--parent-ticket`, `--blocked-by`, or `--blocks` when the user or a
-  feature plan provides those relationships.
+  Add `--parent-ticket`, `--blocked-by`, or `--blocks` for approved relations.
 - Update an existing issue with `issues update <issue> --description <body>`.
-- Preserve an existing issue's status, assignee, project, parent, and relations
-  unless the user asks to change them.
-- Preserve the JSON output from Linearis.
+  Preserve its status, assignee, project, parent, and relations unless requested
+  changes are part of the approved draft.
+- Preserve the JSON response and verify the content and relations with a Linear read.
+- If publication partly succeeds, record the created identifier locally and
+  report the remaining work. Do not create a duplicate on retry.
 
 ### 5. Report
 
-Report the issue identifier, URL, parent, and blocking relations. List only the
-sections that still need user input. Do not commit repository changes.
+- Before publication, report the draft path, unresolved questions, and the
+  required approval. Do not claim that a Linear issue exists.
+- After publication, report the issue identifier, URL, parent, and blocking
+  relations, together with the retained draft path.
+- Do not commit repository changes.
