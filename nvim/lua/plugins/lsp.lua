@@ -1,6 +1,6 @@
 -- Configure language servers with Mason and Neovim's native LSP APIs.
 -- On a fresh setup, install the servers with:
--- :MasonInstall lua-language-server pyright clangd bash-language-server rust-analyzer
+-- :MasonInstall lua-language-server ty clangd bash-language-server rust-analyzer
 return {
   -- Mason: LSP server installer
   {
@@ -35,19 +35,8 @@ return {
         }
       })
 
-      vim.lsp.config('pyright', {
-        cmd = { 'pyright-langserver', '--stdio' },
-        root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
+      vim.lsp.config('ty', {
         capabilities = capabilities,
-        settings = {
-          python = {
-            analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-            }
-          }
-        }
       })
 
       vim.lsp.config('clangd', {
@@ -69,7 +58,7 @@ return {
       })
 
       -- Enable LSP servers for their respective filetypes
-      vim.lsp.enable({ 'lua_ls', 'pyright', 'clangd', 'bashls', 'rust_analyzer' })
+      vim.lsp.enable({ 'lua_ls', 'ty', 'clangd', 'bashls', 'rust_analyzer' })
 
       -- Configure diagnostic display
       vim.diagnostic.config({
