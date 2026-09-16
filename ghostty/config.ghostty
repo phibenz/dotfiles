@@ -1,8 +1,14 @@
 # Configure the terminal appearance and keyboard shortcuts.
+copy-on-select = clipboard
+
 font-family = Hack Nerd Font
 font-size = 12
+adjust-cell-height = 1
 
 theme = TokyoNight
+background-opacity = 0.95
+background-blur = 40
+macos-titlebar-style = hidden
 # Use Aura's purple cursor.
 cursor-color = #a277ff
 # Make bar and outlined cursors one pixel thicker.
