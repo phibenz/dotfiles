@@ -40,13 +40,6 @@ ASD-STE100 compliance.
   reasoning.
 - Disagree when you genuinely disagree. Explain the evidence and reasoning.
 
-# Python
-
-- Prefer an `Enum` class over a `Literal` type for a fixed set of named values.
-- Use `Literal` only when an exact constant value is part of the type contract.
-- Write union types with `|`. For example, write `int | str`, not
-  `Union[int, str]`.
-
 # Code Documentation
 
 - Ensure that each added or modified source file has an accurate file-level
