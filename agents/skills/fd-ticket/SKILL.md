@@ -29,13 +29,31 @@ identifier such as `FD-012` in `$ARGUMENTS`.
 
 - Design the ticket so one pull request can complete it.
 - Keep one coherent semantic change in that pull request.
-- Target 300–800 changed lines per pull request. Prefer a size near 300 lines.
-- Count changed lines as additions plus deletions when assessing scope.
-- If the estimate exceeds 800 lines, use `fd-plan` to find smaller coherent
-  changes. Do not pad a smaller change or add unrelated work to reach 300 lines.
+- Prefer small, reviewable pull requests. Use 300–800 changed lines as a sizing
+  guide, not a quota or hard limit. Count additions plus deletions.
+- Do not pad a smaller change. Above 800 lines, check for smaller coherent changes.
+  Use `fd-plan` when a meaningful split exists. Otherwise explain why the larger
+  change is necessary and why splitting would weaken correctness or reviewability.
 - Exclude unrelated cleanup and independently useful behavior.
 - If the request needs multiple independent semantic changes, use `fd-plan`
   instead of combining them in one ticket.
+
+## Complete, Minimal Design
+
+- Aim for the smallest coherent change that fully achieves the objective.
+  Preserve required failure handling, compatibility, integration, and verification.
+- Judge minimality by necessary behavior and maintenance cost, not line count alone.
+  Do not trade clarity or correctness for a smaller diff.
+- Apply elegance principles: reuse existing contracts, keep ownership clear, and
+  prefer direct control flow with few moving parts.
+- Justify new abstractions, state, recovery guarantees, and compatibility paths
+  with a current requirement or a concrete failure mode within scope.
+- Resolve gaps with the simplest code-supported behavior that meets the contract.
+  Do not add general frameworks or future-proofing only to remove uncertainty.
+- State required behavior and shared contracts. Leave ordinary implementation
+  choices open unless a specific design is necessary for correctness or integration.
+- Before finalizing the draft, check whether removing each step would leave the
+  objective incomplete. Remove unnecessary work and consolidate duplicate tests.
 
 ## Linearis Runtime
 

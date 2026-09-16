@@ -9,8 +9,8 @@ Determine whether implementation can start without guessing material behavior or
 design. Review one implementation ticket, not the parent feature plan.
 
 Read `fd-ticket` for the ticket contract and read-only Linearis runtime guidance.
-Use its sizing, code-grounding, and implementation-step rules as review criteria,
-not as permission to draft, publish, or implement changes.
+Use its complete, minimal design, sizing, code-grounding, and implementation-step
+rules as review criteria, not as permission to draft, publish, or implement changes.
 
 ## 1. Select the ticket and checkout
 
@@ -48,6 +48,14 @@ not as permission to draft, publish, or implement changes.
   using the `fd-ticket` boundaries and sizing guidance.
 - Trace referenced code, callers, interfaces, schemas, and nearby tests. Check
   proposed changes against existing contracts and reusable helpers.
+- Check that every step is necessary to complete the objective. Identify work that
+  can be removed or simplified without losing required behavior or verification.
+- Apply elegance principles: prefer clear ownership, direct control flow, and reuse
+  of existing contracts. Require a concrete need for added abstractions or state.
+- Check that recovery guarantees, compatibility paths, and tests address current
+  requirements or concrete failure modes within scope, rather than speculative needs.
+- Assess large changes by necessity and coherence. Size alone does not make a ticket
+  unready; explain avoidable complexity or a meaningful split with code evidence.
 - Distinguish existing symbols from proposed additions. For new code, assess
   placement and integration rather than treating its absence as a blocker.
 - Treat snippets as proposed scaffolding. Flag stale assumptions that change
@@ -67,7 +75,8 @@ not as permission to draft, publish, or implement changes.
 - Separate review limitations from ticket findings. Report confirmed findings even
   when other checks are incomplete; qualify any verdict by those limits.
 - For each finding, give concrete evidence, its consequence, and the simplest
-  supported resolution. Treat minor preferences as non-blocking.
+  supported resolution. Consider removing unnecessary requirements before adding
+  machinery. Preserve completeness; treat stylistic preferences as non-blocking.
 - Ask only questions that require a user decision. Recommend code-supported defaults
   for choices that can be resolved from the repository.
 - Read and use [assets/review.md](assets/review.md). Keep each finding in one place;
