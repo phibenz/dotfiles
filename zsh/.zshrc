@@ -97,8 +97,8 @@ export LC_CTYPE="${LC_CTYPE:-$LANG}"
 # Load local customizations if they exist
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-# Enable vi editing after local scripts load. New prompts start in insert mode.
-bindkey -v
+# Enable Emacs-style editing after local scripts load.
+bindkey -e
 bindkey '^H' beginning-of-line
 bindkey '^K' up-line-or-beginning-search
 bindkey '^J' down-line-or-beginning-search
