@@ -5,6 +5,9 @@ return {
   config = function()
     require("review").setup({
       keymaps = { toggle = "<leader>rv" },
+      quick_comments = {
+        keymaps = { add = "<leader>rc", toggle_panel = "<leader>qc" },
+      },
       ui = { diff_view_mode = "split" },
     })
 
@@ -20,7 +23,30 @@ return {
     end
 
     vim.keymap.set("n", "<leader>re", "<cmd>Review export<cr>", { desc = "Export review comments" })
-    vim.keymap.set("n", "<leader>rc", "<cmd>Review clear<cr>", { desc = "Clear review comments" })
+    ---Confirm quick-comment clearing, then use the normal review clearing flow.
+    vim.keymap.set("n", "<leader>rq", function()
+      local quick_state = require("review.quick_comments.state")
+      if quick_state.count() == 0 then
+        require("review").clear_comments()
+        return
+      end
+
+      -- Quick comments have no public clear command; mirror their built-in cleanup.
+      ---Clear quick-comment markers, state, and storage before clearing review comments.
+      require("review.ui.util").confirm("Clear all quick comments?", function()
+        local signs = require("review.quick_comments.signs")
+        for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.api.nvim_buf_is_loaded(bufnr) then
+            signs.clear(bufnr)
+          end
+        end
+        quick_state.clear()
+        require("review.quick_comments.persistence").save()
+        require("review.quick_comments").close_panel()
+        vim.notify("Cleared quick comments", vim.log.levels.INFO)
+        require("review").clear_comments()
+      end)
+    end, { desc = "Clear review and quick comments" })
 
     vim.api.nvim_create_autocmd("FileType", {
       group = vim.api.nvim_create_augroup("ReviewKeymaps", { clear = true }),
