@@ -1,6 +1,9 @@
 # Configure the terminal appearance and keyboard shortcuts.
 copy-on-select = clipboard
 
+# Install terminal definitions over SSH, with a fallback for unsupported hosts.
+shell-integration-features = ssh-env,ssh-terminfo
+
 font-family = Hack Nerd Font
 font-size = 12
 adjust-cell-height = 1

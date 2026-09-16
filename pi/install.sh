@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Link Pi settings and shared instructions without replacing existing local files.
+# Link Pi settings with a backup, and preserve existing local instructions.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,10 +23,15 @@ for name in settings.json AGENTS.md; do
   if [[ -e "${target_file}" || -L "${target_file}" ]]; then
     if [[ -L "${target_file}" && "$(readlink "${target_file}")" == "${source_file}" ]]; then
       echo "Already linked: ${target_file}"
+      continue
+    elif [[ "${name}" == "settings.json" && ( -f "${target_file}" || -L "${target_file}" ) ]]; then
+      backup_file="$(mktemp "${target_file}.backup.XXXXXX")"
+      mv "${target_file}" "${backup_file}"
+      echo "Backed up ${target_file} -> ${backup_file}"
     else
       echo "Skipped existing file: ${target_file}"
+      continue
     fi
-    continue
   fi
 
   ln -s "${source_file}" "${target_file}"
