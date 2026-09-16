@@ -1,11 +1,24 @@
--- Configure review.nvim shortcuts and keep Space available as the leader key.
+-- Configure review.nvim shortcuts and guard commit previews against file refreshes.
 return {
   "vuki656/review.nvim",
-  ---Initialize review.nvim and configure review and staging shortcuts.
+  ---Initialize review.nvim, guard preview refreshes, and configure shortcuts.
   config = function()
     require("review").setup({
       keymaps = { toggle = "<leader>rv" },
+      ui = { diff_view_mode = "split" },
     })
+
+    -- Work around upstream refreshes treating commit previews as single-file diffs.
+    local diff_view = require("review.ui.diff_view")
+    local render = diff_view.render
+    ---Refresh file views only; commit previews have no filename.
+    diff_view.render = function()
+      if not diff_view.current or not diff_view.current.file then
+        return
+      end
+      return render()
+    end
+
     vim.keymap.set("n", "<leader>re", "<cmd>Review export<cr>", { desc = "Export review comments" })
     vim.keymap.set("n", "<leader>rc", "<cmd>Review clear<cr>", { desc = "Clear review comments" })
 
