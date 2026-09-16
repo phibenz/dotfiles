@@ -11,7 +11,6 @@ adjust-cell-height = 1
 theme = TokyoNight
 background-opacity = 0.95
 background-blur = 40
-macos-titlebar-style = hidden
 # Use Aura's purple cursor.
 cursor-color = #a277ff
 # Make bar and outlined cursors one pixel thicker.
