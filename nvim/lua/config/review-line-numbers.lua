@@ -1,5 +1,32 @@
--- Display source line numbers in review.nvim's scratch diff buffers.
+-- Display source line numbers and split-diff gap separators in review.nvim.
 local M = {}
+
+---Mark omitted source lines with aligned virtual rows in both split panes.
+local function add_separators(split, namespace)
+  if not split then
+    return
+  end
+
+  local previous_old, previous_new
+  for row, old in ipairs(split.old_lines) do
+    local new = split.new_lines[row]
+    local old_line = old.source_line
+    local new_line = new and new.source_line
+    if (old_line and previous_old and old_line > previous_old + 1)
+      or (new_line and previous_new and new_line > previous_new + 1) then
+      for _, bufnr in ipairs({ split.old_bufnr, split.new_bufnr }) do
+        vim.api.nvim_buf_set_extmark(bufnr, namespace, row - 1, 0, {
+          virt_lines = { { { "⋯", "Comment" } } },
+          virt_lines_above = true,
+        })
+      end
+      -- The other pane can start this block with padding before its first source row.
+      previous_old, previous_new = nil, nil
+    end
+    previous_old = old_line or previous_old
+    previous_new = new_line or previous_new
+  end
+end
 
 ---Return the source line for the row being drawn, or blank for non-source rows.
 function M.line()
@@ -26,18 +53,20 @@ function M.line()
   return line or ""
 end
 
----Install the source-number column when review.nvim creates a diff or commit preview.
+---Refresh source-number columns and split separators when review.nvim renders a view.
 function M.setup()
   local view = require("review.ui.diff_view")
   local layout = require("review.ui.layout")
-  for _, name in ipairs({ "create", "create_commit_preview" }) do
+  local namespace = vim.api.nvim_create_namespace("ReviewGapSeparators")
+  for _, name in ipairs({ "create", "create_commit_preview", "render" }) do
     local create = view[name]
-    ---Preserve the renderer's result and configure its active diff windows.
+    ---Preserve the renderer's result and refresh its columns and gap separators.
     view[name] = function(...)
       local result = create(...)
       for _, get_component in ipairs({ layout.get_diff_view, layout.get_diff_view_old, layout.get_diff_view_new }) do
         local component = get_component()
         if component and vim.api.nvim_win_is_valid(component.winid) then
+          vim.api.nvim_buf_clear_namespace(component.bufnr, namespace, 0, -1)
           vim.api.nvim_set_option_value(
             "statuscolumn",
             "%s%=%{v:lua.require'config.review-line-numbers'.line()} ",
@@ -45,6 +74,7 @@ function M.setup()
           )
         end
       end
+      add_separators(view.split_state, namespace)
       return result
     end
   end
