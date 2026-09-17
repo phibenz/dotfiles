@@ -1,7 +1,7 @@
--- Configure review.nvim shortcuts and guard commit previews against file refreshes.
+-- Configure review.nvim shortcuts, source line numbers, and safe preview refreshes.
 return {
   "vuki656/review.nvim",
-  ---Initialize review.nvim, guard preview refreshes, and configure shortcuts.
+  ---Initialize review.nvim, source line numbers, preview guards, and shortcuts.
   config = function()
     require("review").setup({
       keymaps = { toggle = "<leader>rv" },
@@ -10,6 +10,7 @@ return {
       },
       ui = { diff_view_mode = "split" },
     })
+    require("config.review-line-numbers").setup()
 
     -- Work around upstream refreshes treating commit previews as single-file diffs.
     local diff_view = require("review.ui.diff_view")
