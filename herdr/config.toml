@@ -2,6 +2,8 @@ onboarding = false
 [ui]
 agent_panel_sort = "priority"
 pane_borders = true
+# Keep internal split dividers without an outer frame.
+pane_outer_borders = false
 pane_gaps = false
 pane_scrollbars = false
 tab_bar_right = [
