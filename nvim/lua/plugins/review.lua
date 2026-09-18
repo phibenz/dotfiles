@@ -6,7 +6,11 @@ return {
     require("review").setup({
       keymaps = { toggle = "<leader>rv" },
       quick_comments = {
-        keymaps = { add = "<leader>rc", toggle_panel = "<leader>qc" },
+        keymaps = {
+          add = "<leader>rc",
+          toggle_panel = "<leader>qc",
+          send = "<leader>qs",
+        },
       },
       ui = { diff_view_mode = "split" },
     })
