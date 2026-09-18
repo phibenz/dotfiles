@@ -195,13 +195,22 @@ ensure_tree_sitter_cli
 # Install plugin and Mason dependencies
 echo "Installing Mason dependencies..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
+    if ! python3 -m pip --version &> /dev/null || ! python3 -m venv --help &> /dev/null; then
+        if command -v brew &> /dev/null; then
+            echo "Installing Python for Mason's ty language server..."
+            brew install python
+        else
+            echo "ERROR: Install Python 3 with pip and venv support, then rerun this script."
+            exit 1
+        fi
+    fi
     # Some Neovim plugins depend on LuaRocks packages such as LuaSocket.
     ensure_lua_toolchain
     ensure_nvm_node
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v apt-get &> /dev/null; then
         echo "Installing build dependencies..."
-        sudo apt-get install -y curl unzip build-essential
+        sudo apt-get install -y curl unzip build-essential python3 python3-pip python3-venv
         # Some Neovim plugins depend on LuaRocks packages such as LuaSocket.
         ensure_lua_toolchain
         ensure_nvm_node
@@ -217,6 +226,11 @@ LAZY_PATH="$HOME/.local/share/nvim/lazy/lazy.nvim"
 # Reconcile installed plugins with the current lazy.nvim configuration.
 echo "Synchronizing Neovim plugins..."
 nvim --headless "+Lazy! sync" +qa
+
+# MasonInstall blocks in headless mode and exits nonzero if a server fails.
+# Keep this list aligned with the servers enabled in lua/plugins/lsp.lua.
+echo "Installing language servers (Lua, Python, C/C++, Bash, Rust)..."
+nvim --headless "+MasonInstall lua-language-server ty clangd bash-language-server rust-analyzer" +qa
 
 echo "Configuration installed!"
 echo "Start nvim and run :checkhealth to verify."

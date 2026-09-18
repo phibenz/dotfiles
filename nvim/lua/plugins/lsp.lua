@@ -1,5 +1,5 @@
 -- Configure language servers with Mason and Neovim's native LSP APIs.
--- On a fresh setup, install the servers with:
+-- install.sh installs these servers automatically. To install or retry from Neovim:
 -- :MasonInstall lua-language-server ty clangd bash-language-server rust-analyzer
 return {
   -- Mason: LSP server installer
