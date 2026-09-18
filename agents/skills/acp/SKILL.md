@@ -16,8 +16,9 @@ When you are the parent agent:
    one worker with `task_name = "acp_worker"`, `fork_turns = "none"`,
    `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
 3. Give the worker the user request, working directory, this skill's absolute
-   path, intended file scope, and requested flags. Tell it to skip this section,
-   execute the Workflow, and never spawn another subagent. Do not duplicate its
+   path, intended file scope, requested flags, requested PR base, and relevant
+   stack context. Tell it to skip this section, execute the Workflow, and never
+   spawn another subagent. Do not duplicate its
    mutations; wait for its result.
 4. For a combined `$acp` and `$pr` request, complete ACP first using the selected
    execution mode. Invoke the PR skill only after ACP pushes successfully. Stop
@@ -76,6 +77,12 @@ When you are the delegated worker, skip this section and execute the Workflow di
 
 ## Push Target
 
+- Keep the push target separate from the PR base. In
+  `main <- parent-feature <- child-feature`, push `child-feature` to the remote
+  branch `child-feature`; its PR targets `parent-feature`.
+- Use ordinary Git pushes for the current branch. Do not substitute
+  `gh stack push`, `submit`, or `sync`; they can modify other branches or force-push.
+- Do not automatically rebase, synchronize, or publish parent branches.
 - Use `git push` when the initial inspection shows an existing remote upstream
   whose branch name exactly matches the current local branch.
 - Only when the upstream is absent or mismatched, inspect the branch's push
