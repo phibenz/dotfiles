@@ -27,7 +27,18 @@ return {
       return render()
     end
 
-    vim.keymap.set("n", "<leader>re", "<cmd>Review export<cr>", { desc = "Export review comments" })
+    ---Export review comments in the review UI, or regular-file comments elsewhere.
+    local function export_comments()
+      local review = require("review")
+      local quick_state = require("review.quick_comments.state")
+      if not review.is_open() and quick_state.count() > 0 then
+        require("review.quick_comments").export()
+        return
+      end
+      review.export()
+    end
+
+    vim.keymap.set("n", "<leader>re", export_comments, { desc = "Export review or quick comments" })
     ---Confirm quick-comment clearing, then use the normal review clearing flow.
     vim.keymap.set("n", "<leader>rq", function()
       local quick_state = require("review.quick_comments.state")

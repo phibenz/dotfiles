@@ -1,8 +1,7 @@
--- Configure Treesitter parsers, highlighting, and indentation for Neovim 0.11.
+-- Configure Treesitter parsers, highlighting, and indentation for Neovim 0.12.
 return {
     "nvim-treesitter/nvim-treesitter",
-    -- The main branch requires Neovim 0.12 and uses a different setup API.
-    branch = "master",
+    branch = "main",
     lazy = false,
     build = ":TSUpdate",
     ---Install missing parsers and enable highlighting and indentation.
@@ -24,10 +23,22 @@ return {
             "rust",
         }
 
-        require("nvim-treesitter.configs").setup({
-            ensure_installed = languages,
-            highlight = { enable = true },
-            indent = { enable = true },
+        require("nvim-treesitter").install(languages)
+
+        local filetypes = {}
+        for _, language in ipairs(languages) do
+            vim.list_extend(filetypes, vim.treesitter.language.get_filetypes(language))
+        end
+
+        vim.api.nvim_create_autocmd("FileType", {
+            group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true }),
+            pattern = filetypes,
+            -- Preserve default indentation when a parser is not yet available.
+            callback = function(args)
+                if pcall(vim.treesitter.start, args.buf) then
+                    vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end
+            end,
         })
     end
 }
