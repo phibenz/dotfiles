@@ -16,8 +16,20 @@ return {
     })
     require("config.review-line-numbers").setup()
 
-    -- Work around upstream refreshes treating commit previews as single-file diffs.
     local diff_view = require("review.ui.diff_view")
+    local create = diff_view.create
+    ---Add the comment shortcut to each diff buffer after its native mappings exist.
+    diff_view.create = function(...)
+      local component = create(...)
+      vim.keymap.set({ "n", "x" }, "<leader>rc", "c", {
+        buffer = component.bufnr,
+        remap = true,
+        desc = "Add review comment",
+      })
+      return component
+    end
+
+    -- Work around upstream refreshes treating commit previews as single-file diffs.
     local render = diff_view.render
     ---Refresh file views only; commit previews have no filename.
     diff_view.render = function()
