@@ -12,7 +12,7 @@ fi
 
 mkdir -p "${TARGET_DIR}"
 
-for name in settings.json AGENTS.md; do
+for name in settings.json editor-cursor.json web-search.json AGENTS.md; do
   if [[ "${name}" == "AGENTS.md" ]]; then
     source_file="${SCRIPT_DIR}/../agents/AGENTS.md"
   else
@@ -24,7 +24,7 @@ for name in settings.json AGENTS.md; do
     if [[ -L "${target_file}" && "$(readlink "${target_file}")" == "${source_file}" ]]; then
       echo "Already linked: ${target_file}"
       continue
-    elif [[ "${name}" == "settings.json" && ( -f "${target_file}" || -L "${target_file}" ) ]]; then
+    elif [[ "${name}" != "AGENTS.md" && ( -f "${target_file}" || -L "${target_file}" ) ]]; then
       backup_file="$(mktemp "${target_file}.backup.XXXXXX")"
       mv "${target_file}" "${backup_file}"
       echo "Backed up ${target_file} -> ${backup_file}"
@@ -37,5 +37,7 @@ for name in settings.json AGENTS.md; do
   ln -s "${source_file}" "${target_file}"
   echo "Linked ${source_file} -> ${target_file}"
 done
+
+pi update --extensions
 
 echo "Pi discovers shared skills from ~/.agents/skills automatically."
