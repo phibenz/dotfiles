@@ -149,15 +149,20 @@ retrying. Never repeat successful PR creation to recover failed stack linking.
 
 ## Body Style
 
-- Use as many bullets as are useful, usually 2-4. Do not force exactly three.
-- Make each bullet descriptive and easy to understand in simple words.
-- Focus on what changed and why it matters.
+- Read and fill [assets/pr-body.md](assets/pr-body.md). Replace every placeholder
+  before publishing the PR body.
+- Keep the opening summary to one or two sentences. Do not add a `Summary` heading.
+- Write concise bullets within each section. Use as many bullets as the change needs.
+- Explain the change beyond its ticket link. Describe only significant design
+  choices. Do not repeat the diff or add routine implementation details.
+- Use simple words, active voice, and short sentences. Give each bullet one
+  main idea. Use the same term for the same concept throughout the body.
 - When the PR implements one or more specific Linear tickets, append one
   separate `Fixes <ISSUE-ID>` line for each ticket. Resolve ticket IDs from the
   user request, current conversation, branch name, commit subjects, changed
   feature-design paths, and an existing PR body. Do not guess an issue ID.
-- Do not include a broad diff tour, validation or verification details, test
-  logs, or implementation trivia unless the user explicitly asks.
+- Do not add `## Testing?`, `## Screenshots (optional)`, or `## Anything Else?`.
+  Omit validation details, test logs, and screenshots unless the user asks.
 - Do not include agent attribution, model attribution, emojis, or final playful
   notes. Commit trailers capture model involvement when needed.
 
