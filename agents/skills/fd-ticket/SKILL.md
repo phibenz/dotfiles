@@ -13,17 +13,35 @@ that file with the user before creating or updating the Linear issue.
 Accept a ticket title, feature description, local draft path, or Linear issue
 identifier such as `FD-012` in `$ARGUMENTS`.
 
-## Local Drafts and Approval
+## Local IDs and Drafts
 
-- Use `docs/fd/<ticket-id>-<slug>.md` unless the user supplies another path.
-  For unpublished tickets, use a temporary ID such as `T1`.
+- Store every local ticket draft in the target repository at
+  `docs/fd/<local-id>-<slug>.md`. If the user supplies a path elsewhere, read
+  it as input and preserve it; write the working draft under `docs/fd/`.
+- Assign a standalone ticket `T<N>`, where `<N>` is the smallest unused positive
+  base number. For a plan child, reuse its `T<N>.<K>` ID from parent `P<N>`.
+  Assign the next unused child number only when adding a new child to the plan.
+- Use one base-number sequence for plans and standalone tickets. A plan `P3`
+  reserves base number `3`, so `T3` cannot name a standalone ticket; its
+  children are `T3.1`, `T3.2`, and so on. Never assign the same local ID twice.
+- Before assigning an ID, check the current files under `docs/fd/`, including
+  IDs in parent ticket lists. Never reuse a local ID; share a plan's base
+  number only with that plan's children.
+- Keep assigned drafts under `docs/fd/` after publication or cancellation so
+  their local IDs remain visible.
+- Keep the local ID in the draft filename after publication. Record the Linear
+  ID and URL separately; do not replace the local ID with the Linear ID.
+- Do not renumber existing IDs when a ticket changes order or a plan changes.
+
+## Approval
+
 - Reuse the draft during revisions and preserve unrelated files. Keep title,
   issue ID, team, project, and relations separate from the description.
 - Draft locally; use Linear only for read-only context until publication approval.
 - Share the path and publish only after explicit approval of the current draft.
   Later revisions require renewed approval.
-- Retain the published ID and URL locally. Replace the temporary ID in default
-  filenames and draft links with the real ID after publication.
+- Retain the published ID and URL locally. Link local IDs to the real issues
+  while keeping those IDs in draft filenames and parent ticket lists.
 
 ## Ticket Boundary
 

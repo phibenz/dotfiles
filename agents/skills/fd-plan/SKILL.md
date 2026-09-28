@@ -23,7 +23,8 @@ parent plan too; use the plan format below instead of the ticket template.
 
 ## 2. Order the stacked PRs
 
-- Use one linear sequence: `T1 → T2 → T3`. Each ticket represents one PR;
+- Use one linear sequence: `T3.1 → T3.2 → T3.3` for plan `P3`.
+  Each ticket represents one PR;
   its implementation steps represent commits within that PR.
 - Base the first PR on the target branch and each later PR on its predecessor.
   Order prerequisites first and define each ticket's incremental change.
@@ -37,8 +38,13 @@ parent plan too; use the plan format below instead of the ticket template.
 
 - Read and use [assets/plan.md](assets/plan.md). Keep the parent concise:
   objective, implementation boundaries, and a rough ordered ticket list.
-- Use the `fd-ticket` filename rules. `P1` and `T1`, `T2`, and so on are temporary
-  IDs until Linear assigns real IDs: `P` stands for plan and `T` stands for ticket.
+- Store every local parent plan draft under `docs/fd/` in the target repository.
+  Treat a supplied path elsewhere as input and preserve that source file.
+- Use the `fd-ticket` local ID and filename rules. Choose the smallest unused
+  base number for the plan. Assign child IDs in its ticket list. For example,
+  plan `P3` lists `T3.1` and `T3.2`.
+- Reuse each child's ID when refining its draft. Assign a new child ID only
+  when adding a child to the plan.
 - Start with the rough plan. As work progresses, refine the next child through
   `fd-ticket`; later children remain outlines in the parent until needed.
 - Keep detailed tests, code locations, sketches, and commit-sized steps in that
@@ -55,7 +61,8 @@ parent plan too; use the plan format below instead of the ticket template.
 - Link each published child to the parent. Represent its predecessor as a
   blocking relation for merge
   order; this does not require waiting for a merge before starting implementation.
-- Replace temporary references with issue links in the parent and local drafts.
+- Link local IDs to published issues in the parent and local drafts. Keep the
+  local IDs in the parent ticket list and draft filenames.
   Verify parent links and blocking relations along with published content.
 - Report published IDs, URLs, and any drafts still awaiting approval.
 - Planning does not create branches, commits, or PRs.
