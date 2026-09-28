@@ -11,19 +11,22 @@ as simple as possible, as complex as necessary.
 ## Workflow
 
 1. Establish the review scope from the user's request.
-   - Review staged changes when the user refers to staged work, a commit, or
-     commit preparation.
-   - Review branch changes when the user refers to the branch, PR, or changes
-     compared to a base branch.
-   - Otherwise review the current working tree diff.
+   - Review staged changes when the user refers to staged work or commit
+     preparation. Review a named commit when the user refers to that commit.
+   - Review the cumulative change from the base branch through the working tree
+     when the user refers to a branch or PR. Include related local edits.
+   - Otherwise review the current staged and unstaged working tree changes.
    - Do not broaden the scope to unrelated named files or surrounding code
      except as needed to understand the selected changes.
 2. Understand the intent before judging the shape of the code.
-   - Read surrounding code and existing patterns.
+   - Reconstruct the caller's need and supported contract before reviewing the patch.
+   - Read surrounding code and existing patterns without assuming they are necessary.
    - Identify constraints that justify complexity.
    - Do not optimize for terseness at the cost of clarity or correctness.
 3. Review for elegance and craft:
-   - Can the same behavior be achieved with fewer moving parts?
+   - Describe the smallest plausible implementation of the required behavior.
+     Compare it with the current change. For each extra production part,
+     identify the invariant or supported use that requires it.
    - Are abstractions pulling their weight?
    - Is naming precise enough that the code explains itself?
    - Are conditionals, state, and data flow localized and easy to follow?
@@ -43,6 +46,9 @@ as simple as possible, as complex as necessary.
    - Does the implementation fit the repository's existing style?
    - Is there duplicated or dead code that should be deleted?
 4. Review test value.
+   - Review tests as a set. Map distinct contracts and failure modes to the
+     tests that protect them. Remove tests with equivalent coverage. Remove
+     tests whose mocks bypass the behavior they claim to protect.
    - Require each test to protect a supported contract or a plausible
      regression.
    - The contract or regression must concern observable behavior, a nontrivial
