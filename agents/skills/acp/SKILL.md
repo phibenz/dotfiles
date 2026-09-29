@@ -1,32 +1,11 @@
 ---
 name: acp
-description: Stage, commit, and push only the intended current changes through a fast inline workflow, with optional background delegation. Create exactly one concise conventional commit with active-model co-author attribution, and ensure the current branch tracks its same-name remote branch. Use when the user invokes $acp, says acp, says add commit push or stage commit push, or asks to commit and push current changes.
+description: Stage, commit, and push only the intended current changes through a fast inline workflow. Create exactly one concise conventional commit with active-model co-author attribution, and ensure the current branch tracks its same-name remote branch. Use when the user invokes $acp or /acp, says acp, says add commit push or stage commit push, or asks to commit and push current changes.
 ---
 
 # Add, Commit, Push
 
 Stage the complete intended change, commit it once, and push the current branch.
-
-## Execution and Sequencing
-
-When you are the parent agent:
-
-1. Execute the Workflow directly by default.
-2. If the user explicitly requests background or delegated ACP, spawn exactly
-   one worker with `task_name = "acp_worker"`, `fork_turns = "none"`,
-   `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
-3. Give the worker the user request, working directory, this skill's absolute
-   path, intended file scope, requested flags, requested PR base, and relevant
-   stack context. Tell it to skip this section, execute the Workflow, and never
-   spawn another subagent. Do not duplicate its
-   mutations; wait for its result.
-4. For a combined `$acp` and `$pr` request, complete ACP first using the selected
-   execution mode. Invoke the PR skill only after ACP pushes successfully. Stop
-   without creating or updating a PR if ACP fails.
-
-When you are the delegated worker, skip this section and execute the Workflow directly.
-
-## Workflow
 
 1. Infer the likely intended paths from the user request and conversation. Batch
    the initial read-only inspection into one tool call:
@@ -43,12 +22,15 @@ When you are the delegated worker, skip this section and execute the Workflow di
    `git diff --cached --no-ext-diff`. Stop if the cached diff is empty or
    contains changes outside the intended scope.
 4. Write one concise conventional commit subject and active-model attribution:
-   - `Co-authored-by: <model> <noreply@openai.com>`
+   - `Co-authored-by: <model> <email>`
    - Use the active model display name plus reasoning effort when known, such as
-     `GPT-5.5 medium`. Otherwise use the active model display name.
+     `GPT-5.5 medium` or `Claude Opus 5.5 high`. Otherwise use the active model
+     display name.
+   - Use the email of the active model provider: `noreply@openai.com` for
+     OpenAI models and `noreply@anthropic.com` for Anthropic models.
 5. Choose the push command using the Push Target rules below. In one tool call,
    run the commit and then the push with `&&`, so a failed commit cannot push:
-   - `git commit -m "<subject>" -m "Co-authored-by: <model> <noreply@openai.com>" && <push-command>`
+   - `git commit -m "<subject>" -m "Co-authored-by: <model> <email>" && <push-command>`
    - Escape shell-sensitive characters in both arguments.
    - Forward user-provided commit flags such as `--amend` or `--no-verify`.
    - If the commit portion fails, apply the Hook Repair and Retry rules below.

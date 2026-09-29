@@ -24,6 +24,8 @@ creative, marketing, or voice-sensitive writing.
   in each paragraph.
 - In sectioned documents, use concise bullet points. Use plain language and
   include only necessary information.
+- When suggesting Markdown for the user to copy, show its raw source in a
+  fenced `markdown` code block. Do not prefix its lines with `>`.
 - Put a warning or condition before the action that it controls.
 - Preserve all facts, numbers, constraints, exceptions, and scope qualifiers.
   Never remove meaning only to make the text shorter.

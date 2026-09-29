@@ -1,34 +1,28 @@
 ---
 name: pr
-description: Create or update the current branch's GitHub pull request through a fast inline workflow, with optional background delegation and a generated title and description. Trigger when the user asks for $pr, pr, to open a PR, update PR title/body, PR wording, a pull request title, or a pull request description.
+description: Create or update a GitHub pull request, or suggest PR wording without publishing it. Trigger when the user asks for $pr, /pr, pr, to open a PR, update its title or body, or draft a PR title or description.
 ---
 
-# Pull Request Upsert
+# Pull Request Authoring
 
-Create the current branch's GitHub pull request if it does not exist. If it
-already exists, update only the fields permitted by the request and repository rules.
+Default to the Workflow, which creates or updates the PR. Use Wording Only only
+when the user asks for a draft or suggestion, or says not to publish.
 
-Do not only print PR wording. The skill mutates the PR.
+## Sequencing
 
-## Execution and Sequencing
+For a combined ACP and PR request, wait for ACP to push successfully before
+starting PR. Stop if ACP fails.
 
-When you are the parent agent:
+## Wording Only
 
-1. Execute the Workflow directly by default.
-2. For a combined `$acp` and `$pr` request, wait for ACP to push successfully
-   before starting PR. Stop if ACP fails.
-3. If the user explicitly requests background or delegated PR, spawn exactly one
-   worker with `task_name = "pr_worker"`, `fork_turns = "none"`,
-   `model = "gpt-5.6-terra"`, and `reasoning_effort = "low"`.
-4. Give the worker the user request, working directory, this skill's absolute
-   path, applicable repository rules, requested PR base, relevant stack context,
-   and the ACP result for a combined request. Tell it to skip this section,
-   execute the Workflow, and never spawn another subagent. Do not duplicate its
-   mutations; wait for its result.
-5. For a combined request, return only the concise ACP and PR results after both
-   stages succeed.
-
-When you are the delegated worker, skip this section and execute the Workflow directly.
+- Read the named PR and its diff, or inspect the current branch and its base.
+  Use other relevant issue context when available.
+- Do not create or edit a PR, push a branch, or link a stack.
+- Use the Title Style and Body Style rules for the requested text.
+- Return only the requested wording, without an introduction. Return the body
+  by default. Include a title only when the user asks for one.
+- Put the title on one plain line. Put the body after it in a fenced `markdown`
+  code block.
 
 ## Workflow
 
@@ -150,7 +144,7 @@ retrying. Never repeat successful PR creation to recover failed stack linking.
 ## Body Style
 
 - Read and fill [assets/pr-body.md](assets/pr-body.md). Replace every placeholder
-  before publishing the PR body.
+  before presenting or publishing the PR body.
 - Keep the opening summary to one or two sentences. Do not add a `Summary` heading.
 - Write concise bullets within each section. Use as many bullets as the change needs.
 - Explain the change beyond its ticket link. Describe only significant design
@@ -168,5 +162,9 @@ retrying. Never repeat successful PR creation to recover failed stack linking.
 
 ## Output
 
-Return the PR URL and, when requested, the stack-link result. Report partial
-success and unresolved prerequisites separately. Do not print generated wording.
+For wording-only requests, return the requested text as specified above.
+For publication, return the PR URL and, when requested, the stack-link result.
+For combined ACP and PR publication, return only the concise results after both
+stages succeed.
+Report partial success and unresolved prerequisites separately. Do not print
+published wording unless the user asks.
