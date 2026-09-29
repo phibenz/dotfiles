@@ -21,7 +21,8 @@ while IFS= read -r -d '' skill_file; do
 done < <(find "${LOCAL_SKILLS_DIR}" -mindepth 2 -name SKILL.md -type f -print0)
 
 if [[ "$#" -eq 0 ]]; then
-  target_dirs=("${HOME}/.agents/skills")
+  # Claude Code does not read ~/.agents/skills, so link the skills there too.
+  target_dirs=("${HOME}/.agents/skills" "${HOME}/.claude/skills")
 else
   target_dirs=("$@")
 fi

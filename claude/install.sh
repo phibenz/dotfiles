@@ -2,9 +2,9 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_INSTRUCTIONS="${SCRIPT_DIR}/../agents/AGENTS.md"
-TARGET_RULES_DIR="${HOME}/.claude/rules"
-TARGET_INSTRUCTIONS="${TARGET_RULES_DIR}/communication.md"
+REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SOURCE_INSTRUCTIONS="${REPO_DIR}/agents/AGENTS.md"
+TARGET_INSTRUCTIONS="${HOME}/.claude/CLAUDE.md"
 
 echo "Installing Claude Code configuration..."
 
@@ -22,7 +22,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 fi
 
 # Setup directories and backup existing settings
-mkdir -p ~/.claude "${TARGET_RULES_DIR}"
+mkdir -p ~/.claude
 [ -f ~/.claude/settings.json ] && mv ~/.claude/settings.json ~/.claude/settings.json.backup
 
 # Create symlinks

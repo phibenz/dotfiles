@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Install Herdr configuration and the Vim/Neovim navigation plugin.
+# Install Herdr configuration, the Codex and Claude Code integrations, and the
+# Vim/Neovim navigation plugin.
 
 set -euo pipefail
 
@@ -27,6 +28,7 @@ mkdir -p "${HERDR_CONFIG_DIR}"
 ln -sfn "${SCRIPT_DIR}/config.toml" "${HERDR_CONFIG_DIR}/config.toml"
 ln -sfn "${SCRIPT_DIR}/navigate.sh" "${HERDR_CONFIG_DIR}/navigate.sh"
 herdr integration install codex
+herdr integration install claude
 
 herdr plugin install paulbkim-dev/vim-herdr-navigation --yes
 
