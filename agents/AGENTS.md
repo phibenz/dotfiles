@@ -52,3 +52,8 @@ ASD-STE100 compliance.
 - Use the Communication Style rules for all added or updated docstrings.
 - For Python docstrings, follow PEP 257 and PEP 8's documentation string rules.
   Repository-specific conventions take precedence.
+
+# Skill Validation
+
+- Validate skill code with temporary checks during creation or revision.
+- Do not retain test files, test folders, or generated test caches in skill packages.

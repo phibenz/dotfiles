@@ -2,12 +2,29 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SOURCE_SKILLS_DIR="${SCRIPT_DIR}/skills"
 LOCAL_SKILLS_DIR="${AGENTS_LOCAL_SKILLS_DIR:-${SCRIPT_DIR}/skills.local}"
-OLD_CODEX_SKILLS_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)/codex/skills"
-OLD_FD_SKILLS_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)/codex/feature-design/skills"
 
 mkdir -p "${LOCAL_SKILLS_DIR}"
+LOCAL_SKILLS_DIR="$(cd "${LOCAL_SKILLS_DIR}" && pwd)"
+
+# Recognize managed links from every registered checkout of this repository.
+checkout_skill_roots=("${LOCAL_SKILLS_DIR}")
+while IFS= read -r -d '' record; do
+  case "${record}" in
+    "worktree "*)
+      checkout="${record#worktree }"
+      checkout_skill_roots+=(
+        "${checkout}/agents/skills"
+        "${checkout}/agents/skills.local"
+        "${checkout}/codex/skills"
+        "${checkout}/codex/feature-design/skills"
+      )
+      ;;
+  esac
+done < <(git -C "${REPO_DIR}" worktree list --porcelain -z)
+checkout_skill_roots+=("${SOURCE_SKILLS_DIR}")
 
 skill_files=()
 while IFS= read -r -d '' skill_file; do
@@ -21,55 +38,41 @@ while IFS= read -r -d '' skill_file; do
 done < <(find "${LOCAL_SKILLS_DIR}" -mindepth 2 -name SKILL.md -type f -print0)
 
 if [[ "$#" -eq 0 ]]; then
-  # Claude Code does not read ~/.agents/skills, so link the skills there too.
-  target_dirs=("${HOME}/.agents/skills" "${HOME}/.claude/skills")
+  # Refresh client directories too, including existing direct Codex skill links.
+  target_dirs=("${HOME}/.agents/skills" "${HOME}/.codex/skills" "${HOME}/.claude/skills")
 else
   target_dirs=("$@")
 fi
 
 installed=0
-skipped=0
 pruned=0
 
-check_linearis_cli() {
-  local linearis_cmd=""
+# Add one owned source root without growing the record on repeated installs.
+remember_skill_root() {
+  local root="$1"
+  local existing
 
-  if command -v linearis >/dev/null 2>&1; then
-    linearis_cmd="linearis"
-  elif command -v linear >/dev/null 2>&1; then
-    linearis_cmd="linear"
-  else
-    echo "Linearis CLI is required by the FD skills but was not found." >&2
-    echo "Install it with: npm install -g linearis" >&2
-    return 1
-  fi
-
-  if ! "${linearis_cmd}" usage >/dev/null; then
-    echo "Linearis CLI failed: ${linearis_cmd} usage" >&2
-    return 1
-  fi
-
-  if ! "${linearis_cmd}" issues usage >/dev/null; then
-    echo "Linearis CLI failed: ${linearis_cmd} issues usage" >&2
-    return 1
-  fi
-
-  echo "Linearis CLI ready: ${linearis_cmd}"
+  for existing in "${managed_skill_roots[@]}"; do
+    if [[ "${existing}" == "${root}" ]]; then
+      return 0
+    fi
+  done
+  managed_skill_roots+=("${root}")
 }
 
+# Match links against the recorded source directories.
 is_managed_skill_link() {
   local link_path="$1"
   local link_target
+  local root
 
   link_target="$(readlink "${link_path}")"
-  case "${link_target}" in
-    "${SOURCE_SKILLS_DIR}"/*|"${LOCAL_SKILLS_DIR}"/*|"${OLD_CODEX_SKILLS_DIR}"/*|"${OLD_FD_SKILLS_DIR}"/*)
-      return 0
-      ;;
-    *)
-      return 1
-      ;;
-  esac
+  for root in "${managed_skill_roots[@]}"; do
+    case "${link_target}" in
+      "${root}"/*) return 0 ;;
+    esac
+  done
+  return 1
 }
 
 source_skill_exists() {
@@ -87,6 +90,26 @@ source_skill_exists() {
 
 for target_dir in "${target_dirs[@]}"; do
   mkdir -p "${target_dir}"
+  target_dir="$(cd "${target_dir}" && pwd)"
+  roots_file="${target_dir}/.dotfiles-managed-skill-roots"
+  managed_skill_roots=("${SOURCE_SKILLS_DIR}")
+  if [[ -L "${roots_file}" || ( -e "${roots_file}" && ! -f "${roots_file}" ) ]]; then
+    echo "Cannot update skill ownership record: ${roots_file}" >&2
+    exit 1
+  fi
+  if [[ -f "${roots_file}" ]]; then
+    while IFS= read -r -d '' root; do
+      remember_skill_root "${root}"
+    done < "${roots_file}"
+  fi
+  for root in "${checkout_skill_roots[@]}"; do
+    remember_skill_root "${root}"
+  done
+
+  # Retain ownership before linking, even if installation later stops.
+  roots_temp="$(mktemp "${roots_file}.XXXXXX")"
+  printf '%s\0' "${managed_skill_roots[@]}" > "${roots_temp}"
+  mv -f "${roots_temp}" "${roots_file}"
 
   while IFS= read -r -d '' target_link; do
     skill_name="$(basename "${target_link}")"
@@ -108,9 +131,8 @@ for target_dir in "${target_dirs[@]}"; do
     target_link="${target_dir}/${skill_name}"
 
     if [[ -e "${target_link}" && ! -L "${target_link}" ]]; then
-      echo "Skipping ${skill_name}: ${target_link} exists and is not a symlink"
-      skipped=$((skipped + 1))
-      continue
+      echo "Cannot install ${skill_name}: ${target_link} exists and is not a symlink" >&2
+      exit 1
     fi
 
     ln -sfn "${skill_dir}" "${target_link}"
@@ -119,10 +141,8 @@ for target_dir in "${target_dirs[@]}"; do
   done
 done
 
-echo "Done. Linked ${installed} skill(s), pruned ${pruned}, skipped ${skipped}."
+echo "Done. Linked ${installed} skill(s), pruned ${pruned}."
 
 if [[ "$#" -eq 0 ]]; then
   "${SCRIPT_DIR}/install-open-source-skills.sh"
 fi
-
-check_linearis_cli

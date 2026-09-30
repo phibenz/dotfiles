@@ -39,7 +39,9 @@ Stage the complete intended change, commit it once, and push the current branch.
 
 ## Scope Rules
 
+- For PR work, verify its dedicated worktree and Herdr workspace through [PR Workspaces](../ticket/references/workspaces.md).
 - Infer scope from the user request, conversation, staged files, and dirty state.
+- Exclude `docs/work/` planning files, reports, and local evidence from commits, including forced or pre-existing staged entries.
 - Treat staged files as evidence, not as a hard boundary. Include relevant
   unstaged files from the same intended change.
 - Stage explicit pathspecs only. Never use `git add .` or a broad directory
