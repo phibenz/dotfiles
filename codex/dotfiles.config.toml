@@ -1,4 +1,4 @@
-model = "gpt-6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 [agents]
 max_concurrent_threads_per_session = 10
@@ -8,11 +8,13 @@ status_line = ["model-with-reasoning", "current-dir", "git-branch", "pull-reques
 status_line_use_colors = true
 terminal_title = ["git-branch"]
 theme = "1337"
+screen_reader_detection_done = true
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
-gpt-6-astra = 4
+"gpt-6-astra" = 4
+"gpt-6.1-sol" = 4
 
-[projects."/Users/philipp/projects/seojoong"]
+[projects."/Users/philipp/projects/re-micro-drill"]
 trust_level = "trusted"
