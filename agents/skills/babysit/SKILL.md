@@ -12,7 +12,7 @@ Keep the user's review checkpoint before each commit.
 
 - Resolve the exact repository, PR, head branch, base, and remote head commit. Do not guess from a branch name alone.
 - Identify expected checks and reviewers from repository rules and the request. Distinguish completed reviews from reviews that have not run yet.
-- Declare the mode: **check** for one read-only status and triage pass; **address** for existing findings; **watch** for continued monitoring.
+- Declare the mode: **check** for one read-only status and triage pass; **address** for existing findings; **watch** until the user stops monitoring.
 - Use `check` for status-only requests, `address` for requests to address comments, and `watch` for requests to babysit or watch a PR.
 - `address` and `watch` authorize preparing valid corrections within the assigned PR's existing outcome. They do not authorize commits or publication.
 - Record explicit delivery authorization once for this repository and PR: pushes, replies, thread resolution, or remote check reruns.
@@ -48,8 +48,9 @@ Keep the user's review checkpoint before each commit.
 - Give [build](../build/SKILL.md) the triaged claims, canonical ticket or agreed PR contract, reply drafts, and recorded delivery scope.
 - `build` owns implementation, design reconciliation, verification, elegance, the combined code-and-replies checkpoint, and the approved commit.
 - For reply-only work, present the drafts without invoking `build` or creating a commit.
-- At the checkpoint, request any missing delivery authorization with the concrete drafts and proposed actions. Keep it with code review at one checkpoint.
-- Honor the scope of the user's response. Code approval alone permits the commit; a request covering replies also permits those replies.
+- At each checkpoint, show any reviewed change, reply drafts, and proposed delivery actions. End with: "Reply `y` to approve these actions and continue babysitting."
+- A bare `y` approves one presented commit and only the delivery actions listed at that checkpoint. It does not authorize later commits or unlisted remote actions.
+- If the user requests changes or asks a question, resolve it and present the revised checkpoint. Do not treat that response as approval.
 - After the approved commit, perform only the authorized delivery actions. Reuse standing authorization without asking again; never skip the next commit checkpoint.
 - If an approved correction already has a commit, publish it when authorized without creating another commit or changing stack topology.
 - For an authorized remote reply, use a structured payload or body file. Re-read the thread and current head before posting; inspect remote state after an uncertain result.
@@ -57,17 +58,18 @@ Keep the user's review checkpoint before each commit.
 
 ## 4. Continue or return the checkpoint
 
-- `check` ends after its report. `address` ends at the correction checkpoint or after requested corrections complete.
+- `check` ends after its report. `address` pauses at a correction checkpoint and ends after requested corrections complete.
 - In `watch`, refresh reviews, replies, head, and checks after a push or meaningful state change. Retriage affected claims when their basis changes.
 - While waiting for remote changes, use one polling loop with waits of at most 60 seconds. Respect API rate limits and keep the user informed.
 - A checks watcher alone does not monitor new reviews. Refresh the full evidence snapshot during every polling cycle.
-- Return control at a correction checkpoint, required user decision, verified blocker, execution limit, or user stop request. State what remains pending.
-- If a required push, reply, or thread resolution lacks authorization, present the concrete commit or response draft and return control.
-- Stop when the PR is closed or merged. Report that external change; babysitting does not authorize merging it.
+- Pause at a correction checkpoint for `y`, then continue the same mode. Do not treat the checkpoint as the end of babysitting.
+- If a required push, reply, or thread resolution lacks authorization, list that action at the checkpoint for the user's `y`.
+- Report a verified blocker or required user decision and keep watching for changes that may resolve it.
+- If the PR closes or merges, report that terminal state. Do not claim live monitoring after the PR is terminal; babysitting does not authorize merging it.
 - Report **merge-ready** only when the current remote head has passing required checks, required approvals, no unresolved review threads, and a GitHub merge state consistent with repository rules.
 - Green checks alone do not establish readiness. Unknown mergeability, incomplete evidence, or unpublished fixes prevent that verdict.
 - A requested review that has not finished also prevents that verdict. Do not treat absence of findings as a completed review.
-- Stop `watch` at merge-ready. If the environment cannot keep the loop running, report monitoring as stopped; do not imply background work continues.
+- Report merge-ready when reached, then keep watching until the user says to stop. If the environment cannot keep the loop running, report monitoring as interrupted; do not imply background work continues.
 
 ## Inspiration
 
