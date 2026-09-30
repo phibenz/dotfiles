@@ -1,4 +1,17 @@
-# Git Hooks
+# Git Setup and Hooks
+
+Configure global Git identity and credential caching:
+
+```bash
+bash ~/projects/dotfiles/git/install.sh
+```
+
+The script prompts for a missing `user.name`, then a missing `user.email`.
+It sets `credential.helper` to `cache --timeout=3600` if no global helper is
+configured. Existing global settings are preserved, including helpers such as
+Git Credential Manager or a system keychain.
+
+## Git hooks
 
 This directory contains reusable `pre-commit` templates.
 
