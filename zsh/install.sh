@@ -123,4 +123,5 @@ else
 fi
 
 echo "Configuration installed!"
-echo "Reload your terminal or run: source ~/.zshrc"
+echo "Start Zsh now with: exec zsh"
+echo "To reload the configuration from within Zsh, run: source ~/.zshrc"

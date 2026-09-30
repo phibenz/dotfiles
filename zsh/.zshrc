@@ -1,6 +1,18 @@
 # Zsh configuration
 # Minimal native zsh setup with direct plugin sourcing
 
+if [ -z "${ZSH_VERSION:-}" ]; then
+  printf '%s\n' 'This config requires Zsh. Run: exec zsh' >&2
+  return 1
+fi
+
+# Remote hosts may not have Ghostty's terminal definition installed.
+if [[ "${TERM:-}" == xterm-ghostty ]] && command -v infocmp >/dev/null 2>&1; then
+  if ! infocmp xterm-ghostty >/dev/null 2>&1 && infocmp xterm-256color >/dev/null 2>&1; then
+    export TERM=xterm-256color
+  fi
+fi
+
 ZSH_CONFIG_DIR="${${(%):-%x}:A:h}"
 
 # Completion
@@ -119,3 +131,6 @@ command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
 # Start tmux automatically (if installed) - moved to end to ensure PATH is loaded
 # command -v tmux >/dev/null 2>&1 && test -z "$TMUX" && (tmux attach || tmux new-session)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
