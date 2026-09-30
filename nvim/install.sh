@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Neovim configuration installation script
-# Sets up modern Lua-based nvim config with lazy.nvim
+# Installs the Neovim configuration, plugins, and required tools.
 
 set -euo pipefail
 
@@ -9,6 +9,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NVIM_CONFIG_DIR="${HOME}/.config/nvim"
 NVM_VERSION="v0.40.3"
 NODE_VERSION="24"
+TREE_SITTER_VERSION="0.27.0"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 canonical_path() {
     local path="$1"
@@ -113,7 +115,9 @@ ensure_nvm_node() {
     nvm install "${NODE_VERSION}"
 }
 
-ensure_tree_sitter_cli() {
+ensure_tree_sitter_cli() (
+    # Install the Tree-sitter CLI if it is missing from PATH.
+    local tree_sitter_tmp tool
     if command -v tree-sitter &> /dev/null; then
         echo "tree-sitter CLI already installed."
     elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -124,11 +128,28 @@ ensure_tree_sitter_cli() {
             echo "WARNING: Homebrew not found. Please install tree-sitter-cli manually with 'brew install tree-sitter-cli'"
         fi
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        echo "WARNING: Please install tree-sitter-cli manually. nvim-treesitter main requires the CLI, not just libtree-sitter."
+        for tool in curl cc; do
+            if ! command -v "$tool" >/dev/null 2>&1; then
+                echo "ERROR: $tool is required to install tree-sitter-cli." >&2
+                return 1
+            fi
+        done
+
+        if ! command -v cargo >/dev/null 2>&1; then
+            echo "Installing Rust to build tree-sitter-cli..."
+            tree_sitter_tmp=$(mktemp -d)
+            trap 'rm -rf "$tree_sitter_tmp"' EXIT
+            curl -fsSL https://sh.rustup.rs -o "$tree_sitter_tmp/rustup-init.sh"
+            bash "$tree_sitter_tmp/rustup-init.sh" -y --profile minimal --no-modify-path
+        fi
+
+        echo "Building tree-sitter-cli ${TREE_SITTER_VERSION}..."
+        cargo install --locked --version "$TREE_SITTER_VERSION" --root "$HOME/.local" tree-sitter-cli
+        "$HOME/.local/bin/tree-sitter" --version
     else
         echo "WARNING: OS not detected. Please install tree-sitter-cli manually."
     fi
-}
+)
 
 echo "Installing Neovim configuration..."
 
@@ -189,8 +210,27 @@ else
     echo "WARNING: OS not detected. Please install ripgrep manually"
 fi
 
-# Install tree-sitter CLI (required by nvim-treesitter parser installs)
-ensure_tree_sitter_cli
+# Install fd for file searches.
+echo "Installing fd..."
+if command -v fd >/dev/null 2>&1; then
+    echo "fd already installed."
+elif [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
+    brew install fd
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if ! command -v fdfind >/dev/null 2>&1 && command -v apt-get >/dev/null 2>&1; then
+        sudo apt-get install -y fd-find
+    fi
+    if command -v fdfind >/dev/null 2>&1; then
+        mkdir -p "$HOME/.local/bin"
+        if [[ ! -e "$HOME/.local/bin/fd" && ! -L "$HOME/.local/bin/fd" ]]; then
+            ln -s "$(command -v fdfind)" "$HOME/.local/bin/fd"
+        fi
+    else
+        echo "WARNING: Install fd manually for file searches."
+    fi
+else
+    echo "WARNING: Install fd manually for file searches."
+fi
 
 # Install plugin and Mason dependencies
 echo "Installing Mason dependencies..."
@@ -218,6 +258,9 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "WARNING: apt-get not found. Skipping Mason dependencies installation."
     fi
 fi
+
+# Install the CLI after the C compiler and curl are available.
+ensure_tree_sitter_cli
 
 # Install lazy.nvim plugin manager
 LAZY_PATH="$HOME/.local/share/nvim/lazy/lazy.nvim"
