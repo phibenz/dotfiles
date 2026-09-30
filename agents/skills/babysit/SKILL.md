@@ -43,6 +43,8 @@ Keep the user's review checkpoint before each commit.
 - In `address` and `watch`, collect known valid findings before selecting one coherent correction step. Group related claims; split independent fixes into separate steps.
 - A claim owned by another feature or already merged code needs a separate handoff. Do not hide that work in the current PR.
 - Draft concise reviewer replies with the finding disposition and evidence, including supported reasons for rejecting invalid claims.
+- Prefix each AI-written review reply with the active model ID in brackets, such as `[gpt-6.1-sol]`. Use `[AI]` if the exact model ID is unavailable.
+- For each review comment addressed by a correction, prepare a response linked to its source ID. After verification, state what changed and the verification result or limit.
 - Give [build](../build/SKILL.md) the triaged claims, canonical ticket or agreed PR contract, reply drafts, and recorded delivery scope.
 - `build` owns implementation, design reconciliation, verification, elegance, the combined code-and-replies checkpoint, and the approved commit.
 - For reply-only work, present the drafts without invoking `build` or creating a commit.

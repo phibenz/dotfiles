@@ -44,8 +44,6 @@ ASD-STE100 compliance.
 
 # Code Documentation
 
-- Ensure that each added or modified source file has an accurate file-level
-  docstring when its language supports docstrings.
 - Ensure that each added or modified function has an accurate docstring. Do not
   change other function docstrings unless the user asks for file-wide
   documentation.
