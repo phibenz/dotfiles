@@ -28,6 +28,11 @@ Keep the user's review checkpoint before each commit.
 - Follow [Collect PR Evidence](references/github.md). Record the remote head and collection time with the snapshot.
 - Report merge conflicts or missing prerequisites before preparing dependent fixes. A conflict does not authorize a rebase.
 - Use [triage](../triage/SKILL.md) for new or materially changed review claims. Include claims in review bodies and general discussion.
+- When several independent review comments or PR issues exist, use read-only subagents for parallel analysis when available. Give each worker one issue or related comment group, source links, the current PR head, and the agreed contract.
+- Ask comment workers to apply `triage`. Ask check-failure workers to inspect logs.
+- Each worker returns evidence, a disposition or failure class, the smallest proposed correction, an optional unapplied diff, and a verification idea. For comments, include a draft reply.
+- Start subagents with read-only permissions when available. They may inspect code and run safe checks, but must not edit the shared checkout, commit, push, post replies, resolve threads, or change PR state.
+- Validate their findings against the current head. Resolve duplicate or conflicting proposals before giving supported corrections to `build`; a worker's conclusion is not a verified result.
 - Reuse a disposition only when the claim, relevant code, replies, and assumptions remain unchanged.
 - Keep a local record of source IDs, assessed revisions, dispositions, evidence, and pending actions under the canonical feature's `reviews/pr-<number>.md`.
 - If the PR has no local ticket, keep the record in the conversation. Do not invent a feature or copy planning into the worktree.
@@ -46,6 +51,7 @@ Keep the user's review checkpoint before each commit.
 - Draft concise reviewer replies with the finding disposition and evidence, including supported reasons for rejecting invalid claims.
 - Prefix each AI-written review reply with the active model ID in brackets, such as `[gpt-6.1-sol]`. Use `[AI]` if the exact model ID is unavailable.
 - For each review comment addressed by a correction, prepare a response linked to its source ID. After verification, state what changed and the verification result or limit.
+- At the checkpoint, give the user a concise status for every collected issue and its proposed response. Mark issues that remain pending or need a decision.
 - Give [build](../build/SKILL.md) the triaged claims, canonical ticket or agreed PR contract, reply drafts, and recorded delivery scope.
 - `build` owns implementation, design reconciliation, verification, elegance, the combined code-and-replies checkpoint, and the approved commit.
 - For reply-only work, present the drafts without invoking `build` or creating a commit.
