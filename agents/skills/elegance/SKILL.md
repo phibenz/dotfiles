@@ -27,9 +27,15 @@ as simple as possible, as complex as necessary.
    - Describe the smallest plausible implementation of the required behavior.
      Compare it with the current change. For each extra production part,
      identify the invariant or supported use that requires it.
+   - Before accepting a new helper, type, or setting, search relevant code for
+     an existing equivalent. Reuse it when its contract fits.
+   - For each new setting or optional field, identify a supported caller or
+     state that needs its value to vary. Remove it otherwise.
    - Are abstractions pulling their weight?
    - Is naming precise enough that the code explains itself?
    - Are conditionals, state, and data flow localized and easy to follow?
+   - When data flow changes, trace one value from input to output. Look for
+     silent fallbacks, duplicated state, or structured data parsed from strings.
    - Would reorganizing the code around responsibilities, lifecycle, or data
      flow make the main path easier to comprehend?
    - Is the problem represented with the clearest concepts and data model, or

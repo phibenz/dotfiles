@@ -19,6 +19,9 @@ decision aids, not as fixed templates.
 - Inspect nearby production code and tests before selecting a test boundary.
 - Identify the behavior, plausible regression, or nontrivial invariant that
   each test will protect.
+- Check existing tests for overlap. Add only the smallest set that protects
+  uncovered material risks. For low-risk changes, use direct verification when
+  a lasting regression test would add little value.
 - Select a stable boundary where the behavior can be observed. Prefer a public
   interface over private implementation details.
 - Ask the user about the boundary only when the choice changes public design,
@@ -53,8 +56,9 @@ Those labels vary between teams. Judge each test by its feedback and cost.
   worked example, protocol, or known-good literal.
 - Do not recompute the expected value with the same logic as the implementation.
   Such a test can pass while both sides contain the same defect.
-- Cover important success paths, failure paths, boundaries, state transitions,
-  integration contracts, and reproduced regressions.
+- Choose cases for material risks, such as failure paths, boundaries, state
+  transitions, integration contracts, and reproduced regressions. Do not turn
+  this list into a test for every branch, field, or helper.
 - Make failures identify the broken behavior. Avoid tests that can fail for many
   unrelated environmental or setup reasons.
 - Keep tests deterministic. Control time, randomness, process state, and
