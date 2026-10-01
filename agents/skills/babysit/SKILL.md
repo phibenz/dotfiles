@@ -32,6 +32,7 @@ Keep the user's review checkpoint before each commit.
 - Keep a local record of source IDs, assessed revisions, dispositions, evidence, and pending actions under the canonical feature's `reviews/pr-<number>.md`.
 - If the PR has no local ticket, keep the record in the conversation. Do not invent a feature or copy planning into the worktree.
 - Keep remote thread state separate from local disposition. An invalid claim can still need a reviewer response.
+- Record whether each review thread starts with a human or bot comment. Treat uncertain authorship as human.
 - Keep local-only corrections separate from published fixes. Do not repeat an existing correction while its commit awaits publication.
 - For failed checks, inspect logs and classify code failure, missing prerequisite, or verification environment failure.
 - Correct a confirmed code failure within the PR's scope. Report unrelated failures and unavailable evidence without claiming a pass.
@@ -53,8 +54,11 @@ Keep the user's review checkpoint before each commit.
 - If the user requests changes or asks a question, resolve it and present the revised checkpoint. Do not treat that response as approval.
 - After the approved commit, perform only the authorized delivery actions. Reuse standing authorization without asking again; never skip the next commit checkpoint.
 - If an approved correction already has a commit, publish it when authorized without creating another commit or changing stack topology.
+- Before replying about a code correction, verify its commit is present in the remote PR. If the push is pending or fails, keep the reply draft pending.
 - For an authorized remote reply, use a structured payload or body file. Re-read the thread and current head before posting; inspect remote state after an uncertain result.
-- Describe a fix as published only when its commit is present in the remote PR. Resolve an authorized thread only when evidence supports its disposition.
+- Describe a fix as published only when its commit is present in the remote PR.
+- Never resolve a thread started by a human reviewer, even after addressing it. Leave that decision to the reviewer.
+- Resolve a bot review thread only when authorization and evidence support its disposition.
 
 ## 4. Continue or return the checkpoint
 
@@ -63,7 +67,7 @@ Keep the user's review checkpoint before each commit.
 - While waiting for remote changes, use one polling loop with waits of at most 60 seconds. Respect API rate limits and keep the user informed.
 - A checks watcher alone does not monitor new reviews. Refresh the full evidence snapshot during every polling cycle.
 - Pause at a correction checkpoint for `y`, then continue the same mode. Do not treat the checkpoint as the end of babysitting.
-- If a required push, reply, or thread resolution lacks authorization, list that action at the checkpoint for the user's `y`.
+- If a required push, reply, or eligible bot thread resolution lacks authorization, list that action at the checkpoint for the user's `y`.
 - Report a verified blocker or required user decision and keep watching for changes that may resolve it.
 - If the PR closes or merges, report that terminal state. Do not claim live monitoring after the PR is terminal; babysitting does not authorize merging it.
 - Report **merge-ready** only when the current remote head has passing required checks, required approvals, no unresolved review threads, and a GitHub merge state consistent with repository rules.
