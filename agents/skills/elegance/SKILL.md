@@ -32,6 +32,8 @@ as simple as possible, as complex as necessary.
    - For each new setting or optional field, identify a supported caller or
      state that needs its value to vary. Remove it otherwise.
    - Are abstractions pulling their weight?
+   - When changed code crosses thin modules, would folding a wrapper into its
+     owner make the behavior easier to find without losing a real boundary?
    - Is naming precise enough that the code explains itself?
    - Are conditionals, state, and data flow localized and easy to follow?
    - When data flow changes, trace one value from input to output. Look for

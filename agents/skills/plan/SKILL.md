@@ -26,6 +26,9 @@ Continue through [build](../build/SKILL.md) after approval. Use [babysit](../bab
 ## 2. Design and draft the work
 
 - Use [design](../design/SKILL.md) when consequential design choices remain unresolved. Reuse valid prior decisions.
+- Trace a caller path through the affected code. If thin modules split one concept,
+  consider keeping its behavior together. Preserve boundaries that own distinct
+  invariants or external dependencies.
 - Use [outline](../outline/SKILL.md) for the complete outcome, shared contracts, and rough ticket sequence.
 - Use [ticket](../ticket/SKILL.md) for the next ticket's contract, short rationale, steps, and verification recipes.
 - For one ticket, use `ticket` without creating a parent plan.
