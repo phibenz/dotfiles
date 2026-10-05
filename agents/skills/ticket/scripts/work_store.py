@@ -10,6 +10,7 @@ import sys
 
 
 STORE = Path("docs/work")
+ARCHIVE = "archive"
 FEATURE = re.compile(r"([0-9]{4,})-[a-z0-9]+(?:-[a-z0-9]+)*")
 
 
@@ -82,15 +83,18 @@ def resolve_context(checkout: Path, origin: Path | None = None) -> dict[str, str
 
 
 def initialize_feature(context: dict[str, str], feature: str) -> dict[str, str]:
-    """Create one ignored feature folder while preserving existing local files."""
+    """Create an ignored feature folder without reusing reserved IDs."""
     number = feature_number(feature)
     origin = Path(context["origin"])
     store = Path(context["store"])
     folder = store / feature
+    archive = store / ARCHIVE
     if number is None:
         raise ValueError("Use a padded feature folder such as 0003-request-client.")
     if folder.resolve() != folder:
         raise ValueError("The feature folder must not redirect through a symlink.")
+    if archive.resolve() != archive:
+        raise ValueError("The archive folder must not redirect through a symlink.")
     for checkout in {origin, Path(context["checkout"])}:
         if git(checkout, "ls-files", "--cached", "--", STORE.as_posix()):
             raise ValueError(
@@ -103,14 +107,15 @@ def initialize_feature(context: dict[str, str], feature: str) -> dict[str, str]:
     exclude.parent.mkdir(parents=True, exist_ok=True)
     with exclude.open("a+", encoding="utf-8") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
-        if store.exists():
-            for existing in store.iterdir():
-                reserved = feature_number(existing.name)
-                if reserved == number and existing != folder:
-                    raise ValueError(
-                        "This base number belongs to another feature. "
-                        "Choose an unused ID."
-                    )
+        for location in (store, archive):
+            if location.exists():
+                for existing in location.iterdir():
+                    reserved = feature_number(existing.name)
+                    if reserved == number and existing != folder:
+                        raise ValueError(
+                            "This base number belongs to another feature. "
+                            "Choose an unused ID."
+                        )
         stream.seek(0)
         content = stream.read()
         if "/docs/work/" not in content.splitlines():
@@ -130,6 +135,7 @@ def initialize_feature(context: dict[str, str], feature: str) -> dict[str, str]:
                 "Resolve the ignore conflict before writing drafts."
             )
         folder.mkdir(parents=True, exist_ok=True)
+        archive.mkdir(exist_ok=True)
     return {**context, "feature": str(folder)}
 
 

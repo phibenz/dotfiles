@@ -1,8 +1,8 @@
 # Communication Style
 
-Use writing rules inspired by Simplified Technical English for all user-facing
-text. Follow a different style when the user requests it or when the task needs
-creative, marketing, or voice-sensitive writing.
+Use writing rules inspired by Simplified Technical English for user-facing text
+and added or updated docstrings. Follow a different style when the user requests
+it or when the task needs creative or voice-sensitive writing.
 
 - Lead with the result or required action. Remove unnecessary introductions and
   repeated summaries.
@@ -47,7 +47,6 @@ ASD-STE100 compliance.
 - Ensure that each added or modified function has an accurate docstring. Do not
   change other function docstrings unless the user asks for file-wide
   documentation.
-- Use the Communication Style rules for all added or updated docstrings.
 - For Python docstrings, follow PEP 257 and PEP 8's documentation string rules.
   Repository-specific conventions take precedence.
 
@@ -55,3 +54,19 @@ ASD-STE100 compliance.
 
 - Validate skill code with temporary checks during creation or revision.
 - Do not retain test files, test folders, or generated test caches in skill packages.
+
+# Feature Workflow
+
+- Use [plan](skills/plan/SKILL.md) to draft, compare, review, and revise a
+  feature plan and its next ticket. Present a short summary and wait for the
+  user's go before coding.
+- Use [build](skills/build/SKILL.md) to implement one ticket step, verify it,
+  and run elegance review. Present the diff for review before each commit.
+- Use [babysit](skills/babysit/SKILL.md) to check PR reviews and CI, validate
+  claims, and prepare fixes and replies. Present each fix with its reply draft
+  before committing it.
+- Apply a user's PR delivery authorization to later rounds for that PR.
+  Each commit still needs the user's approval. Resolve threads or rerun remote
+  checks only when authorized.
+- Use `outline`, `design`, `ticket`, `assess`, `verify`, `triage`, or `fork` for
+  focused tasks. Use `pr` for PR creation and `acp` for explicit commit and push.
