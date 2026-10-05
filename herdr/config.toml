@@ -53,7 +53,7 @@ command = 'bash "$HOME/.config/herdr/navigate.sh" right'
 description = "Navigate right (Neovim/Herdr)"
 
 [theme]
-name = "catppuccin"
+name = "dracula"
 auto_switch = false
 
 [ui.toast]
