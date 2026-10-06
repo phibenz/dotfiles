@@ -22,7 +22,8 @@ herdr agent start <name> --kind codex --pane <destination-pane-id> -- fork <sour
 
 - Do not use `--last`, resume the original session, or use `/fork` in the source pane for this handoff.
 - Herdr already creates the checkout. Do not also request Codex's `--worktree` option.
-- Apply the same verified source settings when explicit startup options are necessary.
+- Preserve an automatic-review source with `--approve-for-me`, which also sets
+  the `workspace-write` sandbox. For other modes, use the verified source settings.
 - After startup, verify the new session has a distinct ID and uses the destination checkout.
 - Verify the destination's Herdr context before submitting its handoff through `herdr agent prompt`.
 - The handoff explicitly replaces the active objective and says to plan only until the reviewed checkpoint, unless ticket implementation already has approval.
