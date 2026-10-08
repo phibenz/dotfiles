@@ -5,8 +5,8 @@ description: Write or review automated tests that maximize confidence relative t
 
 # Effective Testing
 
-Create self-testing code that gives useful feedback and supports change. Treat
-TDD as one technique, not as the goal or a universal requirement.
+Build a lean functional suite that catches meaningful regressions through
+supported behavior. Treat TDD as one technique, not as a universal requirement.
 
 Read [references/examples.md](references/examples.md) when a test's boundary,
 expected value, use of doubles, or test level is unclear. Use the examples as
@@ -39,9 +39,9 @@ Consider these tradeoffs:
 - **Overhead:** What execution and maintenance cost does it add?
 - **Lifespan:** How long and how critically must the behavior remain correct?
 
-Prefer focused tests because they usually run quickly and isolate failures.
-Use broader tests when only a broader boundary provides enough confidence, or
-when those tests are fast, reliable, and inexpensive.
+Prefer a small set of functional tests through real collaborators when they are
+fast and reliable. Add isolated focused tests when failure paths, concurrency,
+or compatibility risks need a cheaper or clearer boundary.
 
 Do not enforce fixed ratios between unit, integration, and end-to-end tests.
 Those labels vary between teams. Judge each test by its feedback and cost.
@@ -95,6 +95,9 @@ Prefer real collaborators when they are fast, deterministic, and safe. Use a
 fake, stub, or mock when it improves the feedback tradeoff at an external,
 slow, unsafe, or difficult-to-reproduce boundary.
 
+- Avoid `patch` and `monkeypatch`, especially for internal names or globals.
+  They couple tests to wiring and can hide integration defects. Use them only
+  when no stable boundary can reproduce a material risk safely or cheaply.
 - Avoid mocking private collaborators or mirroring the implementation's call
   sequence.
 - Verify outcomes and state through the selected boundary. Verify interactions
@@ -110,10 +113,6 @@ slow, unsafe, or difficult-to-reproduce boundary.
 
 ## Maintain the Test Portfolio
 
-- When a broad test finds a defect, add a focused regression test when it can
-  reproduce the same risk more clearly and cheaply.
-- Keep the broad test only when it protects a distinct integration or system
-  risk.
 - Remove or rewrite redundant, brittle, tautological, or unsupported-history
   tests that add no distinct confidence or communication value.
 - Do not add a tombstone test solely to prove that deleted, unsupported
