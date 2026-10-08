@@ -17,7 +17,7 @@ Keep the user's review checkpoint before each commit.
 - `address` and `watch` authorize preparing valid corrections within the assigned PR's existing outcome. They do not authorize commits or publication.
 - Record explicit delivery authorization once for this repository and PR: pushes, replies, thread resolution, or remote check reruns.
 - Reuse that scope across rounds until the user changes it. Do not infer it from babysitting, another PR, or code approval alone.
-- Verify the PR's dedicated worktree and Herdr workspace using [PR Workspaces](../ticket/references/workspaces.md) before implementation.
+- Apply [PR Workspaces](../ticket/references/workspaces.md) before implementation.
 - Match repository identity, branch, local HEAD, and existing dirt to the remote PR. Preserve local approved commits; distinguish unpushed work from stale code.
 - If another agent owns implementation or monitoring for this PR, coordinate before editing. Do not run competing fix loops.
 - Keep each fix in the owning PR's context. Read other PRs as evidence; return their findings to their owner.
@@ -84,4 +84,3 @@ Keep the user's review checkpoint before each commit.
 ## Inspiration
 
 [Pstack's Babysit playbook](https://github.com/backnotprop/pstack/blob/main/skills/poteto-mode/playbooks/babysit.md) informs review triage and PR monitoring.
-This workflow uses the existing user checkpoint, local planning store, and dedicated PR workspace.

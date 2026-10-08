@@ -1,6 +1,6 @@
 ---
 name: fork
-description: Fork the current coding conversation into a dedicated linked worktree and Herdr workspace for a new feature, prerequisite feature, or next PR. Use when separating work objectives or starting feature work from the origin checkout. Preserve the source work and continue only the assigned objective.
+description: Fork the current coding conversation into a linked worktree and Herdr workspace for a new feature or separate prerequisite. Use when separating work objectives or starting feature work from the origin checkout. Preserve the source work and continue only the assigned objective.
 ---
 
 # Fork Work into Its Own Workspace
@@ -33,13 +33,12 @@ Read [Manage Local Planning Files](../ticket/references/drafts.md) for canonical
 - Resolve the canonical origin through the storage helper. Preserve its path across the fork.
 - Choose the base from the new objective's actual prerequisites.
 - A prerequisite normally starts from the original feature's prerequisite base, without that feature's unfinished changes.
-- A later PR in the same feature starts from its completed predecessor. A new unrelated feature uses its own target base.
+- A new unrelated feature uses its own target base.
 - Do not copy dirty source files, commit unfinished work, or switch the source branch to create the destination.
 - If the destination needs uncommitted source changes, resolve the dependency boundary before starting it.
 - Inspect existing feature drafts and owners before creating duplicate prerequisite work. Resolve a dependency cycle instead of recursively forking it.
 - Verify branch, path, workspace, and agent-name availability. Preserve existing destinations. Verify an earlier handoff before reusing one.
 - Place the destination outside the source and origin checkouts. Nested worktrees would change the source checkout's contents.
-- The feature's planning worktree may later own its first PR. Each later PR requires a separate worktree and workspace.
 - Avoid creating a second workspace when the user already supplied the correct isolated destination.
 - Verify the source model, sandbox, and approval settings before startup. Do not add sandbox bypass flags or expand origin code access.
 - Resolve required planning access before startup. Grant only the canonical local planning folder through approved execution options.

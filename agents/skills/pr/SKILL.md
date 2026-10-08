@@ -30,8 +30,7 @@ starting PR. Stop if ACP fails.
 
 ## Workflow
 
-Operate from the PR's dedicated worktree and Herdr workspace using [PR Workspaces](../ticket/references/workspaces.md).
-Verify that context before creating or changing the PR.
+Apply [PR Workspaces](../ticket/references/workspaces.md) before creating or changing the PR.
 
 1. Batch the initial inspection where possible:
    - Run `git status --short --branch --untracked-files=all`. This verifies the

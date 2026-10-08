@@ -13,7 +13,6 @@ Commit only the approved step. Preserve unrelated staged and unstaged work.
 - This route commits each named path's working-tree content. Use it only when every change in those paths belongs to the approved step.
 - Verify that those paths contain the complete approved step, including new files, before committing.
 - Do not use a whole-path commit when approved and unrelated changes share a path.
-- Resolve overlapping work through the ticket's dedicated-workspace handoff before implementation, as required by `build`.
 - If you discover mixed-path work later, preserve it and report the isolation problem before committing.
 - Do not clear the original index or stash unrelated work to make the commit succeed.
 - Apply this isolation rule before ACP's commit-and-push command. Keep its push target and failure handling unchanged.

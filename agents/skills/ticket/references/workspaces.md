@@ -1,7 +1,9 @@
-# Operate Each PR in Its Own Herdr Workspace
+# Operate a Feature Stack in One Herdr Workspace
 
-Each implementation ticket owns one branch, one linked Git worktree, and one Herdr workspace.
-All PR operations use that worktree. Shared planning stays in the origin checkout.
+By default, each feature uses one linked Git worktree and one Herdr workspace.
+Each ticket owns one branch and one PR. For a stacked feature, work on its
+branches in that worktree. Keep existing stacks with separate worktrees unless
+the user requests migration. Shared planning stays in the origin checkout.
 
 ## Isolate feature objectives
 
@@ -22,35 +24,35 @@ All PR operations use that worktree. Shared planning stays in the origin checkou
 - Planning may inspect the origin or predecessor code for discovery. Start new feature planning in its isolated context.
 - Record the actual target or predecessor branch and assessed commit in the canonical ticket metadata.
 - Keep uncreated worktree and workspace bindings explicitly unassigned. Do not invent IDs or readiness evidence.
-- At the planning checkpoint, provide the absolute ticket path, origin path, expected base, and proposed branch for the new agent.
-- The user may create the destination and start its agent. Otherwise use `fork` under the default isolation rule.
-- At later ticket boundaries, use `fork` for the next PR's separate context when the user requests continued feature work.
+- At the planning checkpoint, provide the absolute ticket path, origin path, expected base, proposed branch, and feature workspace.
+- For a new feature, the user may create the destination and start its agent. Otherwise use `fork` under the default isolation rule.
 - Use the installed Herdr guidance and current CLI help for requested setup. Preserve user focus and existing work.
 
 ## Verify the implementation context
 
-- Before coding or changing a PR, require its dedicated linked worktree and Herdr workspace.
+- Before coding or changing a PR, require the assigned feature's linked worktree and Herdr workspace.
 - For work without a local ticket, use the agreed task or PR contract and keep its binding in the conversation. Do not invent a planning folder.
 - Inspect the current branch, HEAD, index, and working tree before editing. Preserve unrelated changes and keep the step separate.
 - Require `HERDR_ENV=1` and obtain the caller's `HERDR_WORKSPACE_ID`.
 - Read `herdr workspace get <caller-workspace-id>` and parse its returned IDs and worktree metadata.
 - Verify `result.workspace.worktree.is_linked_worktree` and match `checkout_path` to the current Git checkout.
 - Resolve `repo_root` through the storage helper and verify that it shares the checkout's Git repository.
-- Match the branch and prerequisite code to the assessed ticket or agreed PR contract. Reassess material base changes before coding.
+- Match the current branch and prerequisite code to the assessed ticket or agreed PR contract. Reassess material base changes before coding.
 - Include agreed uncommitted prerequisites explicitly and reassess that context. Use the repository's stack workflow within the assigned context for stacked work.
-- Bind an unassigned ticket to the verified worktree path, branch, and returned workspace ID in its canonical metadata.
-- For an existing binding, verify the path and branch. Verify changed session IDs through live metadata before refreshing them.
-- Never repurpose one PR's worktree or workspace for another ticket. Reviewers for that PR may use additional panes in its workspace.
+- Before switching or creating a branch in a shared worktree, require a clean index and working tree. If either is dirty, stop.
+- If another branch is checked out, use the `gh-stack` skill to select the ticket's branch. Then verify its branch and base.
+- Bind an unassigned ticket to its branch and the verified feature worktree path and workspace ID in canonical metadata.
+- For an existing binding, verify the path, workspace, and ticket branch. Verify changed session IDs through live metadata before refreshing them.
+- Never use a feature workspace for an unrelated feature. Reviewers may use additional panes.
 - If the required workspace is missing or mismatched, return the handoff and stop before coding or committing.
 - Do not switch branches in the origin checkout to satisfy this requirement.
 
 ## Continue across tickets
 
-- Keep all steps of a ticket in its assigned PR worktree, with one approval checkpoint per commit.
+- Keep all steps of a ticket on its assigned branch, with one approval checkpoint per commit.
 - Read and revise canonical planning through absolute origin paths. Do not create local shadow copies.
 - After a ticket completes, prepare the next ticket against its actual predecessor when requested.
-- Present the reviewed next ticket and the handoff for a separate Herdr workspace and worktree.
-- Fork into that context when the request includes continuing the feature. Preserve the next ticket's approval checkpoint.
-- The new agent requires the user's go before building that ticket.
-- Leaving or removing a PR worktree does not remove the origin's planning files.
+- When continuing a shared-worktree stack, use `gh-stack` to select or create the ticket's branch. Before creating a branch, verify the current branch is its recorded predecessor.
+- The agent requires the user's go before building that ticket.
+- Leaving or removing a feature worktree does not remove the origin's planning files.
 - Keep workspace cleanup and branch deletion outside this workflow unless explicitly requested.

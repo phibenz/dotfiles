@@ -61,8 +61,8 @@ Continue through [build](../build/SKILL.md) after approval. Use [babysit](../bab
 - Present a short TLDR of the chosen shape, outlined ticket sequence, and reviewed next ticket.
 - Link the local drafts. State unresolved decisions or review limitations only when they remain.
 - Present the agent handoff using [PR Workspaces](../ticket/references/workspaces.md).
-- Wait for the user's go to [build](../build/SKILL.md) in that ticket's dedicated Herdr workspace and worktree.
-- Planning creates no commits or PRs. `fork` owns any worktree, branch, workspace, and conversation setup.
+- Wait for the user's go to [build](../build/SKILL.md) on that ticket's branch in its assigned workspace.
+- Planning creates no commits or PRs.
 
 ## Reconcile changes during implementation
 

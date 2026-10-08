@@ -49,4 +49,4 @@ Use [plan](../plan/SKILL.md) before coding a new feature and [babysit](../babysi
 - Report the commit hash and subject briefly.
 - For a `babysit` correction, return the commit and verification evidence to `babysit` for authorized delivery and the next correction.
 - Otherwise continue requested steps in the same ticket after the commit, with the same checkpoint before each subsequent commit.
-- At a requested ticket boundary, use `plan` to prepare and present the next ticket. Follow its separate workspace handoff and wait for the user's go there.
+- At a requested ticket boundary, use `plan` to prepare and present the next ticket. Follow its branch handoff in the assigned workspace and wait for the user's go.

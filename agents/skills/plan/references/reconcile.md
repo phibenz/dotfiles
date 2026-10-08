@@ -38,5 +38,5 @@ Routine design revisions stay within the already authorized outcome and scope.
 - Preserve the user's approval checkpoint before committing the current code step.
 - Wait for a user decision if the revision changes the outcome, scope, or compatibility promises.
 - Report a blocker or missing evidence before coding affected work.
-- At a ticket boundary, present the reviewed next ticket and its handoff for a separate Herdr workspace and worktree.
+- At a ticket boundary, present the reviewed next ticket, its proposed branch, and its assigned workspace.
 - Wait for the user's go in that implementation context.
