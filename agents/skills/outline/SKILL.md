@@ -25,7 +25,7 @@ Use `ticket` only when refining an implementation ticket.
 
 ## 2. Order the stacked PRs
 
-- Use one linear sequence: `T3.1 → T3.2 → T3.3` for plan `P3`.
+- Use one linear sequence: `T0003.1 → T0003.2 → T0003.3` for plan `P0003`.
   Each ticket represents one PR;
   its implementation steps represent commits within that PR.
 - Base the first PR on the target branch and each later PR on its predecessor.
@@ -43,8 +43,7 @@ Use `ticket` only when refining an implementation ticket.
 - Store the parent as `<origin>/docs/work/<feature>/plan.md` using the shared storage rules.
 - Treat supplied paths as input and preserve their source files. Never create a copy in the PR worktree.
 - Use the shared local ID and filename rules. Choose the next increasing
-  feature number for the plan. Assign child IDs in its ticket list. For example,
-  plan `P3` lists `T3.1` and `T3.2`.
+  feature number for the plan. Assign child IDs in its ticket list.
 - Reuse each child's ID when refining its draft. Assign a new child ID only
   when adding a child to the plan.
 - Start with the rough plan. As work progresses, refine the next child through

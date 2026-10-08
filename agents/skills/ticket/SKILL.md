@@ -10,7 +10,7 @@ Use [plan](../plan/SKILL.md) for automatic drafting and review rounds.
 
 ## 1. Identify the draft and boundary
 
-- Accept a title, description, local draft path, or local ID such as `T3.1` in `$ARGUMENTS`.
+- Accept a title, description, local draft path, or local ID such as `T0003.1` in `$ARGUMENTS`.
 - Read [Manage Local Planning Files](references/drafts.md) for origin storage, feature folders, IDs, and revisions.
 - Apply [PR Workspaces](references/workspaces.md) before detailed planning for a new feature.
 - Resolve supplied drafts and IDs to their canonical origin location. Preserve source files, useful content, and agreed requirements.

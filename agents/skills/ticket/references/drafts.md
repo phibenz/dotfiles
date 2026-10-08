@@ -25,9 +25,9 @@ Read [PR Workspaces](workspaces.md) for checkout identity and agent handoffs.
 ```text
 docs/work/0003-request-client/
   plan.md
-  tickets/T3.1-request-options.md
-  tickets/T3.2-cli-preview.md
-  reviews/P3.md
+  tickets/T0003.1-request-options.md
+  tickets/T0003.2-cli-preview.md
+  reviews/P0003.md
   evidence/
 docs/work/archive/0002-old-feature/
 ```
@@ -40,20 +40,19 @@ docs/work/archive/0002-old-feature/
 - Planning files, review reports, and local evidence never enter commits. Verify this again when staging implementation work.
 - Local exclusion keeps planning out of ordinary staging. Verify commit scope even for forced or pre-existing staged files.
 - Move a whole feature folder to `archive/` when its work is canceled, dropped, or done. Keep its files and IDs intact.
-- Keep a canceled child ticket in its active feature folder while other work in that feature continues.
+- Keep a canceled ticket in its active feature folder while other work in that feature continues.
 - When work resumes, move its folder back to the root before adding or revising drafts.
 
 ## Local IDs and revisions
 
-- Use the existing `P<N>` plan and `T<N>` standalone IDs. A plan's children use `T<N>.<K>`.
-- Use one base-number sequence across all feature folders. Feature `0012` uses plan `P12` or standalone `T12`, with plan children such as `T12.1`.
-- A plan `P3` reserves `3`, so standalone `T3` is unavailable for another feature.
+- Use the exact padded number from the feature folder in every ID. Folder `0006-*` uses plan `P0006` and tickets `T0006.1`, `T0006.2`, and so on.
+- Every ticket uses the child number, even without a plan or with only one ticket. Do not use `T0006`.
+- Folder `0006-*` reserves `P0006` and `T0006.*`, even before drafts exist. The helper rejects another folder with base `0006`.
 - Before assigning an ID, inspect active and archived feature folders and files, including IDs in parent ticket lists.
-- A feature folder reserves its base number even before its draft is complete. The helper rejects conflicting canonical feature reservations.
 - The drafting coordinator selects IDs from the canonical store before invoking initialization. The helper does not allocate IDs.
 - Choose one greater than the highest reserved base number. Never fill earlier gaps. If no number exists, start at `1`.
-- Add children using one greater than the highest assigned child number for that plan.
-- Never reuse or renumber assigned IDs. Keep canceled and superseded entries in their feature folder, including after archival.
+- Add tickets using one greater than the highest assigned child number in that feature folder.
+- Never reuse or change assigned base or child numbers. Pad old short IDs to match their folder, updating filenames and references together. Keep canceled and superseded entries in their feature folder, including after archival.
 - Keep a feature's folder stable when its title, ordering, or ticket boundaries change.
 - When replacing tickets, retain their drafts or parent entries and record replacement IDs.
 - Reuse the canonical files during revisions. Read the latest content before writing and preserve unrelated changes.
