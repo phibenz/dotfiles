@@ -111,7 +111,7 @@ export LC_CTYPE="${LC_CTYPE:-$LANG}"
 
 # Enable Emacs-style editing after local scripts load.
 bindkey -e
-bindkey '^H' beginning-of-line
+bindkey '^H' backward-word
 bindkey '^K' up-line-or-beginning-search
 bindkey '^J' down-line-or-beginning-search
 bindkey '^L' autosuggest-accept
